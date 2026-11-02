@@ -11,7 +11,14 @@ export default antfu(
       css: true,
       markdown: 'prettier',
     },
-    ignores: ['src/routeTree.gen.ts'],
+    ignores: [
+      'src/routeTree.gen.ts',
+      // Vendored shadcn/ui files, kept byte-for-byte so `shadcn add` can
+      // update them without fighting local formatting rules.
+      'src/components/ui/**',
+      'src/hooks/**',
+      'src/lib/highlighter.tsx',
+    ],
   },
   {
     files: ['**/*.{js,jsx,ts,tsx}'],

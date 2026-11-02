@@ -1,16 +1,16 @@
 import type { RegistryCatalog, RegistryItem } from '@/lib/registry-catalog'
 
 import { createFileRoute, Link } from '@tanstack/react-router'
-import catalogJson from '@/generated/registry.json'
-import { groupItemsByType, itemTypeLabels } from '@/lib/registry-catalog'
-import { buttonVariants } from '@/registry/folio/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/registry/folio/ui/card'
+} from '@/components/ui/card'
+import catalogJson from '@/generated/registry.json'
+import { groupItemsByType, itemTypeLabels } from '@/lib/registry-catalog'
 
 const catalog = catalogJson as unknown as RegistryCatalog
 const groups = groupItemsByType(catalog.items)
@@ -23,25 +23,30 @@ function Home() {
       <section className="flex flex-col gap-8">
         <div className="flex flex-col gap-3">
           <span className="w-fit rounded-full border px-3 py-1 text-xs text-muted-foreground">
-            shadcn/ui registry
+            shadcn/ui extension
           </span>
           <h1 className="max-w-2xl text-4xl font-semibold tracking-tight">
-            Folio design system for shadcn/ui.
+            Folio extensions for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-muted-foreground">
-            Install components, blocks and theme tokens directly into any
-            project with the shadcn CLI. Every item ships as source code you
-            own.
+            Folio extends shadcn/ui for specific scenarios. It is not a
+            replacement: install shadcn/ui first with the b0 preset, then add
+            the blocks and tokens that Folio ships as source code you own.
           </p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <CommandCard
-            title="Install from GitHub"
+            title="1. Set up shadcn/ui"
+            command="npx shadcn@latest init --preset b0"
+            note="Folio defaults to the b0 preset."
+          />
+          <CommandCard
+            title="2. Install from GitHub"
             command="npx shadcn@latest add litingyes/folio/base"
             note="No registry configuration required."
           />
           <CommandCard
-            title="Install by namespace"
+            title="3. Install by namespace"
             command="npx shadcn@latest add @folio/base"
             note="After adding the @folio registry to components.json."
           />

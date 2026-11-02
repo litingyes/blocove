@@ -2,16 +2,16 @@ import type { ComponentProps } from 'react'
 
 import { cn } from 'cn'
 
-import { Button } from '@/registry/folio/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/registry/folio/ui/card'
-import { Input } from '@/registry/folio/ui/input'
-import { Label } from '@/registry/folio/ui/label'
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export function LoginForm({ className, ...props }: ComponentProps<'div'>) {
   return (

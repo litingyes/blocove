@@ -1,16 +1,16 @@
 import type { RegistryCatalog } from '@/lib/registry-catalog'
 
 import { createFileRoute, Link } from '@tanstack/react-router'
-import catalogJson from '@/generated/registry.json'
-import { itemTypeLabels } from '@/lib/registry-catalog'
-import { buttonVariants } from '@/registry/folio/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/registry/folio/ui/card'
+} from '@/components/ui/card'
+import catalogJson from '@/generated/registry.json'
+import { itemTypeLabels } from '@/lib/registry-catalog'
 
 const catalog = catalogJson as unknown as RegistryCatalog
 
@@ -67,6 +67,13 @@ function ItemPage() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold">Install</h2>
+        <p className="text-sm text-muted-foreground">
+          Requires a project initialized with shadcn/ui and the b0 preset:
+          {' '}
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">
+            npx shadcn@latest init --preset b0
+          </code>
+        </p>
         <div className="flex flex-col gap-2">
           <code className="rounded-md bg-muted px-3 py-2 text-xs break-all">
             {installFromGitHub}
@@ -105,7 +112,9 @@ function ItemPage() {
             {item.files.length === 0
               ? (
                   <p className="text-sm text-muted-foreground">
-                    This item only applies theme tokens.
+                    {item.type === 'registry:base'
+                      ? 'This item installs shadcn/ui prerequisites and ships no files of its own.'
+                      : 'This item only applies theme tokens.'}
                   </p>
                 )
               : (

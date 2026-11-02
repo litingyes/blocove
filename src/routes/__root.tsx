@@ -24,7 +24,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'A shadcn/ui registry of Folio components, blocks and design tokens.',
+          'A shadcn/ui extension registry: Folio blocks and tokens layered on top of shadcn/ui.',
       },
     ],
     links: [
@@ -86,7 +86,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           <main className="flex-1 py-12">{children}</main>
           <footer className="flex flex-wrap items-center justify-between gap-2 border-t py-6 text-xs text-muted-foreground">
             <span>
-              Install items with
+              Requires shadcn/ui with the b0 preset, then add items with
               {' '}
               <code className="rounded bg-muted px-1 py-0.5">
                 npx shadcn@latest add litingyes/folio/&lt;item&gt;

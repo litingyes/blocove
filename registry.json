@@ -1,0 +1,6 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "folio",
+  "homepage": "https://github.com/litingyes/folio",
+  "include": ["src/registry/folio/registry.json"]
+}

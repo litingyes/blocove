@@ -1,0 +1,122 @@
+import { Link, createFileRoute } from "@tanstack/react-router"
+
+import catalogJson from "@/generated/registry.json"
+import type { RegistryCatalog, RegistryItem } from "@/lib/registry-catalog"
+import { groupItemsByType, itemTypeLabels } from "@/lib/registry-catalog"
+import { buttonVariants } from "@/registry/folio/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/registry/folio/ui/card"
+
+const catalog = catalogJson as unknown as RegistryCatalog
+const groups = groupItemsByType(catalog.items)
+
+export const Route = createFileRoute("/")({ component: Home })
+
+function Home() {
+  return (
+    <div className="flex flex-col gap-16">
+      <section className="flex flex-col gap-8">
+        <div className="flex flex-col gap-3">
+          <span className="w-fit rounded-full border px-3 py-1 text-xs text-muted-foreground">
+            shadcn/ui registry
+          </span>
+          <h1 className="max-w-2xl text-4xl font-semibold tracking-tight">
+            Folio design system for shadcn/ui.
+          </h1>
+          <p className="max-w-2xl text-muted-foreground">
+            Install components, blocks and theme tokens directly into any
+            project with the shadcn CLI. Every item ships as source code you
+            own.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <CommandCard
+            title="Install from GitHub"
+            command="npx shadcn@latest add litingyes/folio/base"
+            note="No registry configuration required."
+          />
+          <CommandCard
+            title="Install by namespace"
+            command="npx shadcn@latest add @folio/base"
+            note="After adding the @folio registry to components.json."
+          />
+        </div>
+      </section>
+
+      {[...groups.entries()].map(([type, items]) => (
+        <section key={type} className="flex flex-col gap-4">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-lg font-semibold tracking-tight">
+              {itemTypeLabels[type] ?? type}
+            </h2>
+            <span className="text-xs text-muted-foreground">
+              {items.length} {items.length === 1 ? "item" : "items"}
+            </span>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {items.map((item) => (
+              <ItemCard key={item.name} item={item} />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  )
+}
+
+function CommandCard({
+  title,
+  command,
+  note,
+}: {
+  title: string
+  command: string
+  note: string
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">{title}</CardTitle>
+        <CardDescription>{note}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <code className="block rounded-md bg-muted px-3 py-2 text-xs break-all">
+          {command}
+        </code>
+      </CardContent>
+    </Card>
+  )
+}
+
+function ItemCard({ item }: { item: RegistryItem }) {
+  return (
+    <Card className="flex flex-col">
+      <CardHeader>
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle className="text-base">{item.title}</CardTitle>
+          <span className="shrink-0 rounded-full border px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+            {item.name}
+          </span>
+        </div>
+        <CardDescription>{item.description}</CardDescription>
+      </CardHeader>
+      <CardContent className="mt-auto flex items-end justify-between gap-3">
+        <code className="rounded-md bg-muted px-2 py-1 text-[11px] break-all text-muted-foreground">
+          npx shadcn@latest add litingyes/folio/{item.name}
+        </code>
+        <Link
+          to="/items/$name"
+          params={{ name: item.name }}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          View
+        </Link>
+      </CardContent>
+    </Card>
+  )
+}

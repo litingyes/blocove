@@ -1,27 +1,28 @@
 {
   "name": "folio",
-  "private": true,
   "type": "module",
+  "private": true,
+  "packageManager": "pnpm@12.16.1",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.22.1"
   },
   "scripts": {
     "dev": "vite dev --port 3000",
-    "predev": "npm run registry:prepare",
+    "predev": "pnpm run registry:prepare",
     "build": "vite build",
-    "prebuild": "npm run registry:prepare",
+    "prebuild": "pnpm run registry:prepare",
     "preview": "vite preview",
     "generate-routes": "tsr generate",
     "lint": "eslint",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "pretypecheck": "npm run registry:prepare",
+    "lint:fix": "eslint --fix",
+    "pretypecheck": "pnpm run registry:prepare",
     "typecheck": "tsc --noEmit",
     "registry:build": "shadcn build",
     "catalog:build": "node scripts/build-catalog.mjs",
-    "registry:prepare": "npm run registry:build && npm run catalog:build",
+    "registry:prepare": "pnpm run registry:build && pnpm run catalog:build",
     "registry:validate": "shadcn registry validate litingyes/folio",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run build"
+    "prepare": "lefthook install",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -41,17 +42,24 @@
     "tw-animate-css": "^1.4.0"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^10.0.0",
+    "@eslint-react/eslint-plugin": "^5.28.8",
     "@tanstack/devtools-vite": "latest",
-    "@tanstack/eslint-config": "latest",
     "@tanstack/router-cli": "^1.167.45",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
     "eslint": "^10",
-    "prettier": "^3.9.10",
-    "prettier-plugin-tailwindcss": "^0.8.1",
+    "eslint-plugin-better-tailwindcss": "^4.10.0",
+    "eslint-plugin-format": "^2.0.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "lefthook": "^2.2.2",
+    "lint-staged": "^17.6.0",
     "typescript": "^6.0.2",
     "vite": "^8"
+  },
+  "lint-staged": {
+    "*.{js,jsx,mjs,cjs,ts,tsx,json,jsonc,yaml,yml,md,css,html}": "eslint --fix --no-warn-ignored"
   }
 }

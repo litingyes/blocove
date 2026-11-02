@@ -1,35 +1,35 @@
+import type { ReactNode } from 'react'
 import {
+  createRootRoute,
   HeadContent,
   Link,
   Scripts,
-  createRootRoute,
-} from "@tanstack/react-router"
-import type { ReactNode } from "react"
+} from '@tanstack/react-router'
 
-import appCss from "../styles.css?url"
+import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: 'utf-8',
       },
       {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
       },
       {
-        title: "Folio Registry",
+        title: 'Folio Registry',
       },
       {
-        name: "description",
+        name: 'description',
         content:
-          "A shadcn/ui registry of Folio components, blocks and design tokens.",
+          'A shadcn/ui registry of Folio components, blocks and design tokens.',
       },
     ],
     links: [
       {
-        rel: "stylesheet",
+        rel: 'stylesheet',
         href: appCss,
       },
     ],
@@ -86,7 +86,8 @@ function RootDocument({ children }: { children: ReactNode }) {
           <main className="flex-1 py-12">{children}</main>
           <footer className="flex flex-wrap items-center justify-between gap-2 border-t py-6 text-xs text-muted-foreground">
             <span>
-              Install items with{" "}
+              Install items with
+              {' '}
               <code className="rounded bg-muted px-1 py-0.5">
                 npx shadcn@latest add litingyes/folio/&lt;item&gt;
               </code>

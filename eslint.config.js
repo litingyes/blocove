@@ -1,21 +1,39 @@
-//  @ts-check
+// @ts-check
 
-import { tanstackConfig } from "@tanstack/eslint-config"
+import antfu from '@antfu/eslint-config'
+import betterTailwindcss from 'eslint-plugin-better-tailwindcss'
 
-export default [
-  ...tanstackConfig,
+export default antfu(
   {
+    type: 'app',
+    react: true,
+    formatters: {
+      css: true,
+      markdown: 'prettier',
+    },
+    ignores: ['src/routeTree.gen.ts'],
+  },
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    plugins: { 'better-tailwindcss': betterTailwindcss },
+    settings: {
+      'better-tailwindcss': { entryPoint: 'src/styles.css' },
+    },
     rules: {
-      "import/no-cycle": "off",
-      "import/order": "off",
-      "import/consistent-type-specifier-style": "off",
-      "sort-imports": "off",
-      "@typescript-eslint/array-type": "off",
-      "@typescript-eslint/require-await": "off",
-      "pnpm/json-enforce-catalog": "off",
+      // Replaces prettier-plugin-tailwindcss: keep class names in canonical order.
+      'better-tailwindcss/enforce-consistent-class-order': 'error',
     },
   },
   {
-    ignores: ["eslint.config.js", ".prettierrc"],
+    // Route files export `Route`, registry components export variants next to
+    // components, so the fast-refresh component-only rule does not apply.
+    files: ['src/routes/**/*.tsx', 'src/registry/**/*.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
   },
-]
+  {
+    // Keep pnpm-workspace.yaml minimal instead of adopting antfu's opinionated
+    // pnpm settings (trustPolicy, shellEmulator, ...).
+    files: ['pnpm-workspace.yaml'],
+    rules: { 'pnpm/yaml-enforce-settings': 'off' },
+  },
+)

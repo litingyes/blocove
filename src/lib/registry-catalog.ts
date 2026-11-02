@@ -22,39 +22,39 @@ export interface RegistryCatalog {
 }
 
 export const itemTypeOrder = [
-  "registry:base",
-  "registry:ui",
-  "registry:block",
-  "registry:theme",
-  "registry:lib",
-  "registry:hook",
+  'registry:base',
+  'registry:ui',
+  'registry:block',
+  'registry:theme',
+  'registry:lib',
+  'registry:hook',
 ] as const
 
 export const itemTypeLabels: Record<string, string> = {
-  "registry:base": "Base",
-  "registry:ui": "UI",
-  "registry:block": "Blocks",
-  "registry:theme": "Theme",
-  "registry:lib": "Lib",
-  "registry:hook": "Hooks",
+  'registry:base': 'Base',
+  'registry:ui': 'UI',
+  'registry:block': 'Blocks',
+  'registry:theme': 'Theme',
+  'registry:lib': 'Lib',
+  'registry:hook': 'Hooks',
 }
 
 export function groupItemsByType(items: RegistryItem[]) {
   const groups = new Map<string, RegistryItem[]>()
 
   for (const type of itemTypeOrder) {
-    const group = items.filter((item) => item.type === type)
+    const group = items.filter(item => item.type === type)
     if (group.length > 0) {
       groups.set(type, group)
     }
   }
 
   const other = items.filter(
-    (item) =>
-      !itemTypeOrder.includes(item.type as (typeof itemTypeOrder)[number])
+    item =>
+      !itemTypeOrder.includes(item.type as (typeof itemTypeOrder)[number]),
   )
   if (other.length > 0) {
-    groups.set("other", other)
+    groups.set('other', other)
   }
 
   return groups

@@ -1,0 +1,3 @@
+# lefthook's postinstall syncs git hooks, so pnpm 11+ has to allow its build.
+allowBuilds:
+  lefthook: true

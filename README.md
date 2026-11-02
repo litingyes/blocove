@@ -10,8 +10,8 @@ GitHub address, a URL, or a namespace.
 
 ## Requirements
 
-- Node.js >= 22.12
-- npm
+- Node.js >= 22.22
+- pnpm >= 11 (`corepack enable` is enough)
 
 ## Install items
 
@@ -98,24 +98,42 @@ generated from the build output, and consumers install the same source files.
 ## Local development
 
 ```bash
-npm install
-npm run dev          # http://localhost:3000, regenerates public/r first
+pnpm install         # installs dependencies and the git hooks
+pnpm dev             # http://localhost:3000, regenerates public/r first
 ```
 
 Useful scripts:
 
-| Script                      | Description                                        |
-| --------------------------- | -------------------------------------------------- |
-| `npm run registry:build`    | `shadcn build` into `public/r`                     |
-| `npm run registry:prepare`  | Build registry JSON and generate the site catalog  |
-| `npm run registry:validate` | Validate `litingyes/folio` from GitHub             |
-| `npm run typecheck`         | TypeScript                                         |
-| `npm run lint`              | ESLint                                             |
-| `npm run format`            | Prettier                                           |
-| `npm run check`             | typecheck, lint, format check and production build |
+| Script                   | Description                                       |
+| ------------------------ | ------------------------------------------------- |
+| `pnpm registry:build`    | `shadcn build` into `public/r`                    |
+| `pnpm registry:prepare`  | Build registry JSON and generate the site catalog |
+| `pnpm registry:validate` | Validate `litingyes/folio` from GitHub            |
+| `pnpm typecheck`         | TypeScript                                        |
+| `pnpm lint`              | ESLint: lint and formatting                       |
+| `pnpm lint:fix`          | ESLint with autofix                               |
+| `pnpm check`             | typecheck, lint and production build              |
 
 The generated files (`public/r`, `src/generated`) are gitignored. `predev`,
 `prebuild` and `pretypecheck` regenerate them automatically.
+
+### Git hooks
+
+`pnpm install` runs `prepare` and installs the git hooks with
+[lefthook](https://lefthook.dev). The `pre-commit` hook runs
+[lint-staged](https://github.com/lint-staged/lint-staged), which applies
+`eslint --fix` to every staged file and stages the result again, so lint and
+formatting errors never reach a commit.
+
+- Skip the hook once with `LEFTHOOK=0 git commit ...` or
+  `git commit --no-verify`; CI still runs `pnpm lint`.
+- Reinstall the hooks with `pnpm exec lefthook install`.
+
+ESLint is the single source of truth for linting and formatting
+([`@antfu/eslint-config`](https://github.com/antfu/eslint-config)).
+`.css`, `.md`, `.json` and `.yaml` files are formatted through its `formatters`
+integration, and Tailwind class names are kept in canonical order by
+`eslint-plugin-better-tailwindcss`.
 
 ## Adding an item
 
@@ -133,7 +151,7 @@ The generated files (`public/r`, `src/generated`) are gitignored. `predev`,
      "files": [{ "path": "ui/badge.tsx", "type": "registry:ui" }]
    }
    ```
-3. Run `npm run registry:prepare` and check `public/r/<name>.json`.
+3. Run `pnpm run registry:prepare` and check `public/r/<name>.json`.
 4. Commit the source and item definition, then tag a release.
 
 Conventions:
@@ -150,8 +168,8 @@ Conventions:
 ## Verify an install
 
 ```bash
-npm run registry:prepare
-npm run dev
+pnpm run registry:prepare
+pnpm dev
 npx shadcn@latest view http://localhost:3000/r/button.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/button.json
 ```
@@ -170,7 +188,7 @@ After the first deploy:
 
 1. Set `homepage` in the root `registry.json` to the public URL.
 2. Update the namespace URL in this README and in the site footer.
-3. Re-run `npm run registry:prepare` and tag a release.
+3. Re-run `pnpm run registry:prepare` and tag a release.
 
 ## License
 

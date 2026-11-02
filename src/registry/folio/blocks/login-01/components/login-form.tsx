@@ -1,21 +1,21 @@
-import type { ComponentProps } from "react"
+import type { ComponentProps } from 'react'
 
-import { cn } from "cn"
+import { cn } from 'cn'
 
-import { Button } from "@/registry/folio/ui/button"
+import { Button } from '@/registry/folio/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/folio/ui/card"
-import { Input } from "@/registry/folio/ui/input"
-import { Label } from "@/registry/folio/ui/label"
+} from '@/registry/folio/ui/card'
+import { Input } from '@/registry/folio/ui/input'
+import { Label } from '@/registry/folio/ui/label'
 
-export function LoginForm({ className, ...props }: ComponentProps<"div">) {
+export function LoginForm({ className, ...props }: ComponentProps<'div'>) {
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>

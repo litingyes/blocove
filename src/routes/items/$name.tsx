@@ -1,24 +1,24 @@
-import { Link, createFileRoute } from "@tanstack/react-router"
+import type { RegistryCatalog } from '@/lib/registry-catalog'
 
-import catalogJson from "@/generated/registry.json"
-import type { RegistryCatalog } from "@/lib/registry-catalog"
-import { itemTypeLabels } from "@/lib/registry-catalog"
-import { buttonVariants } from "@/registry/folio/ui/button"
+import { createFileRoute, Link } from '@tanstack/react-router'
+import catalogJson from '@/generated/registry.json'
+import { itemTypeLabels } from '@/lib/registry-catalog'
+import { buttonVariants } from '@/registry/folio/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/folio/ui/card"
+} from '@/registry/folio/ui/card'
 
 const catalog = catalogJson as unknown as RegistryCatalog
 
-export const Route = createFileRoute("/items/$name")({ component: ItemPage })
+export const Route = createFileRoute('/items/$name')({ component: ItemPage })
 
 function ItemPage() {
   const { name } = Route.useParams()
-  const item = catalog.items.find((entry) => entry.name === name)
+  const item = catalog.items.find(entry => entry.name === name)
 
   if (!item) {
     return (
@@ -27,7 +27,10 @@ function ItemPage() {
           Item not found
         </h1>
         <p className="text-muted-foreground">
-          No registry item named <code className="font-mono">{name}</code>.
+          No registry item named
+          {' '}
+          <code className="font-mono">{name}</code>
+          .
         </p>
         <Link to="/" className="text-sm underline-offset-4 hover:underline">
           Back to the registry
@@ -75,15 +78,15 @@ function ItemPage() {
         <div className="flex flex-wrap gap-3 pt-1">
           <a
             href={`/r/${item.name}.json`}
-            className={buttonVariants({ variant: "outline", size: "sm" })}
+            className={buttonVariants({ variant: 'outline', size: 'sm' })}
           >
             View JSON
           </a>
           <a
-            href={`https://github.com/litingyes/folio`}
+            href="https://github.com/litingyes/folio"
             target="_blank"
             rel="noreferrer"
-            className={buttonVariants({ variant: "ghost", size: "sm" })}
+            className={buttonVariants({ variant: 'ghost', size: 'sm' })}
           >
             Source on GitHub
           </a>
@@ -99,24 +102,28 @@ function ItemPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-2">
-            {item.files.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                This item only applies theme tokens.
-              </p>
-            ) : (
-              item.files.map((file) => (
-                <div
-                  key={file.path}
-                  className="flex flex-col gap-0.5 rounded-md border px-3 py-2"
-                >
-                  <code className="text-xs break-all">{file.path}</code>
-                  <span className="text-[11px] text-muted-foreground">
-                    {file.type}
-                    {file.target ? ` → ${file.target}` : null}
-                  </span>
-                </div>
-              ))
-            )}
+            {item.files.length === 0
+              ? (
+                  <p className="text-sm text-muted-foreground">
+                    This item only applies theme tokens.
+                  </p>
+                )
+              : (
+                  item.files.map(file => (
+                    <div
+                      key={file.path}
+                      className="flex flex-col gap-0.5 rounded-md border px-3 py-2"
+                    >
+                      <code className="text-xs break-all">{file.path}</code>
+                      <span className="text-[11px] text-muted-foreground">
+                        {file.type}
+                        {file.target
+                          ? ` → ${file.target}`
+                          : null}
+                      </span>
+                    </div>
+                  ))
+                )}
           </CardContent>
         </Card>
 
@@ -138,18 +145,20 @@ function ItemPage() {
               values={item.registryDependencies}
               empty="No registry dependencies."
             />
-            {item.categories.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {item.categories.map((category) => (
-                  <span
-                    key={category}
-                    className="rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground"
-                  >
-                    {category}
-                  </span>
-                ))}
-              </div>
-            ) : null}
+            {item.categories.length > 0
+              ? (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {item.categories.map(category => (
+                      <span
+                        key={category}
+                        className="rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                )
+              : null}
           </CardContent>
         </Card>
       </div>
@@ -171,20 +180,22 @@ function DependencyGroup({
       <span className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
         {label}
       </span>
-      {values.length === 0 ? (
-        <span className="text-sm text-muted-foreground">{empty}</span>
-      ) : (
-        <div className="flex flex-wrap gap-1.5">
-          {values.map((value) => (
-            <code
-              key={value}
-              className="rounded-md bg-muted px-2 py-1 text-[11px]"
-            >
-              {value}
-            </code>
-          ))}
-        </div>
-      )}
+      {values.length === 0
+        ? (
+            <span className="text-sm text-muted-foreground">{empty}</span>
+          )
+        : (
+            <div className="flex flex-wrap gap-1.5">
+              {values.map(value => (
+                <code
+                  key={value}
+                  className="rounded-md bg-muted px-2 py-1 text-[11px]"
+                >
+                  {value}
+                </code>
+              ))}
+            </div>
+          )}
     </div>
   )
 }

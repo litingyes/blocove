@@ -1,21 +1,21 @@
-import { Link, createFileRoute } from "@tanstack/react-router"
+import type { RegistryCatalog, RegistryItem } from '@/lib/registry-catalog'
 
-import catalogJson from "@/generated/registry.json"
-import type { RegistryCatalog, RegistryItem } from "@/lib/registry-catalog"
-import { groupItemsByType, itemTypeLabels } from "@/lib/registry-catalog"
-import { buttonVariants } from "@/registry/folio/ui/button"
+import { createFileRoute, Link } from '@tanstack/react-router'
+import catalogJson from '@/generated/registry.json'
+import { groupItemsByType, itemTypeLabels } from '@/lib/registry-catalog'
+import { buttonVariants } from '@/registry/folio/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/folio/ui/card"
+} from '@/registry/folio/ui/card'
 
 const catalog = catalogJson as unknown as RegistryCatalog
 const groups = groupItemsByType(catalog.items)
 
-export const Route = createFileRoute("/")({ component: Home })
+export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
   return (
@@ -48,18 +48,24 @@ function Home() {
         </div>
       </section>
 
-      {[...groups.entries()].map(([type, items]) => (
+      {[
+        ...groups.entries(),
+      ].map(([type, items]) => (
         <section key={type} className="flex flex-col gap-4">
           <div className="flex items-baseline justify-between">
             <h2 className="text-lg font-semibold tracking-tight">
               {itemTypeLabels[type] ?? type}
             </h2>
             <span className="text-xs text-muted-foreground">
-              {items.length} {items.length === 1 ? "item" : "items"}
+              {items.length}
+              {' '}
+              {items.length === 1
+                ? 'item'
+                : 'items'}
             </span>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {items.map((item) => (
+            {items.map(item => (
               <ItemCard key={item.name} item={item} />
             ))}
           </div>
@@ -107,12 +113,13 @@ function ItemCard({ item }: { item: RegistryItem }) {
       </CardHeader>
       <CardContent className="mt-auto flex items-end justify-between gap-3">
         <code className="rounded-md bg-muted px-2 py-1 text-[11px] break-all text-muted-foreground">
-          npx shadcn@latest add litingyes/folio/{item.name}
+          npx shadcn@latest add litingyes/folio/
+          {item.name}
         </code>
         <Link
           to="/items/$name"
           params={{ name: item.name }}
-          className={buttonVariants({ variant: "outline", size: "sm" })}
+          className={buttonVariants({ variant: 'outline', size: 'sm' })}
         >
           View
         </Link>

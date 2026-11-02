@@ -20,5 +20,8 @@ todos.json
 public/r
 src/generated
 
+# pnpm project-local store (sandboxed environments)
+.pnpm-store
+
 # logs
 *.log

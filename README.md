@@ -12,15 +12,18 @@ first and Blocove only adds the blocks and components it needs.
 
 The default and supported baseline is the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font). The flagship
-addition is a composable [Tiptap](https://tiptap.dev) rich text editor: the editor
-shell, every node and every mark are separate registry items with their own
-documentation page, and content is typeset with
-[shadcn/typeset](https://ui.shadcn.com/docs/typeset).
+additions are two editor families: a composable [Tiptap](https://tiptap.dev)
+rich text editor, whose shell, nodes and marks are separate registry items with
+their own documentation page and whose content is typeset with
+[shadcn/typeset](https://ui.shadcn.com/docs/typeset), and a
+[CodeMirror](https://codemirror.net) code editor with
+[shiki](https://shiki.style) highlighting, split into a shell and composable
+extensions.
 
 Items are grouped per editor family. The rich text editor lives under the
-`rich-text-editor-*` prefix and installs into `components/ui/rich-text-editor/`, so a second
-family (a code editor, for example) can be added next to it without renaming
-existing items.
+`rich-text-editor-*` prefix and installs into `components/ui/rich-text-editor/`,
+the code editor under `code-editor-*` into `components/ui/code-editor/`, so a new
+family can be added next to them without renaming existing items.
 
 The site is built with [TanStack Start](https://tanstack.com/start) and the
 registry itself is plain JSON, so the same items work with the shadcn CLI from a
@@ -190,6 +193,89 @@ pass `typeset={false}` to opt out. The typeset selectors skip elements with a
 - Marks: `rich-text-editor-bold`, `rich-text-editor-italic`, `rich-text-editor-underline`,
   `rich-text-editor-strike`, `rich-text-editor-code`, `rich-text-editor-link`.
 
+## Code editor
+
+The code editor is declarative in the same way: the shell is a CodeMirror view and
+each capability — highlighting, language support, editor chrome — is a separate
+item declared as a component inside `<CodeEditor>`. The `code-editor` item installs
+the shell; add the extensions you compose on top.
+
+The family installs as a folder under the consumer's `ui` alias, so imports are
+namespaced: `@/components/ui/code-editor/editor`,
+`@/components/ui/code-editor/shiki`, and so on. The helpers install as
+`@/lib/code-editor-extension` and `@/lib/code-editor-shiki`.
+
+```tsx
+import {
+  CodeEditor,
+  CodeEditorContent,
+  CodeEditorStatusBar,
+  CodeEditorToolbar,
+} from '@/components/ui/code-editor/editor'
+import { CodeEditorLanguages } from '@/components/ui/code-editor/languages'
+import { CodeEditorLineNumbers } from '@/components/ui/code-editor/line-numbers'
+import { CodeEditorShiki } from '@/components/ui/code-editor/shiki'
+
+export function CodeEditorExample() {
+  return (
+    <CodeEditor defaultValue="const answer = 42" language="tsx" className="h-72">
+      <CodeEditorShiki />
+      <CodeEditorLanguages />
+      <CodeEditorLineNumbers />
+
+      <CodeEditorToolbar />
+      <CodeEditorContent />
+      <CodeEditorStatusBar />
+    </CodeEditor>
+  )
+}
+```
+
+The `language` prop on `<CodeEditor>` is shared by the declarations: highlighting
+and language support read it unless they set their own. Highlighting is done by
+shiki with the `github-light` and `github-dark` themes, following the page color
+scheme; language support loads CodeMirror grammars on demand for indentation,
+bracket matching and folding. The document is controlled through `value` and
+`onChange`, and the shell renders the frame, toolbar, surface and status bar as
+separate components.
+
+Pass `readOnly` to render a document that can be selected and copied but not
+edited; the status bar labels it and the diff controls keep working.
+
+```tsx
+<CodeEditor
+  defaultValue={modified}
+  language="tsx"
+  readOnly
+  className="h-72"
+>
+  <CodeEditorDiff original={original} />
+  <CodeEditorShiki />
+  <CodeEditorLineNumbers />
+
+  <CodeEditorToolbar>
+    <CodeEditorDiffToolbar />
+  </CodeEditorToolbar>
+  <CodeEditorContent />
+</CodeEditor>
+```
+
+`code-editor-diff` adds an inline diff view: the document is compared against
+`original`, changed chunks are highlighted with their deleted lines, and each
+chunk gets accept and reject controls. `CodeEditorDiffToolbar` adds previous and
+next chunk navigation plus a counter to the toolbar.
+
+### Code editor item graph
+
+- `code-editor` depends on `code-editor-extension` (internal helper) and the
+  shadcn/ui primitives used by the toolbar and status bar.
+- `code-editor-shiki`, `code-editor-languages` and `code-editor-line-numbers`
+  depend on `code-editor-extension`; combine them with the shell.
+- `code-editor-diff` depends on `code-editor` (it reuses the toolbar button) and
+  adds the diff view plus its chunk navigation control.
+- `code-editor-shiki` also installs `lib/code-editor-shiki.ts`, the shiki
+  highlighter shared by the docs code panels and the editor.
+
 ## Items
 
 | Item                          | Type            | Description                                                            |
@@ -211,10 +297,17 @@ pass `typeset={false}` to opt out. The typeset selectors skip elements with a
 | `rich-text-editor-strike`     | `registry:ui`   | Strikethrough mark and toolbar toggle                                  |
 | `rich-text-editor-code`       | `registry:ui`   | Inline code mark and toolbar toggle                                    |
 | `rich-text-editor-link`       | `registry:ui`   | Link mark and URL popover                                              |
+| `code-editor`                 | `registry:ui`   | Code editor shell: root, surface, toolbar and status bar               |
+| `code-editor-extension`       | `registry:lib`  | Internal helper for declaring CodeMirror extensions as components      |
+| `code-editor-shiki`           | `registry:ui`   | Shiki syntax highlighting for the editor                               |
+| `code-editor-languages`       | `registry:ui`   | CodeMirror language support for indentation, brackets and folding      |
+| `code-editor-line-numbers`    | `registry:ui`   | Line numbers, fold gutter and active line highlight                    |
+| `code-editor-diff`            | `registry:ui`   | Inline diff view with accept, reject and chunk navigation              |
 
-The `rich-text-editor-*` UI items have no `target`: their registry paths keep the
-`rich-text-editor/` folder, so the CLI installs them into `components/ui/rich-text-editor/`
-and the helper into `lib/rich-text-editor-extension.ts`.
+The `rich-text-editor-*` and `code-editor-*` UI items have no `target`: their
+registry paths keep the family folder, so the CLI installs them into
+`components/ui/rich-text-editor/` and `components/ui/code-editor/`, and the
+helpers into `lib/rich-text-editor-extension.ts` and `lib/code-editor-extension.ts`.
 
 `base` ships no files of its own: it declares the official shadcn/ui items
 (`font-inter`, `button`, `card`, `input`, `label`) and the npm packages those
@@ -248,7 +341,10 @@ and `/r/editor*.json` URLs no longer exist.
 registry.json                     # registry catalog entry point (name, homepage, include)
 src/registry/blocove/
   registry.json                   # item definitions, included by the root registry
+  lib/code-editor-extension.ts          # registry:lib helper for the code editor family
+  lib/code-editor-shiki.ts              # registry:lib shiki highlighter for the code editor
   lib/rich-text-editor-extension.ts     # registry:lib helper for the rich text editor family
+  ui/code-editor/                       # registry:ui items (shell, highlighting, languages, chrome)
   ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
 src/docs/
   types.ts                        # DocsPage and DocsPageData types
@@ -274,8 +370,9 @@ public/r/                         # generated registry JSON (gitignored)
 ```
 
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.
-  Items are grouped by family: the rich text editor lives in `ui/rich-text-editor/`, and
-  a new family gets its own folder and item prefix.
+  Items are grouped by family: the rich text editor lives in
+  `ui/rich-text-editor/`, the code editor in `ui/code-editor/`, and a new family
+  gets its own folder and item prefix.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
   the whole shadcn/ui surface is available as context for composing new
@@ -288,8 +385,9 @@ public/r/                         # generated registry JSON (gitignored)
 Docs demos import registry files through the repository path
 (`@/registry/blocove/ui/rich-text-editor/bold`). The shipped items themselves use the
 exact paths consumers get (`@/components/ui/rich-text-editor/editor`,
-`@/lib/rich-text-editor-extension`), so the site resolves those two specifiers to the
-registry sources in `tsconfig.json` and `vite.config.ts`. Add a mapping there when
+`@/lib/rich-text-editor-extension`, `@/components/ui/code-editor/editor`,
+`@/lib/code-editor-extension`, `@/lib/code-editor-shiki`), so the site resolves those
+specifiers to the registry sources in `tsconfig.json` and `vite.config.ts`. Add a mapping there when
 a registry item imports another item that has no local file under
 `src/components/ui`.
 
@@ -412,9 +510,38 @@ reference it instead.
    - add the item name to `src/docs/nav.ts` under the `Rich Text Editor` section.
 6. Run `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
 
+### Adding a code editor extension
+
+1. Create `src/registry/blocove/ui/code-editor/<name>.tsx`.
+2. Declare the CodeMirror extension with the shared helper:
+   ```tsx
+   import { lineNumbers } from '@codemirror/view'
+   import { defineCodeEditorExtension } from '@/lib/code-editor-extension'
+
+   export const CodeEditorNumbers = defineCodeEditorExtension('numbers', () => [
+     lineNumbers(),
+   ])
+   ```
+3. The factory receives the declaration props and the editor root context, so a
+   declaration can fall back to the `language` set once on `<CodeEditor>`.
+4. Add the item to `src/registry/blocove/registry.json` with
+   `type: "registry:ui"`, path `ui/code-editor/<name>.tsx` (no `target`: the CLI
+   installs it as `components/ui/code-editor/<name>.tsx`), the CodeMirror or
+   shiki packages in `dependencies`, and
+   `registryDependencies: ["litingyes/blocove/code-editor-extension"]` plus the
+   shadcn/ui primitives the declaration renders.
+5. Document it:
+   - demo: `src/docs/examples/code-editor/<name>.tsx`, composing
+     `CodeEditorDemoFrame` from `src/docs/examples/code-editor/frame.tsx`;
+   - data: `src/docs/pages/code-editor/<name>.ts` exporting a `docsPage` with the
+     item name and `codeEditorUsage(...)` as the example code. Pages are
+     auto-registered from the module tree, so no index edit is needed;
+   - add the item name to `src/docs/nav.ts` under the `Code Editor` section.
+6. Run `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
+
 To add a whole editor family, give it its own folder (`ui/<family>/`), item
 prefix, docs section in `src/docs/nav.ts`, demo frame and snippet builder. The
-rich text editor items are unaffected.
+rich text editor and code editor items are unaffected.
 
 Conventions:
 

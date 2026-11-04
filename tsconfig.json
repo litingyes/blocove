@@ -8,8 +8,17 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "paths": {
+      "@/components/ui/code-editor/editor": [
+        "./src/registry/blocove/ui/code-editor/editor.tsx"
+      ],
       "@/components/ui/rich-text-editor/editor": [
         "./src/registry/blocove/ui/rich-text-editor/editor.tsx"
+      ],
+      "@/lib/code-editor-extension": [
+        "./src/registry/blocove/lib/code-editor-extension.ts"
+      ],
+      "@/lib/code-editor-shiki": [
+        "./src/registry/blocove/lib/code-editor-shiki.ts"
       ],
       "@/lib/rich-text-editor-extension": [
         "./src/registry/blocove/lib/rich-text-editor-extension.ts"

@@ -436,6 +436,157 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "code-editor-extension",
+      "type": "registry:lib",
+      "title": "Code Editor Extension",
+      "description": "Internal helper for declaring CodeMirror extensions as code editor components.",
+      "dependencies": [
+        "@codemirror/state"
+      ],
+      "categories": [
+        "code-editor",
+        "internal"
+      ],
+      "files": [
+        {
+          "path": "lib/code-editor-extension.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "code-editor",
+      "type": "registry:ui",
+      "title": "Code Editor",
+      "description": "A composable code editor built on CodeMirror, with a controlled document, toolbar, status bar and extension declarations.",
+      "dependencies": [
+        "@codemirror/commands",
+        "@codemirror/state",
+        "@codemirror/view",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/code-editor-extension",
+        "button",
+        "toggle",
+        "tooltip"
+      ],
+      "categories": [
+        "code-editor"
+      ],
+      "files": [
+        {
+          "path": "ui/code-editor/editor.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-editor-shiki",
+      "type": "registry:ui",
+      "title": "Shiki Highlighting",
+      "description": "Syntax highlighting for the code editor, tokenized with shiki using the same themes as the documentation code panels.",
+      "dependencies": [
+        "@codemirror/state",
+        "@codemirror/view",
+        "shiki"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/code-editor-extension"
+      ],
+      "categories": [
+        "code-editor",
+        "highlight"
+      ],
+      "files": [
+        {
+          "path": "lib/code-editor-shiki.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "ui/code-editor/shiki.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-editor-languages",
+      "type": "registry:ui",
+      "title": "Languages",
+      "description": "Language support for the code editor: syntax aware indentation, bracket matching, folding and completion.",
+      "dependencies": [
+        "@codemirror/lang-css",
+        "@codemirror/lang-html",
+        "@codemirror/lang-javascript",
+        "@codemirror/lang-json",
+        "@codemirror/lang-markdown",
+        "@codemirror/state",
+        "@codemirror/view"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/code-editor-extension"
+      ],
+      "categories": [
+        "code-editor",
+        "language"
+      ],
+      "files": [
+        {
+          "path": "ui/code-editor/languages.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-editor-line-numbers",
+      "type": "registry:ui",
+      "title": "Line Numbers",
+      "description": "Line numbers, the fold gutter and the active line highlight for the code editor.",
+      "dependencies": [
+        "@codemirror/language",
+        "@codemirror/state",
+        "@codemirror/view"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/code-editor-extension"
+      ],
+      "categories": [
+        "code-editor",
+        "chrome"
+      ],
+      "files": [
+        {
+          "path": "ui/code-editor/line-numbers.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-editor-diff",
+      "type": "registry:ui",
+      "title": "Diff View",
+      "description": "Inline diff view for the code editor: highlights changed chunks against an original document, with accept, reject and chunk navigation controls.",
+      "dependencies": [
+        "@codemirror/merge",
+        "@codemirror/state",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/code-editor"
+      ],
+      "categories": [
+        "code-editor",
+        "diff"
+      ],
+      "files": [
+        {
+          "path": "ui/code-editor/diff.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

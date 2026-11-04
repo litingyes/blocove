@@ -57,6 +57,24 @@ export const docsNav: DocsNavSection[] = [
       },
     ],
   },
+  {
+    label: 'Code Editor',
+    groups: [
+      {
+        label: 'Overview',
+        items: ['code-editor'],
+      },
+      {
+        label: 'Extensions',
+        items: [
+          'code-editor-shiki',
+          'code-editor-languages',
+          'code-editor-line-numbers',
+          'code-editor-diff',
+        ],
+      },
+    ],
+  },
 ]
 
 export const docsNavOrder = docsNav.flatMap(section =>

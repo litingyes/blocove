@@ -31,28 +31,28 @@
       ]
     },
     {
-      "name": "editor-extension",
+      "name": "rich-text-editor-extension",
       "type": "registry:lib",
-      "title": "Editor Extension",
-      "description": "Internal helper for declaring Tiptap extensions as editor components.",
+      "title": "Rich Text Editor Extension",
+      "description": "Internal helper for declaring Tiptap extensions as rich text editor components.",
       "dependencies": [
         "@tiptap/core@3.32.2"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "internal"
       ],
       "files": [
         {
-          "path": "lib/editor-extension.ts",
+          "path": "lib/rich-text-editor-extension.ts",
           "type": "registry:lib"
         }
       ]
     },
     {
-      "name": "editor",
+      "name": "rich-text-editor",
       "type": "registry:ui",
-      "title": "Editor",
+      "title": "Rich Text Editor",
       "description": "A composable rich text editor built on Tiptap, with a toolbar, bubble menu, character count and typeset content.",
       "dependencies": [
         "@tiptap/core@3.32.2",
@@ -67,10 +67,10 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor-extension",
-        "litingyes/blocove/editor-text",
-        "litingyes/blocove/editor-paragraph",
-        "litingyes/blocove/editor-hard-break",
+        "litingyes/blocove/rich-text-editor-extension",
+        "litingyes/blocove/rich-text-editor-text",
+        "litingyes/blocove/rich-text-editor-paragraph",
+        "litingyes/blocove/rich-text-editor-hard-break",
         "button",
         "kbd",
         "separator",
@@ -78,61 +78,61 @@
         "tooltip"
       ],
       "categories": [
-        "editor"
+        "rich-text-editor"
       ],
       "files": [
         {
-          "path": "ui/editor.tsx",
+          "path": "ui/rich-text-editor/editor.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-text",
+      "name": "rich-text-editor-text",
       "type": "registry:ui",
       "title": "Text",
-      "description": "The Tiptap Text node, required by every editor document.",
+      "description": "The Tiptap Text node, required by every document.",
       "dependencies": [
         "@tiptap/extension-text@3.32.2"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor-extension"
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-text.tsx",
+          "path": "ui/rich-text-editor/text.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-paragraph",
+      "name": "rich-text-editor-paragraph",
       "type": "registry:ui",
       "title": "Paragraph",
-      "description": "Block paragraph nodes for the editor.",
+      "description": "Block paragraph nodes for the rich text editor.",
       "dependencies": [
         "@tiptap/extension-paragraph@3.32.2"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor-extension"
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-paragraph.tsx",
+          "path": "ui/rich-text-editor/paragraph.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-hard-break",
+      "name": "rich-text-editor-hard-break",
       "type": "registry:ui",
       "title": "Hard Break",
       "description": "Line breaks inside a paragraph, created with Shift + Enter.",
@@ -140,21 +140,21 @@
         "@tiptap/extension-hard-break@3.32.2"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor-extension"
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-hard-break.tsx",
+          "path": "ui/rich-text-editor/hard-break.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-heading",
+      "name": "rich-text-editor-heading",
       "type": "registry:ui",
       "title": "Heading",
       "description": "Heading nodes with a toolbar selector for levels 1–3.",
@@ -165,22 +165,22 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor",
+        "litingyes/blocove/rich-text-editor",
         "select"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-heading.tsx",
+          "path": "ui/rich-text-editor/heading.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-code-block",
+      "name": "rich-text-editor-code-block",
       "type": "registry:ui",
       "title": "Code Block",
       "description": "Preformatted code blocks with a toolbar toggle.",
@@ -191,21 +191,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-code-block.tsx",
+          "path": "ui/rich-text-editor/code-block.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-details",
+      "name": "rich-text-editor-details",
       "type": "registry:ui",
       "title": "Details",
       "description": "Collapsible details blocks with a summary and a toggle control.",
@@ -216,21 +216,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-details.tsx",
+          "path": "ui/rich-text-editor/details.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-image",
+      "name": "rich-text-editor-image",
       "type": "registry:ui",
       "title": "Image",
       "description": "Image nodes inserted by URL from the toolbar.",
@@ -241,24 +241,24 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor",
+        "litingyes/blocove/rich-text-editor",
         "button",
         "input",
         "popover"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-image.tsx",
+          "path": "ui/rich-text-editor/image.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-table",
+      "name": "rich-text-editor-table",
       "type": "registry:ui",
       "title": "Table",
       "description": "Tables with toolbar controls to insert, extend and remove rows and columns.",
@@ -269,23 +269,23 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor",
+        "litingyes/blocove/rich-text-editor",
         "button",
         "popover"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "node"
       ],
       "files": [
         {
-          "path": "ui/editor-table.tsx",
+          "path": "ui/rich-text-editor/table.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-bold",
+      "name": "rich-text-editor-bold",
       "type": "registry:ui",
       "title": "Bold",
       "description": "The bold mark with a toolbar toggle and keyboard shortcut.",
@@ -296,21 +296,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "mark"
       ],
       "files": [
         {
-          "path": "ui/editor-bold.tsx",
+          "path": "ui/rich-text-editor/bold.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-italic",
+      "name": "rich-text-editor-italic",
       "type": "registry:ui",
       "title": "Italic",
       "description": "The italic mark with a toolbar toggle and keyboard shortcut.",
@@ -321,21 +321,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "mark"
       ],
       "files": [
         {
-          "path": "ui/editor-italic.tsx",
+          "path": "ui/rich-text-editor/italic.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-underline",
+      "name": "rich-text-editor-underline",
       "type": "registry:ui",
       "title": "Underline",
       "description": "The underline mark with a toolbar toggle and keyboard shortcut.",
@@ -346,21 +346,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "mark"
       ],
       "files": [
         {
-          "path": "ui/editor-underline.tsx",
+          "path": "ui/rich-text-editor/underline.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-strike",
+      "name": "rich-text-editor-strike",
       "type": "registry:ui",
       "title": "Strikethrough",
       "description": "The strikethrough mark with a toolbar toggle and keyboard shortcut.",
@@ -371,21 +371,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "mark"
       ],
       "files": [
         {
-          "path": "ui/editor-strike.tsx",
+          "path": "ui/rich-text-editor/strike.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-code",
+      "name": "rich-text-editor-code",
       "type": "registry:ui",
       "title": "Inline Code",
       "description": "The inline code mark with a toolbar toggle and keyboard shortcut.",
@@ -396,21 +396,21 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor"
+        "litingyes/blocove/rich-text-editor"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "mark"
       ],
       "files": [
         {
-          "path": "ui/editor-code.tsx",
+          "path": "ui/rich-text-editor/code.tsx",
           "type": "registry:ui"
         }
       ]
     },
     {
-      "name": "editor-link",
+      "name": "rich-text-editor-link",
       "type": "registry:ui",
       "title": "Link",
       "description": "The link mark with a URL popover in the toolbar.",
@@ -421,45 +421,19 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/editor",
+        "litingyes/blocove/rich-text-editor",
         "button",
         "input",
         "popover"
       ],
       "categories": [
-        "editor",
+        "rich-text-editor",
         "mark"
       ],
       "files": [
         {
-          "path": "ui/editor-link.tsx",
+          "path": "ui/rich-text-editor/link.tsx",
           "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "login-01",
-      "type": "registry:block",
-      "title": "Login 01",
-      "description": "A login form composed from shadcn/ui primitives.",
-      "dependencies": [
-        "cn"
-      ],
-      "registryDependencies": [
-        "button",
-        "card",
-        "input",
-        "label"
-      ],
-      "categories": [
-        "authentication",
-        "login"
-      ],
-      "files": [
-        {
-          "path": "blocks/login-01/components/login-form.tsx",
-          "type": "registry:component",
-          "target": "components/login-form.tsx"
         }
       ]
     }

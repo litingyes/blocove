@@ -18,6 +18,7 @@ import {
   namespaceAddress,
   packageManagers,
 } from '@/lib/docs-commands'
+import { installedFilePath } from '@/lib/registry-catalog'
 import { getRegistrySource } from '@/lib/registry-source'
 import { CodePanel } from './code-panel'
 import { CopyButton } from './copy-button'
@@ -95,11 +96,11 @@ function TypesetNote() {
       {' '}
       <Link
         to="/items/$name"
-        params={{ name: 'editor' }}
+        params={{ name: 'rich-text-editor' }}
         hash="usage"
         className="font-medium text-foreground underline-offset-4 hover:underline"
       >
-        Editor setup
+        Rich text editor setup
       </Link>
       .
     </div>
@@ -177,24 +178,6 @@ function CommandInstall({
   )
 }
 
-function installedPath(item: RegistryItem, file: RegistryItem['files'][number]) {
-  if (file.target) {
-    return file.target
-  }
-
-  const basename = file.path.split('/').pop() ?? file.path
-
-  if (item.type === 'registry:ui') {
-    return `components/ui/${basename}`
-  }
-
-  if (item.type === 'registry:lib') {
-    return `lib/${basename}`
-  }
-
-  return file.path
-}
-
 function ManualInstall({
   item,
   data,
@@ -204,7 +187,7 @@ function ManualInstall({
 }) {
   const fileSources = (item.files ?? []).map(file => ({
     ...file,
-    installedPath: installedPath(item, file),
+    installedPath: installedFilePath(item, file),
     source: getRegistrySource(file.path),
   }))
 

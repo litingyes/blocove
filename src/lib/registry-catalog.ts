@@ -39,6 +39,49 @@ export const itemTypeLabels: Record<string, string> = {
   'registry:hook': 'Hooks',
 }
 
+// Alias root the CLI installs each file type into. See `resolveNestedFilePath`
+// in @shadcn/registry: the installed path keeps everything after the alias
+// folder, so nested registry folders (ui/rich-text-editor/...) survive installation.
+const installedRoots: Record<string, string> = {
+  'registry:ui': 'components/ui',
+  'registry:lib': 'lib',
+  'registry:hook': 'hooks',
+  'registry:block': 'components',
+  'registry:component': 'components',
+}
+
+/**
+ * The path a registry file lands on in a consumer project. Mirrors the CLI
+ * resolution so the manual installation steps match what `shadcn add` writes.
+ */
+export function installedFilePath(
+  item: Pick<RegistryItem, 'type'>,
+  file: Pick<RegistryFile, 'path' | 'target'>,
+) {
+  if (file.target) {
+    return file.target
+  }
+
+  const root = installedRoots[item.type]
+
+  if (!root) {
+    return file.path
+  }
+
+  const segments = file.path.split('/').filter(Boolean)
+  const anchor = root.split('/').pop()
+  const anchorIndex = anchor
+    ? segments.indexOf(anchor)
+    : -1
+  const relative = anchorIndex === -1
+    ? segments.pop()
+    : segments.slice(anchorIndex + 1).join('/')
+
+  return relative
+    ? `${root}/${relative}`
+    : root
+}
+
 export function groupItemsByType(items: RegistryItem[]) {
   const groups = new Map<string, RegistryItem[]>()
 

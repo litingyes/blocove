@@ -12,10 +12,15 @@ first and Blocove only adds the blocks and components it needs.
 
 The default and supported baseline is the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font). The flagship
-addition is a composable [Tiptap](https://tiptap.dev) rich text editor: the base
-editor, every node and every mark are separate registry items with their own
-documentation page, and editor content is typeset with
+addition is a composable [Tiptap](https://tiptap.dev) rich text editor: the editor
+shell, every node and every mark are separate registry items with their own
+documentation page, and content is typeset with
 [shadcn/typeset](https://ui.shadcn.com/docs/typeset).
+
+Items are grouped per editor family. The rich text editor lives under the
+`rich-text-editor-*` prefix and installs into `components/ui/rich-text-editor/`, so a second
+family (a code editor, for example) can be added next to it without renaming
+existing items.
 
 The site is built with [TanStack Start](https://tanstack.com/start) and the
 registry itself is plain JSON, so the same items work with the shadcn CLI from a
@@ -36,23 +41,20 @@ GitHub address, a URL, or a namespace.
 From a project with `components.json` and shadcn/ui installed:
 
 ```bash
-# The Blocove baseline: official shadcn/ui components used by Blocove blocks.
+# The Blocove baseline: official shadcn/ui components used by Blocove items.
 npx shadcn@latest add litingyes/blocove/base
 
 # The rich text editor shell. It installs the basic nodes as well.
-npx shadcn@latest add litingyes/blocove/editor
+npx shadcn@latest add litingyes/blocove/rich-text-editor
 
 # Add only the nodes and marks you compose into the editor.
-npx shadcn@latest add litingyes/blocove/editor-heading litingyes/blocove/editor-bold
-
-# A Blocove block, straight from GitHub. No configuration required.
-npx shadcn@latest add litingyes/blocove/login-01
+npx shadcn@latest add litingyes/blocove/rich-text-editor-heading litingyes/blocove/rich-text-editor-bold
 ```
 
 Pin a release for reproducible installs:
 
 ```bash
-npx shadcn@latest add litingyes/blocove/editor#v0.2.0
+npx shadcn@latest add litingyes/blocove/rich-text-editor#v0.2.0
 ```
 
 ### Namespace
@@ -76,7 +78,7 @@ npx shadcn@latest registry add @blocove=https://blocove.vercel.app/r/{name}.json
 Then install by namespace:
 
 ```bash
-npx shadcn@latest add @blocove/editor
+npx shadcn@latest add @blocove/rich-text-editor
 ```
 
 > Registry dependencies that point at shadcn/ui use the official item names
@@ -88,25 +90,31 @@ npx shadcn@latest add @blocove/editor
 ## Rich text editor
 
 The editor is declarative: each Tiptap node or mark is a component that registers
-its extension, and the base editor collects them from its children. The demo on
-the site is the exact code shown on each page.
+its extension, and the base editor collects them from its children. The
+`rich-text-editor` item installs the shell and the basic nodes; add the nodes and marks
+you compose on top.
+
+The family installs as a folder under the consumer's `ui` alias, so imports are
+namespaced: `@/components/ui/rich-text-editor/editor`,
+`@/components/ui/rich-text-editor/bold`, and so on. The internal helper installs as
+`@/lib/rich-text-editor-extension`.
 
 ```tsx
+import { EditorBold, EditorBoldToolbar } from '@/components/ui/rich-text-editor/bold'
 import {
   Editor,
   EditorBubbleMenu,
   EditorCharacterCount,
   EditorContent,
   EditorToolbar,
-} from '@/components/ui/editor'
-import { EditorBold, EditorBoldToolbar } from '@/components/ui/editor-bold'
-import { EditorHardBreak } from '@/components/ui/editor-hard-break'
-import { EditorHeading, EditorHeadingToolbar } from '@/components/ui/editor-heading'
-import { EditorLink, EditorLinkToolbar } from '@/components/ui/editor-link'
-import { EditorParagraph } from '@/components/ui/editor-paragraph'
-import { EditorText } from '@/components/ui/editor-text'
+} from '@/components/ui/rich-text-editor/editor'
+import { EditorHardBreak } from '@/components/ui/rich-text-editor/hard-break'
+import { EditorHeading, EditorHeadingToolbar } from '@/components/ui/rich-text-editor/heading'
+import { EditorLink, EditorLinkToolbar } from '@/components/ui/rich-text-editor/link'
+import { EditorParagraph } from '@/components/ui/rich-text-editor/paragraph'
+import { EditorText } from '@/components/ui/rich-text-editor/text'
 
-export function EditorExample() {
+export function RichTextEditorExample() {
   return (
     <Editor defaultValue="<h2>Hello</h2><p>Blocove editor</p>">
       <EditorText />
@@ -171,47 +179,51 @@ pass `typeset={false}` to opt out. The typeset selectors skip elements with a
 
 ### Item graph
 
-- `editor` depends on `editor-extension` (internal helper), `editor-text`,
-  `editor-paragraph` and `editor-hard-break`, plus the shadcn/ui primitives used
-  by the toolbar.
-- Every node and mark item depends on `editor`, so installing one item brings a
-  working editor and the basic nodes.
-- Nodes: `editor-text`, `editor-paragraph`, `editor-hard-break`,
-  `editor-heading`, `editor-code-block`, `editor-details`, `editor-image`,
-  `editor-table`.
-- Marks: `editor-bold`, `editor-italic`, `editor-underline`, `editor-strike`,
-  `editor-code`, `editor-link`.
+- `rich-text-editor` depends on `rich-text-editor-extension` (internal helper),
+  `rich-text-editor-text`, `rich-text-editor-paragraph` and `rich-text-editor-hard-break`, plus the
+  shadcn/ui primitives used by the toolbar.
+- Every node and mark item depends on `rich-text-editor`, so installing one item brings
+  a working editor and the basic nodes.
+- Nodes: `rich-text-editor-text`, `rich-text-editor-paragraph`, `rich-text-editor-hard-break`,
+  `rich-text-editor-heading`, `rich-text-editor-code-block`, `rich-text-editor-details`,
+  `rich-text-editor-image`, `rich-text-editor-table`.
+- Marks: `rich-text-editor-bold`, `rich-text-editor-italic`, `rich-text-editor-underline`,
+  `rich-text-editor-strike`, `rich-text-editor-code`, `rich-text-editor-link`.
 
 ## Items
 
-| Item                | Type             | Description                                                            |
-| ------------------- | ---------------- | ---------------------------------------------------------------------- |
-| `base`              | `registry:base`  | Installs the shadcn/ui (b0) primitives Blocove extensions compose with |
-| `editor`            | `registry:ui`    | Editor shell: root, content, toolbar, bubble menu and character count  |
-| `editor-extension`  | `registry:lib`   | Internal helper for declaring Tiptap extensions as components          |
-| `editor-text`       | `registry:ui`    | Tiptap Text node                                                       |
-| `editor-paragraph`  | `registry:ui`    | Tiptap Paragraph node                                                  |
-| `editor-hard-break` | `registry:ui`    | Tiptap HardBreak node                                                  |
-| `editor-heading`    | `registry:ui`    | Heading node and toolbar selector                                      |
-| `editor-code-block` | `registry:ui`    | Code block node and toolbar toggle                                     |
-| `editor-details`    | `registry:ui`    | Collapsible details node with a React node view                        |
-| `editor-image`      | `registry:ui`    | Image node and URL insert control                                      |
-| `editor-table`      | `registry:ui`    | Table kit and command menu                                             |
-| `editor-bold`       | `registry:ui`    | Bold mark and toolbar toggle                                           |
-| `editor-italic`     | `registry:ui`    | Italic mark and toolbar toggle                                         |
-| `editor-underline`  | `registry:ui`    | Underline mark and toolbar toggle                                      |
-| `editor-strike`     | `registry:ui`    | Strikethrough mark and toolbar toggle                                  |
-| `editor-code`       | `registry:ui`    | Inline code mark and toolbar toggle                                    |
-| `editor-link`       | `registry:ui`    | Link mark and URL popover                                              |
-| `login-01`          | `registry:block` | A login form composed from shadcn/ui primitives                        |
+| Item                          | Type            | Description                                                            |
+| ----------------------------- | --------------- | ---------------------------------------------------------------------- |
+| `base`                        | `registry:base` | Installs the shadcn/ui (b0) primitives Blocove extensions compose with |
+| `rich-text-editor`            | `registry:ui`   | Rich text editor shell: root, content, toolbar, bubble menu and count  |
+| `rich-text-editor-extension`  | `registry:lib`  | Internal helper for declaring Tiptap extensions as components          |
+| `rich-text-editor-text`       | `registry:ui`   | Tiptap Text node                                                       |
+| `rich-text-editor-paragraph`  | `registry:ui`   | Tiptap Paragraph node                                                  |
+| `rich-text-editor-hard-break` | `registry:ui`   | Tiptap HardBreak node                                                  |
+| `rich-text-editor-heading`    | `registry:ui`   | Heading node and toolbar selector                                      |
+| `rich-text-editor-code-block` | `registry:ui`   | Code block node and toolbar toggle                                     |
+| `rich-text-editor-details`    | `registry:ui`   | Collapsible details node with a React node view                        |
+| `rich-text-editor-image`      | `registry:ui`   | Image node and URL insert control                                      |
+| `rich-text-editor-table`      | `registry:ui`   | Table kit and command menu                                             |
+| `rich-text-editor-bold`       | `registry:ui`   | Bold mark and toolbar toggle                                           |
+| `rich-text-editor-italic`     | `registry:ui`   | Italic mark and toolbar toggle                                         |
+| `rich-text-editor-underline`  | `registry:ui`   | Underline mark and toolbar toggle                                      |
+| `rich-text-editor-strike`     | `registry:ui`   | Strikethrough mark and toolbar toggle                                  |
+| `rich-text-editor-code`       | `registry:ui`   | Inline code mark and toolbar toggle                                    |
+| `rich-text-editor-link`       | `registry:ui`   | Link mark and URL popover                                              |
+
+The `rich-text-editor-*` UI items have no `target`: their registry paths keep the
+`rich-text-editor/` folder, so the CLI installs them into `components/ui/rich-text-editor/`
+and the helper into `lib/rich-text-editor-extension.ts`.
 
 `base` ships no files of its own: it declares the official shadcn/ui items
 (`font-inter`, `button`, `card`, `input`, `label`) and the npm packages those
 components need. Theme tokens stay owned by shadcn/ui and come from your `b0`
 initialization; Blocove does not overwrite them.
 
-`editor-extension` is internal: it is installed as a dependency of the editor
-items and is hidden from the site catalog and documentation navigation.
+`rich-text-editor-extension` is internal: it is installed as a dependency of the
+rich text editor items and is hidden from the site catalog and documentation
+navigation.
 
 ### Upgrading from v0.1
 
@@ -225,37 +237,45 @@ npx shadcn@latest add button card input label
 
 Installs pinned to the `v0.1.0` tag keep working, since tags are immutable.
 
+The rich text editor items were renamed to the `rich-text-editor-*` family (previously
+`editor`, `editor-bold`, ...) and the `login-01` block was removed before the
+`v0.2.0` release. Nothing was tagged with the old names, so no aliases are kept
+and `/r/editor*.json` URLs no longer exist.
+
 ## Project layout
 
 ```txt
-registry.json                  # registry catalog entry point (name, homepage, include)
+registry.json                     # registry catalog entry point (name, homepage, include)
 src/registry/blocove/
-  registry.json                # item definitions, included by the root registry
-  lib/editor-extension.ts      # registry:lib helper for the editor family
-  ui/                          # registry:ui items (editor, nodes, marks)
-  blocks/                      # registry:block items
+  registry.json                   # item definitions, included by the root registry
+  lib/rich-text-editor-extension.ts     # registry:lib helper for the rich text editor family
+  ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
 src/docs/
-  types.ts                     # DocsPageData types
-  nav.ts                       # docs navigation and page order
-  pages/                       # one DocsPageData module per documented item
-  examples/                    # demo components shown on each page
-src/components/docs/           # docs shell: sidebar, TOC, preview, code, API
-src/typeset.css                # vendored shadcn/typeset stylesheet
-src/lib/docs-commands.ts       # CLI commands used by the installation section
-src/lib/docs-markdown.ts       # Copy Page markdown
-src/lib/docs-source.ts         # registry paths -> consumer paths for demos
-src/lib/registry-source.ts     # raw registry sources for the manual install
-src/components/ui/             # official shadcn/ui components (installed with the CLI)
-src/hooks/                     # official shadcn/ui hooks (installed with the CLI)
-src/lib/highlighter.tsx        # official shadcn/ui helper (installed with the CLI)
-src/routes/                    # TanStack Start site (catalog and item pages)
-src/styles.css                 # Tailwind CSS entry (b0 preset theme + typeset)
-scripts/build-catalog.mjs      # public/r/registry.json -> src/generated/registry.json
-scripts/check-preset.mjs       # asserts the project still resolves to the b0 preset
-public/r/                      # generated registry JSON (gitignored)
+  types.ts                        # DocsPage and DocsPageData types
+  nav.ts                          # docs navigation, grouped per editor family
+  pages/                          # docs pages, auto-registered from the module tree
+  examples/                       # demo components shown on each page
+  snippets/                       # generated usage snippets for the code panels
+src/components/docs/              # docs shell: sidebar, TOC, preview, code, API
+src/typeset.css                   # vendored shadcn/typeset stylesheet
+src/lib/docs-commands.ts          # CLI commands used by the installation section
+src/lib/docs-markdown.ts          # Copy Page markdown
+src/lib/docs-source.ts            # registry paths -> consumer paths for demos
+src/lib/registry-source.ts        # raw registry sources for the manual install
+src/components/ui/                # official shadcn/ui components (installed with the CLI)
+src/hooks/                        # official shadcn/ui hooks (installed with the CLI)
+src/lib/highlighter.tsx           # official shadcn/ui helper (installed with the CLI)
+src/routes/                       # TanStack Start site (catalog and item pages)
+src/styles.css                    # Tailwind CSS entry (b0 preset theme + typeset)
+scripts/build-catalog.mjs         # public/r/registry.json -> src/generated/registry.json
+scripts/clean-registry.mjs        # clears generated registry artifacts before a build
+scripts/check-preset.mjs          # asserts the project still resolves to the b0 preset
+public/r/                         # generated registry JSON (gitignored)
 ```
 
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.
+  Items are grouped by family: the rich text editor lives in `ui/rich-text-editor/`, and
+  a new family gets its own folder and item prefix.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
   the whole shadcn/ui surface is available as context for composing new
@@ -266,11 +286,12 @@ public/r/                      # generated registry JSON (gitignored)
 ### Demo aliases
 
 Docs demos import registry files through the repository path
-(`@/registry/blocove/ui/editor-heading`). The shipped items themselves use the
-exact paths consumers get (`@/components/ui/editor`, `@/lib/editor-extension`),
-so the site resolves those two specifiers to the registry sources in
-`tsconfig.json` and `vite.config.ts`. Add a mapping there when a registry item
-imports another item that has no local file under `src/components/ui`.
+(`@/registry/blocove/ui/rich-text-editor/bold`). The shipped items themselves use the
+exact paths consumers get (`@/components/ui/rich-text-editor/editor`,
+`@/lib/rich-text-editor-extension`), so the site resolves those two specifiers to the
+registry sources in `tsconfig.json` and `vite.config.ts`. Add a mapping there when
+a registry item imports another item that has no local file under
+`src/components/ui`.
 
 ## Local development
 
@@ -283,7 +304,7 @@ Useful scripts:
 
 | Script                   | Description                                         |
 | ------------------------ | --------------------------------------------------- |
-| `pnpm registry:build`    | `shadcn build` into `public/r`                      |
+| `pnpm registry:build`    | Clear `public/r` and run `shadcn build`             |
 | `pnpm registry:prepare`  | Build registry JSON and generate the site catalog   |
 | `pnpm registry:validate` | Validate `litingyes/blocove` from GitHub            |
 | `pnpm preset:check`      | Fail unless the project resolves to the `b0` preset |
@@ -361,32 +382,39 @@ reference it instead.
 4. Run `pnpm run registry:prepare` and check `public/r/<name>.json`.
 5. Commit the source and item definition, then tag a release.
 
-### Adding an editor extension
+### Adding a rich text editor extension
 
-1. Create `src/registry/blocove/ui/editor-<name>.tsx`.
+1. Create `src/registry/blocove/ui/rich-text-editor/<name>.tsx`.
 2. Declare the extension with the shared helper:
    ```tsx
    import { Heading } from '@tiptap/extension-heading'
-   import { defineExtensionComponent } from '@/lib/editor-extension'
+   import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
 
    export const EditorHeading = defineExtensionComponent('heading', props => [
      Heading.configure(props),
    ])
    ```
 3. Export a toolbar control when the extension needs one. Controls use
-   `useCurrentEditor()` and `EditorToolbarButton` from `@/components/ui/editor`;
-   guard the null editor, then read active state in an inner component with
-   `useEditorState`.
-4. Add the item with `type: "registry:ui"`, target
-   `components/ui/editor-<name>.tsx`, the Tiptap package in `dependencies`, and
-   `registryDependencies: ["litingyes/blocove/editor"]` plus the shadcn/ui
-   primitives the control uses.
+   `useCurrentEditor()` and `EditorToolbarButton` from
+   `@/components/ui/rich-text-editor/editor`; guard the null editor, then read active
+   state in an inner component with `useEditorState`.
+4. Add the item to `src/registry/blocove/registry.json` with
+   `type: "registry:ui"`, path `ui/rich-text-editor/<name>.tsx` (no `target`: the CLI
+   installs it as `components/ui/rich-text-editor/<name>.tsx`), the Tiptap package in
+   `dependencies`, and `registryDependencies: ["litingyes/blocove/rich-text-editor"]`
+   plus the shadcn/ui primitives the control uses.
 5. Document it:
-   - demo: `src/docs/examples/<item>.tsx`, importing registry paths;
-   - data: `src/docs/pages/<item>.tsx` exporting a `DocsPageData`;
-   - register the module in `src/docs/pages/index.ts` and add the item name to
-     `src/docs/nav.ts`.
+   - demo: `src/docs/examples/rich-text-editor/<name>.tsx`, composing
+     `RichTextEditorDemoFrame` from `src/docs/examples/rich-text-editor/frame.tsx`;
+   - data: `src/docs/pages/rich-text-editor/<name>.ts` exporting a `docsPage` with the
+     item name and `richTextEditorUsage(...)` as the example code. Pages are
+     auto-registered from the module tree, so no index edit is needed;
+   - add the item name to `src/docs/nav.ts` under the `Rich Text Editor` section.
 6. Run `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
+
+To add a whole editor family, give it its own folder (`ui/<family>/`), item
+prefix, docs section in `src/docs/nav.ts`, demo frame and snippet builder. The
+rich text editor items are unaffected.
 
 Conventions:
 
@@ -398,7 +426,7 @@ Conventions:
   and are useful for LLM tooling.
 - Blocove UI and lib items omit `target`, so the CLI installs them through the
   consumer's `ui` and `lib` aliases. Blocks and files that must land at a fixed
-  path (for example `login-01`) keep an explicit `target`.
+  path keep an explicit `target`.
 - `registry:page` and `registry:file` items require a `target`.
 - `@blocove/base` assumes the consumer project is set up with shadcn/ui: Tailwind
   CSS v4, `shadcn/tailwind.css` and the `@theme inline` color mappings.
@@ -409,12 +437,14 @@ Conventions:
   description, demo with a collapsible code panel, installation (Command and
   Manual tabs with pnpm/npm/yarn/bun commands), usage snippets and an API
   reference table.
-- The left navigation groups pages by Base / Editor / Nodes / Marks / Blocks;
-  the right column tracks the current section. Copy Page copies the whole page
-  as markdown.
-- Docs data lives in `src/docs/pages/`, demos in `src/docs/examples/`. The code
-  panel shows the demo source with registry paths rewritten to consumer paths
-  by `src/lib/docs-source.ts`.
+- The left navigation groups pages per editor family: `Base` and `Rich Text Editor`
+  (Overview, Nodes, Marks). A new family is another section, not a second nav
+  tree. The right column tracks the current section. Copy Page copies the whole
+  page as markdown.
+- Docs data lives in `src/docs/pages/` (auto-registered, one module per item),
+  demos in `src/docs/examples/`. Code panels are generated by
+  `src/docs/snippets/rich-text-editor.ts`, so every page shows the same composition and
+  the imports match what the CLI installs.
 - The installation section reads the built registry JSON, so the commands, file
   targets and dependency lists always match what `shadcn add` installs.
 
@@ -425,15 +455,15 @@ pnpm run preset:check        # project still resolves to b0
 pnpm run registry:prepare
 pnpm dev
 
-npx shadcn@latest view http://localhost:3000/r/editor.json
-npx shadcn@latest add --dry-run http://localhost:3000/r/editor.json
-npx shadcn@latest add --dry-run http://localhost:3000/r/editor-heading.json
-npx shadcn@latest add --dry-run http://localhost:3000/r/editor-table.json
+npx shadcn@latest view http://localhost:3000/r/rich-text-editor.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-heading.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-table.json
 ```
 
 For a full end-to-end check, create a throwaway project, run
-`npx shadcn@latest init --preset b0`, install `editor` plus the nodes and marks
-you need, add typeset, then run its `typecheck` and `build`.
+`npx shadcn@latest init --preset b0`, install `rich-text-editor` plus the nodes and
+marks you need, add typeset, then run its `typecheck` and `build`.
 
 ## Deploy
 

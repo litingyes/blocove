@@ -1,52 +1,67 @@
 export interface DocsNavGroup {
-  label: string
+  /** Optional subgroup label rendered under the section heading. */
+  label?: string
   items: string[]
 }
 
+export interface DocsNavSection {
+  label: string
+  groups: DocsNavGroup[]
+}
+
 /**
- * Documentation navigation and page order. Registry items that are not listed
- * here (for example the internal editor helper) do not get a page.
+ * Documentation navigation and page order. Items are grouped per editor family,
+ * so a new family (a code editor, for example) is another section rather than a
+ * second nav tree. Registry items that are not listed here (for example the
+ * internal rich text editor helper) do not get a page.
  */
-export const docsNav: DocsNavGroup[] = [
+export const docsNav: DocsNavSection[] = [
   {
     label: 'Base',
-    items: ['base'],
-  },
-  {
-    label: 'Editor',
-    items: ['editor'],
-  },
-  {
-    label: 'Nodes',
-    items: [
-      'editor-text',
-      'editor-paragraph',
-      'editor-hard-break',
-      'editor-heading',
-      'editor-code-block',
-      'editor-details',
-      'editor-image',
-      'editor-table',
+    groups: [
+      {
+        items: ['base'],
+      },
     ],
   },
   {
-    label: 'Marks',
-    items: [
-      'editor-bold',
-      'editor-italic',
-      'editor-underline',
-      'editor-strike',
-      'editor-code',
-      'editor-link',
+    label: 'Rich Text Editor',
+    groups: [
+      {
+        label: 'Overview',
+        items: ['rich-text-editor'],
+      },
+      {
+        label: 'Nodes',
+        items: [
+          'rich-text-editor-text',
+          'rich-text-editor-paragraph',
+          'rich-text-editor-hard-break',
+          'rich-text-editor-heading',
+          'rich-text-editor-code-block',
+          'rich-text-editor-details',
+          'rich-text-editor-image',
+          'rich-text-editor-table',
+        ],
+      },
+      {
+        label: 'Marks',
+        items: [
+          'rich-text-editor-bold',
+          'rich-text-editor-italic',
+          'rich-text-editor-underline',
+          'rich-text-editor-strike',
+          'rich-text-editor-code',
+          'rich-text-editor-link',
+        ],
+      },
     ],
-  },
-  {
-    label: 'Blocks',
-    items: ['login-01'],
   },
 ]
 
-export const docsNavOrder = docsNav.flatMap(group => group.items)
+export const docsNavOrder = docsNav.flatMap(section =>
+  section.groups.flatMap(group => group.items),
+)
 
 export function getDocsNeighbors(name: string) {
   const index = docsNavOrder.indexOf(name)

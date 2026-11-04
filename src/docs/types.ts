@@ -37,3 +37,12 @@ export interface DocsPageData {
   requiresTypeset?: boolean
   note?: string
 }
+
+/**
+ * A documentation page module. `item` is the registry item the page documents;
+ * pages are registered from the module tree, so adding a page only requires a
+ * new file exporting `docsPage`.
+ */
+export interface DocsPage extends DocsPageData {
+  item: string
+}

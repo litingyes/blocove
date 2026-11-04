@@ -8,8 +8,12 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "paths": {
-      "@/components/ui/editor": ["./src/registry/blocove/ui/editor.tsx"],
-      "@/lib/editor-extension": ["./src/registry/blocove/lib/editor-extension.ts"],
+      "@/components/ui/rich-text-editor/editor": [
+        "./src/registry/blocove/ui/rich-text-editor/editor.tsx"
+      ],
+      "@/lib/rich-text-editor-extension": [
+        "./src/registry/blocove/lib/rich-text-editor-extension.ts"
+      ],
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,

@@ -17,7 +17,7 @@
     "lint:fix": "eslint --fix",
     "pretypecheck": "pnpm run registry:prepare",
     "typecheck": "tsc --noEmit",
-    "registry:build": "shadcn build",
+    "registry:build": "node scripts/clean-registry.mjs && shadcn build",
     "catalog:build": "node scripts/build-catalog.mjs",
     "registry:prepare": "pnpm run registry:build && pnpm run catalog:build",
     "registry:validate": "shadcn registry validate litingyes/blocove",

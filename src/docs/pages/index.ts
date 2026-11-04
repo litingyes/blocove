@@ -1,40 +1,38 @@
-import type { DocsPageData } from '@/docs/types'
-import { editorDocs } from './editor'
-import { boldDocs } from './editor-bold'
-import { codeDocs } from './editor-code'
-import { codeBlockDocs } from './editor-code-block'
-import { detailsDocs } from './editor-details'
-import { hardBreakDocs } from './editor-hard-break'
-import { headingDocs } from './editor-heading'
-import { imageDocs } from './editor-image'
-import { italicDocs } from './editor-italic'
-import { linkDocs } from './editor-link'
-import { paragraphDocs } from './editor-paragraph'
-import { strikeDocs } from './editor-strike'
-import { tableDocs } from './editor-table'
-import { textDocs } from './editor-text'
-import { underlineDocs } from './editor-underline'
-import { loginDocs } from './login-01'
+import type { DocsPage } from '@/docs/types'
 
-const docsPages: Record<string, DocsPageData> = {
-  'editor': editorDocs,
-  'editor-text': textDocs,
-  'editor-paragraph': paragraphDocs,
-  'editor-hard-break': hardBreakDocs,
-  'editor-heading': headingDocs,
-  'editor-code-block': codeBlockDocs,
-  'editor-details': detailsDocs,
-  'editor-image': imageDocs,
-  'editor-table': tableDocs,
-  'editor-bold': boldDocs,
-  'editor-italic': italicDocs,
-  'editor-underline': underlineDocs,
-  'editor-strike': strikeDocs,
-  'editor-code': codeDocs,
-  'editor-link': linkDocs,
-  'login-01': loginDocs,
+interface DocsPageModule {
+  docsPage?: DocsPage
+}
+
+// Every page module exports `docsPage`; adding a documented item means adding a
+// file, nothing else. `index.ts` matches the glob as well and is skipped below.
+const modules = import.meta.glob('./**/*.{ts,tsx}', {
+  eager: true,
+}) as Record<string, DocsPageModule>
+
+const docsPages = new Map<string, DocsPage>()
+
+for (const [path, module] of Object.entries(modules)) {
+  if (path === './index.ts') {
+    continue
+  }
+
+  const page = module.docsPage
+
+  if (!page) {
+    continue
+  }
+
+  if (docsPages.has(page.item)) {
+    console.warn(
+      `[blocove/docs] Duplicate page for "${page.item}" in ${path}, keeping the first one.`,
+    )
+    continue
+  }
+
+  docsPages.set(page.item, page)
 }
 
 export function getDocsPage(name: string) {
-  return docsPages[name]
+  return docsPages.get(name)
 }

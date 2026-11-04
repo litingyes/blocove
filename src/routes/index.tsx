@@ -33,8 +33,8 @@ function Home() {
           <p className="max-w-2xl text-muted-foreground">
             Blocove extends shadcn/ui for specific scenarios. It is not a
             replacement: install shadcn/ui first with the b0 preset, then add
-            the rich text editor, blocks and components that Blocove ships as
-            source code you own.
+            the rich text editor and components that Blocove ships as source code
+            you own.
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-3">

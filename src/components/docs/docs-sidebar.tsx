@@ -1,4 +1,4 @@
-import type { RegistryCatalog } from '@/lib/registry-catalog'
+import type { RegistryCatalog, RegistryItem } from '@/lib/registry-catalog'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { cn } from 'cn'
 import { MenuIcon } from 'lucide-react'
@@ -17,45 +17,65 @@ function DocsNav({ catalog }: { catalog: RegistryCatalog }) {
   })
   const items = new Map(catalog.items.map(item => [item.name, item]))
 
+  // Sections group families (Base, Rich Text Editor, ...); each family keeps its own
+  // subgroups so a new family only adds a section.
+  const sections = docsNav
+    .map(section => ({
+      label: section.label,
+      groups: section.groups
+        .map(group => ({
+          label: group.label,
+          items: group.items
+            .map(name => items.get(name))
+            .filter((item): item is RegistryItem => Boolean(item)),
+        }))
+        .filter(group => group.items.length > 0),
+    }))
+    .filter(section => section.groups.length > 0)
+
   return (
     <nav aria-label="Documentation" className="flex flex-col gap-6">
-      {docsNav.map((group) => {
-        const groupItems = group.items
-          .map(name => items.get(name))
-          .filter((item): item is NonNullable<typeof item> => Boolean(item))
+      {sections.map(section => (
+        <div key={section.label} className="flex flex-col gap-1.5">
+          <p className="px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            {section.label}
+          </p>
+          {section.groups.map(group => (
+            <div
+              key={group.label ?? 'items'}
+              className="flex flex-col gap-0.5"
+            >
+              {group.label
+                ? (
+                    <p className="px-2 pt-1 text-[11px] font-medium text-muted-foreground/80">
+                      {group.label}
+                    </p>
+                  )
+                : null}
+              <ul className="flex flex-col gap-0.5">
+                {group.items.map((item) => {
+                  const active = pathname === `/items/${item.name}`
 
-        if (groupItems.length === 0) {
-          return null
-        }
-
-        return (
-          <div key={group.label} className="flex flex-col gap-1.5">
-            <p className="px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              {group.label}
-            </p>
-            <ul className="flex flex-col gap-0.5">
-              {groupItems.map((item) => {
-                const active = pathname === `/items/${item.name}`
-
-                return (
-                  <li key={item.name}>
-                    <Link
-                      to="/items/$name"
-                      params={{ name: item.name }}
-                      className={cn(
-                        'block rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
-                        active && 'bg-muted font-medium text-foreground',
-                      )}
-                    >
-                      {item.title}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        )
-      })}
+                  return (
+                    <li key={item.name}>
+                      <Link
+                        to="/items/$name"
+                        params={{ name: item.name }}
+                        className={cn(
+                          'block rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+                          active && 'bg-muted font-medium text-foreground',
+                        )}
+                      >
+                        {item.title}
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ))}
     </nav>
   )
 }

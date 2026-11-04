@@ -13,7 +13,7 @@ if (!fs.existsSync(builtCatalogPath)) {
 }
 
 const built = JSON.parse(fs.readFileSync(builtCatalogPath, 'utf8'))
-const sourcePrefix = 'src/registry/folio/'
+const sourcePrefix = 'src/registry/blocove/'
 
 const items = (built.items ?? []).map(item => ({
   name: item.name,

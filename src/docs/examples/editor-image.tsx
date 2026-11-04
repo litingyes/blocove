@@ -3,18 +3,18 @@ import {
   Editor,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
+} from '@/registry/blocove/ui/editor'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
 import {
   EditorImage,
   EditorImageToolbar,
-} from '@/registry/folio/ui/editor-image'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor-image'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<p>Images are block nodes in the document.</p>',
-  '<img src="/editor-image.svg" alt="Folio editor example">',
+  '<img src="/editor-image.svg" alt="Blocove editor example">',
   '<p>Use the toolbar to insert an image by URL. Selecting an image pre-fills its current source.</p>',
 ].join('')
 

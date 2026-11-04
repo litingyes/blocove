@@ -4,11 +4,11 @@ import {
   EditorBubbleMenu,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorCode, EditorCodeToolbar } from '@/registry/folio/ui/editor-code'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor'
+import { EditorCode, EditorCodeToolbar } from '@/registry/blocove/ui/editor-code'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<p>This paragraph contains <code>inline code</code> next to regular text.</p>',

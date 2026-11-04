@@ -4,11 +4,11 @@ import {
   EditorBubbleMenu,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorBold, EditorBoldToolbar } from '@/registry/folio/ui/editor-bold'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor'
+import { EditorBold, EditorBoldToolbar } from '@/registry/blocove/ui/editor-bold'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<p>This paragraph contains <strong>bold text</strong> next to regular text.</p>',

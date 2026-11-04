@@ -5,7 +5,7 @@ import { Fragment, isValidElement } from 'react'
 // Marks a component as an editor extension declaration. The value is a symbol
 // so the base Editor can recognize extension components from any item without
 // importing them.
-const extensionComponentMarker = Symbol.for('folio.editor.extension-component')
+const extensionComponentMarker = Symbol.for('blocove.editor.extension-component')
 
 export type ExtensionFactory<P extends object> = (props: P) => Extensions
 
@@ -102,7 +102,7 @@ export function collectEditorChildren(children: ReactNode): EditorChildren {
   const deduped = extensions.filter((config) => {
     if (seen.has(config.component.extensionName)) {
       console.warn(
-        `[folio/editor] Duplicate extension "${config.component.extensionName}" ignored. Only the first declaration is registered.`,
+        `[blocove/editor] Duplicate extension "${config.component.extensionName}" ignored. Only the first declaration is registered.`,
       )
       return false
     }

@@ -4,14 +4,14 @@ import {
   EditorBubbleMenu,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 import {
   EditorUnderline,
   EditorUnderlineToolbar,
-} from '@/registry/folio/ui/editor-underline'
+} from '@/registry/blocove/ui/editor-underline'
 
 const initialContent = [
   '<p>This paragraph contains <u>underlined text</u> next to regular text.</p>',

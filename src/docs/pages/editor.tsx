@@ -18,7 +18,7 @@ import { EditorText } from "@/components/ui/editor-text"
 
 export function Example() {
   return (
-    <Editor defaultValue="<h2>Hello</h2><p>Folio editor</p>">
+    <Editor defaultValue="<h2>Hello</h2><p>Blocove editor</p>">
       <EditorText />
       <EditorParagraph />
       <EditorHardBreak />

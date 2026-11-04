@@ -3,14 +3,14 @@ import {
   Editor,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
+} from '@/registry/blocove/ui/editor'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
 import {
   EditorHeading,
   EditorHeadingToolbar,
-} from '@/registry/folio/ui/editor-heading'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor-heading'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<h1>Heading 1</h1>',

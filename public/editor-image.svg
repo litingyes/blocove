@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-label="Folio editor example image">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-label="Blocove editor example image">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#f4f4f5" />
@@ -16,6 +16,6 @@
     <path d="m310 400 150-155 130 135 105-105 155 165" />
   </g>
   <text x="600" y="535" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="600" fill="#71717a" letter-spacing="6">
-    FOLIO EDITOR
+    BLOCOVE EDITOR
   </text>
 </svg>

@@ -269,7 +269,7 @@ export function DocsPage({
                 </p>
                 <p className="mt-1">
                   This item declares the shadcn/ui prerequisites that the other
-                  Folio items compose with. It ships no UI of its own, so there
+                  Blocove items compose with. It ships no UI of its own, so there
                   is no preview, usage snippet or API table.
                 </p>
               </div>

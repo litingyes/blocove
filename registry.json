@@ -1,6 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "folio",
-  "homepage": "https://github.com/litingyes/folio",
-  "include": ["src/registry/folio/registry.json"]
+  "name": "blocove",
+  "homepage": "https://blocove.vercel.app",
+  "include": [
+    "src/registry/blocove/registry.json"
+  ]
 }

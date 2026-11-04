@@ -4,11 +4,11 @@ import {
   EditorBubbleMenu,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorLink, EditorLinkToolbar } from '@/registry/folio/ui/editor-link'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorLink, EditorLinkToolbar } from '@/registry/blocove/ui/editor-link'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<p>This paragraph contains a <a href="https://ui.shadcn.com">link</a> next to regular text.</p>',

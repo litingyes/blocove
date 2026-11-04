@@ -5,6 +5,7 @@ import {
   Link,
   Scripts,
 } from '@tanstack/react-router'
+import { BrandLogo } from '@/components/brand-logo'
 
 import appCss from '../styles.css?url'
 
@@ -19,18 +20,42 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Folio Registry',
+        title: 'Blocove Registry',
       },
       {
         name: 'description',
         content:
-          'A shadcn/ui extension registry: Folio blocks and tokens layered on top of shadcn/ui.',
+          'A shadcn/ui extension registry: Blocove blocks and tokens layered on top of shadcn/ui.',
+      },
+      {
+        name: 'theme-color',
+        content: '#191a19',
       },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico',
+      },
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        sizes: 'any',
+        href: '/favicon.svg',
+      },
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.json',
       },
     ],
   }),
@@ -62,8 +87,12 @@ function RootDocument({ children }: { children: ReactNode }) {
         <div className="flex min-h-svh w-full flex-col">
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/80">
             <div className="mx-auto flex h-16 w-full max-w-[96rem] items-center justify-between px-4 sm:px-6">
-              <Link to="/" className="text-sm font-semibold tracking-tight">
-                Folio Registry
+              <Link
+                to="/"
+                aria-label="Blocove home"
+                className="inline-flex shrink-0 items-center"
+              >
+                <BrandLogo className="h-9 w-auto" />
               </Link>
               <nav className="flex items-center gap-5 text-sm text-muted-foreground">
                 <a
@@ -75,7 +104,7 @@ function RootDocument({ children }: { children: ReactNode }) {
                   Docs
                 </a>
                 <a
-                  href="https://github.com/litingyes/folio"
+                  href="https://github.com/litingyes/blocove"
                   target="_blank"
                   rel="noreferrer"
                   className="transition-colors hover:text-foreground"
@@ -92,7 +121,7 @@ function RootDocument({ children }: { children: ReactNode }) {
                 Requires shadcn/ui with the b0 preset, then add items with
                 {' '}
                 <code className="rounded bg-muted px-1 py-0.5">
-                  npx shadcn@latest add litingyes/folio/&lt;item&gt;
+                  npx shadcn@latest add litingyes/blocove/&lt;item&gt;
                 </code>
               </span>
               <span>MIT License</span>

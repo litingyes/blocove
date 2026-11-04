@@ -3,17 +3,17 @@ import {
   Editor,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
+} from '@/registry/blocove/ui/editor'
 import {
   EditorDetails,
   EditorDetailsToolbar,
-} from '@/registry/folio/ui/editor-details'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor-details'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
-  '<details open><summary>What is Tiptap?</summary><div data-type="detailsContent"><p>Tiptap is a headless editor framework built on ProseMirror. Folio wraps its extensions as composable components.</p></div></details>',
+  '<details open><summary>What is Tiptap?</summary><div data-type="detailsContent"><p>Tiptap is a headless editor framework built on ProseMirror. Blocove wraps its extensions as composable components.</p></div></details>',
   '<p>Details blocks collapse long content. Click the chevron to toggle the block, or insert a new one from the toolbar.</p>',
 ].join('')
 

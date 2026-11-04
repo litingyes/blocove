@@ -28,12 +28,12 @@ function Home() {
             shadcn/ui extension
           </span>
           <h1 className="max-w-2xl text-4xl font-semibold tracking-tight">
-            Folio extensions for shadcn/ui.
+            Blocove extensions for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-muted-foreground">
-            Folio extends shadcn/ui for specific scenarios. It is not a
+            Blocove extends shadcn/ui for specific scenarios. It is not a
             replacement: install shadcn/ui first with the b0 preset, then add
-            the rich text editor, blocks and components that Folio ships as
+            the rich text editor, blocks and components that Blocove ships as
             source code you own.
           </p>
         </div>
@@ -41,17 +41,17 @@ function Home() {
           <CommandCard
             title="1. Set up shadcn/ui"
             command="npx shadcn@latest init --preset b0"
-            note="Folio defaults to the b0 preset."
+            note="Blocove defaults to the b0 preset."
           />
           <CommandCard
             title="2. Install from GitHub"
-            command="npx shadcn@latest add litingyes/folio/base"
+            command="npx shadcn@latest add litingyes/blocove/base"
             note="No registry configuration required."
           />
           <CommandCard
             title="3. Install by namespace"
-            command="npx shadcn@latest add @folio/base"
-            note="After adding the @folio registry to components.json."
+            command="npx shadcn@latest add @blocove/base"
+            note="After adding the @blocove registry to components.json."
           />
         </div>
       </section>
@@ -121,7 +121,7 @@ function ItemCard({ item }: { item: RegistryItem }) {
       </CardHeader>
       <CardContent className="mt-auto flex items-end justify-between gap-3">
         <code className="rounded-md bg-muted px-2 py-1 text-[11px] break-all text-muted-foreground">
-          npx shadcn@latest add litingyes/folio/
+          npx shadcn@latest add litingyes/blocove/
           {item.name}
         </code>
         <Link

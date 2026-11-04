@@ -3,14 +3,14 @@ import {
   Editor,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
+} from '@/registry/blocove/ui/editor'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
 import {
   EditorTable,
   EditorTableToolbar,
-} from '@/registry/folio/ui/editor-table'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor-table'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<p>Tables are rendered as native table elements and styled by typeset.</p>',

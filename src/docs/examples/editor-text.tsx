@@ -3,14 +3,14 @@ import {
   Editor,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorHardBreak } from '@/registry/folio/ui/editor-hard-break'
-import { EditorParagraph } from '@/registry/folio/ui/editor-paragraph'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor'
+import { EditorHardBreak } from '@/registry/blocove/ui/editor-hard-break'
+import { EditorParagraph } from '@/registry/blocove/ui/editor-paragraph'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 
 const initialContent = [
   '<p>Text is the leaf node every editor document is built from. Marks and inline content live inside it.</p>',
-  '<p>Folio keeps extensions explicit: register the text node, then add only the nodes and marks you compose.</p>',
+  '<p>Blocove keeps extensions explicit: register the text node, then add only the nodes and marks you compose.</p>',
   '<p>This demo wires the text node next to paragraphs and hard breaks. The toolbar still works because the base editor owns history and alignment.</p>',
 ].join('')
 

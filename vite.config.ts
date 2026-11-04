@@ -13,10 +13,10 @@ const config = defineConfig({
     // specifiers consumers use, so previews run the shipped code.
     alias: {
       '@/components/ui/editor': fileURLToPath(
-        new URL('./src/registry/folio/ui/editor.tsx', import.meta.url),
+        new URL('./src/registry/blocove/ui/editor.tsx', import.meta.url),
       ),
       '@/lib/editor-extension': fileURLToPath(
-        new URL('./src/registry/folio/lib/editor-extension.ts', import.meta.url),
+        new URL('./src/registry/blocove/lib/editor-extension.ts', import.meta.url),
       ),
     },
   },

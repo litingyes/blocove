@@ -1,9 +1,14 @@
-# Folio Registry
+# Blocove Registry
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/brand/blocove-lockup-white.svg" />
+  <img src="public/brand/blocove-lockup-black.svg" alt="Blocove" width="240" />
+</picture>
 
 A [shadcn/ui registry](https://ui.shadcn.com/docs/registry) that **extends**
-[shadcn/ui](https://ui.shadcn.com) for specific scenarios. Folio is not a
+[shadcn/ui](https://ui.shadcn.com) for specific scenarios. Blocove is not a
 replacement for shadcn/ui: it builds on top of it, so shadcn/ui is installed
-first and Folio only adds the blocks and components it needs.
+first and Blocove only adds the blocks and components it needs.
 
 The default and supported baseline is the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font). The flagship
@@ -31,23 +36,23 @@ GitHub address, a URL, or a namespace.
 From a project with `components.json` and shadcn/ui installed:
 
 ```bash
-# The Folio baseline: official shadcn/ui components used by Folio blocks.
-npx shadcn@latest add litingyes/folio/base
+# The Blocove baseline: official shadcn/ui components used by Blocove blocks.
+npx shadcn@latest add litingyes/blocove/base
 
 # The rich text editor shell. It installs the basic nodes as well.
-npx shadcn@latest add litingyes/folio/editor
+npx shadcn@latest add litingyes/blocove/editor
 
 # Add only the nodes and marks you compose into the editor.
-npx shadcn@latest add litingyes/folio/editor-heading litingyes/folio/editor-bold
+npx shadcn@latest add litingyes/blocove/editor-heading litingyes/blocove/editor-bold
 
-# A Folio block, straight from GitHub. No configuration required.
-npx shadcn@latest add litingyes/folio/login-01
+# A Blocove block, straight from GitHub. No configuration required.
+npx shadcn@latest add litingyes/blocove/login-01
 ```
 
 Pin a release for reproducible installs:
 
 ```bash
-npx shadcn@latest add litingyes/folio/editor#v0.2.0
+npx shadcn@latest add litingyes/blocove/editor#v0.2.0
 ```
 
 ### Namespace
@@ -57,7 +62,7 @@ After the site is deployed, add the registry to `components.json`:
 ```json
 {
   "registries": {
-    "@folio": "https://<your-domain>/r/{name}.json"
+    "@blocove": "https://blocove.vercel.app/r/{name}.json"
   }
 }
 ```
@@ -65,19 +70,19 @@ After the site is deployed, add the registry to `components.json`:
 or with the CLI:
 
 ```bash
-npx shadcn@latest registry add @folio=https://<your-domain>/r/{name}.json
+npx shadcn@latest registry add @blocove=https://blocove.vercel.app/r/{name}.json
 ```
 
 Then install by namespace:
 
 ```bash
-npx shadcn@latest add @folio/editor
+npx shadcn@latest add @blocove/editor
 ```
 
 > Registry dependencies that point at shadcn/ui use the official item names
 > (`button`, `kbd`, `toggle`, ...), which the CLI resolves from `ui.shadcn.com`
-> using your project style. Dependencies between Folio items use GitHub
-> addresses (`litingyes/folio/...`), so resolution works for both GitHub and
+> using your project style. Dependencies between Blocove items use GitHub
+> addresses (`litingyes/blocove/...`), so resolution works for both GitHub and
 > namespace installs. The repository must stay public.
 
 ## Rich text editor
@@ -103,7 +108,7 @@ import { EditorText } from '@/components/ui/editor-text'
 
 export function EditorExample() {
   return (
-    <Editor defaultValue="<h2>Hello</h2><p>Folio editor</p>">
+    <Editor defaultValue="<h2>Hello</h2><p>Blocove editor</p>">
       <EditorText />
       <EditorParagraph />
       <EditorHardBreak />
@@ -179,38 +184,38 @@ pass `typeset={false}` to opt out. The typeset selectors skip elements with a
 
 ## Items
 
-| Item                | Type             | Description                                                           |
-| ------------------- | ---------------- | --------------------------------------------------------------------- |
-| `base`              | `registry:base`  | Installs the shadcn/ui (b0) primitives Folio extensions compose with  |
-| `editor`            | `registry:ui`    | Editor shell: root, content, toolbar, bubble menu and character count |
-| `editor-extension`  | `registry:lib`   | Internal helper for declaring Tiptap extensions as components         |
-| `editor-text`       | `registry:ui`    | Tiptap Text node                                                      |
-| `editor-paragraph`  | `registry:ui`    | Tiptap Paragraph node                                                 |
-| `editor-hard-break` | `registry:ui`    | Tiptap HardBreak node                                                 |
-| `editor-heading`    | `registry:ui`    | Heading node and toolbar selector                                     |
-| `editor-code-block` | `registry:ui`    | Code block node and toolbar toggle                                    |
-| `editor-details`    | `registry:ui`    | Collapsible details node with a React node view                       |
-| `editor-image`      | `registry:ui`    | Image node and URL insert control                                     |
-| `editor-table`      | `registry:ui`    | Table kit and command menu                                            |
-| `editor-bold`       | `registry:ui`    | Bold mark and toolbar toggle                                          |
-| `editor-italic`     | `registry:ui`    | Italic mark and toolbar toggle                                        |
-| `editor-underline`  | `registry:ui`    | Underline mark and toolbar toggle                                     |
-| `editor-strike`     | `registry:ui`    | Strikethrough mark and toolbar toggle                                 |
-| `editor-code`       | `registry:ui`    | Inline code mark and toolbar toggle                                   |
-| `editor-link`       | `registry:ui`    | Link mark and URL popover                                             |
-| `login-01`          | `registry:block` | A login form composed from shadcn/ui primitives                       |
+| Item                | Type             | Description                                                            |
+| ------------------- | ---------------- | ---------------------------------------------------------------------- |
+| `base`              | `registry:base`  | Installs the shadcn/ui (b0) primitives Blocove extensions compose with |
+| `editor`            | `registry:ui`    | Editor shell: root, content, toolbar, bubble menu and character count  |
+| `editor-extension`  | `registry:lib`   | Internal helper for declaring Tiptap extensions as components          |
+| `editor-text`       | `registry:ui`    | Tiptap Text node                                                       |
+| `editor-paragraph`  | `registry:ui`    | Tiptap Paragraph node                                                  |
+| `editor-hard-break` | `registry:ui`    | Tiptap HardBreak node                                                  |
+| `editor-heading`    | `registry:ui`    | Heading node and toolbar selector                                      |
+| `editor-code-block` | `registry:ui`    | Code block node and toolbar toggle                                     |
+| `editor-details`    | `registry:ui`    | Collapsible details node with a React node view                        |
+| `editor-image`      | `registry:ui`    | Image node and URL insert control                                      |
+| `editor-table`      | `registry:ui`    | Table kit and command menu                                             |
+| `editor-bold`       | `registry:ui`    | Bold mark and toolbar toggle                                           |
+| `editor-italic`     | `registry:ui`    | Italic mark and toolbar toggle                                         |
+| `editor-underline`  | `registry:ui`    | Underline mark and toolbar toggle                                      |
+| `editor-strike`     | `registry:ui`    | Strikethrough mark and toolbar toggle                                  |
+| `editor-code`       | `registry:ui`    | Inline code mark and toolbar toggle                                    |
+| `editor-link`       | `registry:ui`    | Link mark and URL popover                                              |
+| `login-01`          | `registry:block` | A login form composed from shadcn/ui primitives                        |
 
 `base` ships no files of its own: it declares the official shadcn/ui items
 (`font-inter`, `button`, `card`, `input`, `label`) and the npm packages those
 components need. Theme tokens stay owned by shadcn/ui and come from your `b0`
-initialization; Folio does not overwrite them.
+initialization; Blocove does not overwrite them.
 
 `editor-extension` is internal: it is installed as a dependency of the editor
 items and is hidden from the site catalog and documentation navigation.
 
 ### Upgrading from v0.1
 
-Folio no longer re-ships shadcn/ui primitives. The `button`, `input`, `label`,
+Blocove no longer re-ships shadcn/ui primitives. The `button`, `input`, `label`,
 `card`, `theme` and `utils` items were removed from `HEAD` because they were
 verbatim copies of shadcn/ui. Install the official components instead:
 
@@ -224,7 +229,7 @@ Installs pinned to the `v0.1.0` tag keep working, since tags are immutable.
 
 ```txt
 registry.json                  # registry catalog entry point (name, homepage, include)
-src/registry/folio/
+src/registry/blocove/
   registry.json                # item definitions, included by the root registry
   lib/editor-extension.ts      # registry:lib helper for the editor family
   ui/                          # registry:ui items (editor, nodes, marks)
@@ -250,7 +255,7 @@ scripts/check-preset.mjs       # asserts the project still resolves to the b0 pr
 public/r/                      # generated registry JSON (gitignored)
 ```
 
-- `src/registry/folio/` is the single source of truth for Folio extensions.
+- `src/registry/blocove/` is the single source of truth for Blocove extensions.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
   the whole shadcn/ui surface is available as context for composing new
@@ -261,7 +266,7 @@ public/r/                      # generated registry JSON (gitignored)
 ### Demo aliases
 
 Docs demos import registry files through the repository path
-(`@/registry/folio/ui/editor-heading`). The shipped items themselves use the
+(`@/registry/blocove/ui/editor-heading`). The shipped items themselves use the
 exact paths consumers get (`@/components/ui/editor`, `@/lib/editor-extension`),
 so the site resolves those two specifiers to the registry sources in
 `tsconfig.json` and `vite.config.ts`. Add a mapping there when a registry item
@@ -280,7 +285,7 @@ Useful scripts:
 | ------------------------ | --------------------------------------------------- |
 | `pnpm registry:build`    | `shadcn build` into `public/r`                      |
 | `pnpm registry:prepare`  | Build registry JSON and generate the site catalog   |
-| `pnpm registry:validate` | Validate `litingyes/folio` from GitHub              |
+| `pnpm registry:validate` | Validate `litingyes/blocove` from GitHub            |
 | `pnpm preset:check`      | Fail unless the project resolves to the `b0` preset |
 | `pnpm typecheck`         | TypeScript                                          |
 | `pnpm lint`              | ESLint: lint and formatting                         |
@@ -305,7 +310,7 @@ pnpm run typecheck
 ```
 
 Upstream `scroll-area.tsx` ships an unused `import * as React from "react"` that
-trips `noUnusedLocals`; Folio removes that one line locally. If a refresh adds it
+trips `noUnusedLocals`; Blocove removes that one line locally. If a refresh adds it
 back, delete it again.
 
 ### Git hooks
@@ -328,13 +333,13 @@ integration, and Tailwind class names are kept in canonical order by
 
 ## Adding an item
 
-Folio only ships extensions. Never copy a shadcn/ui component into the registry:
+Blocove only ships extensions. Never copy a shadcn/ui component into the registry:
 reference it instead.
 
-1. Put the source files under `src/registry/folio/` (`lib/`, `ui/`, `blocks/`, ...).
+1. Put the source files under `src/registry/blocove/` (`lib/`, `ui/`, `blocks/`, ...).
 2. Import shadcn/ui components from `@/components/ui/*`. The CLI rewrites those
    imports to the consumer's `ui` alias on install.
-3. Add an item to `src/registry/folio/registry.json`. Paths are relative to that
+3. Add an item to `src/registry/blocove/registry.json`. Paths are relative to that
    file:
    ```json
    {
@@ -358,7 +363,7 @@ reference it instead.
 
 ### Adding an editor extension
 
-1. Create `src/registry/folio/ui/editor-<name>.tsx`.
+1. Create `src/registry/blocove/ui/editor-<name>.tsx`.
 2. Declare the extension with the shared helper:
    ```tsx
    import { Heading } from '@tiptap/extension-heading'
@@ -374,7 +379,7 @@ reference it instead.
    `useEditorState`.
 4. Add the item with `type: "registry:ui"`, target
    `components/ui/editor-<name>.tsx`, the Tiptap package in `dependencies`, and
-   `registryDependencies: ["litingyes/folio/editor"]` plus the shadcn/ui
+   `registryDependencies: ["litingyes/blocove/editor"]` plus the shadcn/ui
    primitives the control uses.
 5. Document it:
    - demo: `src/docs/examples/<item>.tsx`, importing registry paths;
@@ -387,15 +392,15 @@ Conventions:
 
 - List every npm package a file imports in `dependencies`; list official
   shadcn/ui items by their registry name (`button`, `font-inter`, ...) in
-  `registryDependencies`; list other Folio items with the GitHub address
-  (`litingyes/folio/<item>`).
+  `registryDependencies`; list other Blocove items with the GitHub address
+  (`litingyes/blocove/<item>`).
 - Give every item a `title` and `description`; they are surfaced in the catalog
   and are useful for LLM tooling.
-- Folio UI and lib items omit `target`, so the CLI installs them through the
+- Blocove UI and lib items omit `target`, so the CLI installs them through the
   consumer's `ui` and `lib` aliases. Blocks and files that must land at a fixed
   path (for example `login-01`) keep an explicit `target`.
 - `registry:page` and `registry:file` items require a `target`.
-- `@folio/base` assumes the consumer project is set up with shadcn/ui: Tailwind
+- `@blocove/base` assumes the consumer project is set up with shadcn/ui: Tailwind
   CSS v4, `shadcn/tailwind.css` and the `@theme inline` color mappings.
 
 ## Docs site
@@ -436,11 +441,11 @@ The build produces static registry JSON in `public/r` plus the TanStack Start
 server output. Any host supported by TanStack Start works (Vercel, Netlify,
 Cloudflare or a Node server); make sure `/r/*.json` is served publicly.
 
-After the first deploy:
-
-1. Set `homepage` in the root `registry.json` to the public URL.
-2. Update the namespace URL in this README and in the site footer.
-3. Re-run `pnpm run registry:prepare` and tag a release.
+The public site is [blocove.vercel.app](https://blocove.vercel.app). The
+`@blocove` namespace resolves items from
+`https://blocove.vercel.app/r/{name}.json`. If the domain changes, update the
+root registry `homepage` and the namespace URLs together, then re-run
+`pnpm run registry:prepare`.
 
 ## License
 

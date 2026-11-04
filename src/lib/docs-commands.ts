@@ -3,11 +3,11 @@ export const packageManagers = ['pnpm', 'npm', 'yarn', 'bun'] as const
 export type PackageManager = (typeof packageManagers)[number]
 
 export function itemAddress(name: string) {
-  return `litingyes/folio/${name}`
+  return `litingyes/blocove/${name}`
 }
 
 export function namespaceAddress(name: string) {
-  return `@folio/${name}`
+  return `@blocove/${name}`
 }
 
 export function addCommand(

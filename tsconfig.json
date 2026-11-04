@@ -8,8 +8,8 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "paths": {
-      "@/components/ui/editor": ["./src/registry/folio/ui/editor.tsx"],
-      "@/lib/editor-extension": ["./src/registry/folio/lib/editor-extension.ts"],
+      "@/components/ui/editor": ["./src/registry/blocove/ui/editor.tsx"],
+      "@/lib/editor-extension": ["./src/registry/blocove/lib/editor-extension.ts"],
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,

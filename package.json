@@ -1,5 +1,5 @@
 {
-  "name": "folio",
+  "name": "blocove",
   "type": "module",
   "private": true,
   "packageManager": "pnpm@12.16.1",
@@ -20,7 +20,7 @@
     "registry:build": "shadcn build",
     "catalog:build": "node scripts/build-catalog.mjs",
     "registry:prepare": "pnpm run registry:build && pnpm run catalog:build",
-    "registry:validate": "shadcn registry validate litingyes/folio",
+    "registry:validate": "shadcn registry validate litingyes/blocove",
     "preset:check": "node scripts/check-preset.mjs",
     "prepare": "lefthook install",
     "check": "pnpm run preset:check && pnpm run typecheck && pnpm run lint && pnpm run build"

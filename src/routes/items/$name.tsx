@@ -19,8 +19,8 @@ export const Route = createFileRoute('/items/$name')({
       meta: [
         {
           title: item
-            ? `${item.title} – Folio Registry`
-            : 'Item not found – Folio Registry',
+            ? `${item.title} – Blocove Registry`
+            : 'Item not found – Blocove Registry',
         },
         ...(item
           ? [

@@ -4,8 +4,8 @@
     {
       "name": "base",
       "type": "registry:base",
-      "title": "Folio Base",
-      "description": "Installs the shadcn/ui (b0 preset) primitives that Folio extensions compose with.",
+      "title": "Blocove Base",
+      "description": "Installs the shadcn/ui (b0 preset) primitives that Blocove extensions compose with.",
       "config": {
         "style": "base-nova",
         "tailwind": {
@@ -67,10 +67,10 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor-extension",
-        "litingyes/folio/editor-text",
-        "litingyes/folio/editor-paragraph",
-        "litingyes/folio/editor-hard-break",
+        "litingyes/blocove/editor-extension",
+        "litingyes/blocove/editor-text",
+        "litingyes/blocove/editor-paragraph",
+        "litingyes/blocove/editor-hard-break",
         "button",
         "kbd",
         "separator",
@@ -96,7 +96,7 @@
         "@tiptap/extension-text@3.32.2"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor-extension"
+        "litingyes/blocove/editor-extension"
       ],
       "categories": [
         "editor",
@@ -118,7 +118,7 @@
         "@tiptap/extension-paragraph@3.32.2"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor-extension"
+        "litingyes/blocove/editor-extension"
       ],
       "categories": [
         "editor",
@@ -140,7 +140,7 @@
         "@tiptap/extension-hard-break@3.32.2"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor-extension"
+        "litingyes/blocove/editor-extension"
       ],
       "categories": [
         "editor",
@@ -165,7 +165,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor",
+        "litingyes/blocove/editor",
         "select"
       ],
       "categories": [
@@ -191,7 +191,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -216,7 +216,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -241,7 +241,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor",
+        "litingyes/blocove/editor",
         "button",
         "input",
         "popover"
@@ -269,7 +269,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor",
+        "litingyes/blocove/editor",
         "button",
         "popover"
       ],
@@ -296,7 +296,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -321,7 +321,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -346,7 +346,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -371,7 +371,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -396,7 +396,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor"
+        "litingyes/blocove/editor"
       ],
       "categories": [
         "editor",
@@ -421,7 +421,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/folio/editor",
+        "litingyes/blocove/editor",
         "button",
         "input",
         "popover"

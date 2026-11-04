@@ -32,4 +32,4 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm dlx shadcn@latest registry validate litingyes/folio
+      - run: pnpm dlx shadcn@latest registry validate litingyes/blocove

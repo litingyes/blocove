@@ -5,41 +5,41 @@ import {
   EditorCharacterCount,
   EditorContent,
   EditorToolbar,
-} from '@/registry/folio/ui/editor'
-import { EditorBold, EditorBoldToolbar } from '@/registry/folio/ui/editor-bold'
-import { EditorCode, EditorCodeToolbar } from '@/registry/folio/ui/editor-code'
+} from '@/registry/blocove/ui/editor'
+import { EditorBold, EditorBoldToolbar } from '@/registry/blocove/ui/editor-bold'
+import { EditorCode, EditorCodeToolbar } from '@/registry/blocove/ui/editor-code'
 import {
   EditorCodeBlock,
   EditorCodeBlockToolbar,
-} from '@/registry/folio/ui/editor-code-block'
+} from '@/registry/blocove/ui/editor-code-block'
 import {
   EditorHardBreak,
-} from '@/registry/folio/ui/editor-hard-break'
+} from '@/registry/blocove/ui/editor-hard-break'
 import {
   EditorHeading,
   EditorHeadingToolbar,
-} from '@/registry/folio/ui/editor-heading'
+} from '@/registry/blocove/ui/editor-heading'
 import {
   EditorItalic,
   EditorItalicToolbar,
-} from '@/registry/folio/ui/editor-italic'
-import { EditorLink, EditorLinkToolbar } from '@/registry/folio/ui/editor-link'
+} from '@/registry/blocove/ui/editor-italic'
+import { EditorLink, EditorLinkToolbar } from '@/registry/blocove/ui/editor-link'
 import {
   EditorParagraph,
-} from '@/registry/folio/ui/editor-paragraph'
+} from '@/registry/blocove/ui/editor-paragraph'
 import {
   EditorStrike,
   EditorStrikeToolbar,
-} from '@/registry/folio/ui/editor-strike'
-import { EditorText } from '@/registry/folio/ui/editor-text'
+} from '@/registry/blocove/ui/editor-strike'
+import { EditorText } from '@/registry/blocove/ui/editor-text'
 import {
   EditorUnderline,
   EditorUnderlineToolbar,
-} from '@/registry/folio/ui/editor-underline'
+} from '@/registry/blocove/ui/editor-underline'
 
 const initialContent = [
   '<h2>Composable by design</h2>',
-  '<p>Folio ships the editor as small Tiptap components. Compose the ones you need and keep the rest out of your bundle.</p>',
+  '<p>Blocove ships the editor as small Tiptap components. Compose the ones you need and keep the rest out of your bundle.</p>',
   '<p>Try <strong>bold</strong>, <em>italic</em>, <u>underline</u>, <s>strikethrough</s>, <code>inline code</code> and a <a href="https://ui.shadcn.com/docs/typeset">link</a>.</p>',
   '<p>Select some text to open the bubble menu.</p>',
 ].join('')

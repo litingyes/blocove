@@ -59,40 +59,44 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body className="min-h-svh bg-background text-foreground antialiased">
-        <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-col px-6">
-          <header className="flex h-16 items-center justify-between border-b">
-            <Link to="/" className="text-sm font-semibold tracking-tight">
-              Folio Registry
-            </Link>
-            <nav className="flex items-center gap-5 text-sm text-muted-foreground">
-              <a
-                href="https://ui.shadcn.com/docs/registry"
-                target="_blank"
-                rel="noreferrer"
-                className="transition-colors hover:text-foreground"
-              >
-                Docs
-              </a>
-              <a
-                href="https://github.com/litingyes/folio"
-                target="_blank"
-                rel="noreferrer"
-                className="transition-colors hover:text-foreground"
-              >
-                GitHub
-              </a>
-            </nav>
+        <div className="flex min-h-svh w-full flex-col">
+          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/80">
+            <div className="mx-auto flex h-16 w-full max-w-[96rem] items-center justify-between px-4 sm:px-6">
+              <Link to="/" className="text-sm font-semibold tracking-tight">
+                Folio Registry
+              </Link>
+              <nav className="flex items-center gap-5 text-sm text-muted-foreground">
+                <a
+                  href="https://ui.shadcn.com/docs/registry"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-foreground"
+                >
+                  Docs
+                </a>
+                <a
+                  href="https://github.com/litingyes/folio"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-foreground"
+                >
+                  GitHub
+                </a>
+              </nav>
+            </div>
           </header>
-          <main className="flex-1 py-12">{children}</main>
-          <footer className="flex flex-wrap items-center justify-between gap-2 border-t py-6 text-xs text-muted-foreground">
-            <span>
-              Requires shadcn/ui with the b0 preset, then add items with
-              {' '}
-              <code className="rounded bg-muted px-1 py-0.5">
-                npx shadcn@latest add litingyes/folio/&lt;item&gt;
-              </code>
-            </span>
-            <span>MIT License</span>
+          <main className="flex-1">{children}</main>
+          <footer className="border-t">
+            <div className="mx-auto flex w-full max-w-[96rem] flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground sm:px-6">
+              <span>
+                Requires shadcn/ui with the b0 preset, then add items with
+                {' '}
+                <code className="rounded bg-muted px-1 py-0.5">
+                  npx shadcn@latest add litingyes/folio/&lt;item&gt;
+                </code>
+              </span>
+              <span>MIT License</span>
+            </div>
           </footer>
         </div>
         <Scripts />

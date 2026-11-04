@@ -13,13 +13,15 @@ import catalogJson from '@/generated/registry.json'
 import { groupItemsByType, itemTypeLabels } from '@/lib/registry-catalog'
 
 const catalog = catalogJson as unknown as RegistryCatalog
-const groups = groupItemsByType(catalog.items)
+const groups = groupItemsByType(
+  catalog.items.filter(item => !item.categories.includes('internal')),
+)
 
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
   return (
-    <div className="flex flex-col gap-16">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-16 px-4 py-12 sm:px-6">
       <section className="flex flex-col gap-8">
         <div className="flex flex-col gap-3">
           <span className="w-fit rounded-full border px-3 py-1 text-xs text-muted-foreground">
@@ -31,7 +33,8 @@ function Home() {
           <p className="max-w-2xl text-muted-foreground">
             Folio extends shadcn/ui for specific scenarios. It is not a
             replacement: install shadcn/ui first with the b0 preset, then add
-            the blocks and tokens that Folio ships as source code you own.
+            the rich text editor, blocks and components that Folio ships as
+            source code you own.
           </p>
         </div>
         <div className="grid gap-4 md:grid-cols-3">

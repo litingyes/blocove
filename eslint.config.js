@@ -18,6 +18,8 @@ export default antfu(
       'src/components/ui/**',
       'src/hooks/**',
       'src/lib/highlighter.tsx',
+      // Downloaded shadcn/typeset stylesheet, kept identical to upstream.
+      'src/typeset.css',
     ],
   },
   {

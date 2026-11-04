@@ -12,8 +12,10 @@ export interface DocsNavSection {
 /**
  * Documentation navigation and page order. Items are grouped per editor family,
  * so a new family (a code editor, for example) is another section rather than a
- * second nav tree. Registry items that are not listed here (for example the
- * internal rich text editor helper) do not get a page.
+ * second nav tree. A family leads with its shell or complete block, then lists
+ * the nodes, marks or extensions it is composed from as groups below. Registry
+ * items that are not listed here (for example the internal helpers) do not get a
+ * page.
  */
 export const docsNav: DocsNavSection[] = [
   {
@@ -28,8 +30,7 @@ export const docsNav: DocsNavSection[] = [
     label: 'Rich Text Editor',
     groups: [
       {
-        label: 'Overview',
-        items: ['rich-text-editor'],
+        items: ['rich-text-editor-playground', 'rich-text-editor'],
       },
       {
         label: 'Nodes',

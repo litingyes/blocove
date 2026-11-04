@@ -587,6 +587,39 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "rich-text-editor-playground",
+      "type": "registry:block",
+      "title": "Rich Text Editor Playground",
+      "description": "A complete rich text editor block: every node, every mark, the toolbar, the bubble menu and the character count.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-heading",
+        "litingyes/blocove/rich-text-editor-code-block",
+        "litingyes/blocove/rich-text-editor-details",
+        "litingyes/blocove/rich-text-editor-image",
+        "litingyes/blocove/rich-text-editor-table",
+        "litingyes/blocove/rich-text-editor-bold",
+        "litingyes/blocove/rich-text-editor-italic",
+        "litingyes/blocove/rich-text-editor-underline",
+        "litingyes/blocove/rich-text-editor-strike",
+        "litingyes/blocove/rich-text-editor-code",
+        "litingyes/blocove/rich-text-editor-link"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/rich-text-editor-playground.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }

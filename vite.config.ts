@@ -18,6 +18,9 @@ const config = defineConfig({
       '@/components/ui/rich-text-editor/editor': fileURLToPath(
         new URL('./src/registry/blocove/ui/rich-text-editor/editor.tsx', import.meta.url),
       ),
+      '@/components/ui/rich-text-editor': fileURLToPath(
+        new URL('./src/registry/blocove/ui/rich-text-editor', import.meta.url),
+      ),
       '@/lib/code-editor-extension': fileURLToPath(
         new URL(
           './src/registry/blocove/lib/code-editor-extension.ts',

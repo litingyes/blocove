@@ -28,6 +28,15 @@ export const Route = createFileRoute('/items/$name')({
             ]
           : []),
       ],
+      links: item
+        ? [
+            {
+              rel: 'alternate',
+              type: 'text/markdown',
+              href: `/items/${item.name}.md`,
+            },
+          ]
+        : [],
     }
   },
 })

@@ -11,7 +11,7 @@ import { itemTypeLabels } from '@/lib/registry-catalog'
 import { ApiReference } from './api-reference'
 import { CodePanel } from './code-panel'
 import { ComponentPreview } from './component-preview'
-import { CopyPageButton } from './copy-page-button'
+import { CopyPageMenu } from './copy-page-button'
 import { MobileDocsNav } from './docs-sidebar'
 import { DocsToc } from './docs-toc'
 import { Installation } from './installation'
@@ -40,16 +40,18 @@ function Section({
 
 function PageActions({
   markdown,
+  markdownHref,
   previous,
   next,
 }: {
   markdown: string
+  markdownHref: string
   previous?: RegistryItem
   next?: RegistryItem
 }) {
   return (
     <div className="flex items-center gap-2">
-      <CopyPageButton markdown={markdown} />
+      <CopyPageMenu markdown={markdown} href={markdownHref} />
       <div className="flex items-center gap-1">
         {previous
           ? (
@@ -126,6 +128,7 @@ export function DocsPage({
   const usage = data?.usage ?? []
   const api = data?.api ?? []
   const markdown = buildPageMarkdown(item, data)
+  const markdownHref = `/items/${item.name}.md`
   const hasPreview = examples.length > 0
   const hasUsage = usage.length > 0
   const hasApi = api.length > 0
@@ -158,7 +161,12 @@ export function DocsPage({
         <header className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-3 lg:hidden">
             <MobileDocsNav catalog={catalog} />
-            <PageActions markdown={markdown} previous={previous} next={next} />
+            <PageActions
+              markdown={markdown}
+              markdownHref={markdownHref}
+              previous={previous}
+              next={next}
+            />
           </div>
 
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -186,7 +194,12 @@ export function DocsPage({
             </div>
 
             <div className="hidden shrink-0 lg:block">
-              <PageActions markdown={markdown} previous={previous} next={next} />
+              <PageActions
+                markdown={markdown}
+                markdownHref={markdownHref}
+                previous={previous}
+                next={next}
+              />
             </div>
           </div>
 

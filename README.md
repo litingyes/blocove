@@ -246,27 +246,31 @@ Pass `readOnly` to render a document that can be selected and copied but not
 edited; the status bar labels it and the diff controls keep working.
 
 ```tsx
-<CodeEditor
-  defaultValue={modified}
-  language="tsx"
-  readOnly
-  className="h-72"
->
+<CodeEditor defaultValue={modified} language="tsx" className="h-72">
   <CodeEditorDiff original={original} />
   <CodeEditorShiki />
+  <CodeEditorLanguages />
   <CodeEditorLineNumbers />
 
   <CodeEditorToolbar>
     <CodeEditorDiffToolbar />
   </CodeEditorToolbar>
   <CodeEditorContent />
+  <CodeEditorStatusBar />
 </CodeEditor>
 ```
 
 `code-editor-diff` adds an inline diff view: the document is compared against
-`original`, changed chunks are highlighted with their deleted lines, and each
-chunk gets accept and reject controls. `CodeEditorDiffToolbar` adds previous and
-next chunk navigation plus a counter to the toolbar.
+`original`, and the changed and deleted lines are themed with the editor tokens
+in both color schemes. `CodeEditorDiffToolbar` turns the toolbar into a review
+surface: previous and next change (wrapping around) with the position and the
+added and removed line counts, accept or reject for the chunk under the cursor,
+accept or reject for every remaining chunk, and a reset once nothing is left.
+Keyboard: `Mod Alt Down` and `Mod Alt Up` move between changes, `Mod Enter`
+accepts and `Shift Mod Enter` rejects the chunk under the cursor; pass
+`shortcuts={false}` to leave the bindings to the consumer. Accepting moves the
+comparison base forward, rejecting restores the buffer from it, so both keep
+working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 
 ### Code editor item graph
 
@@ -275,7 +279,8 @@ next chunk navigation plus a counter to the toolbar.
 - `code-editor-shiki`, `code-editor-languages` and `code-editor-line-numbers`
   depend on `code-editor-extension`; combine them with the shell.
 - `code-editor-diff` depends on `code-editor` (it reuses the toolbar button) and
-  adds the diff view plus its chunk navigation control.
+  on the `separator` primitive, and adds the themed diff view plus the review
+  toolbar.
 - `code-editor-shiki` also installs `lib/code-editor-shiki.ts`, the shiki
   highlighter shared by the docs code panels and the editor.
 

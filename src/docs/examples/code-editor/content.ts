@@ -16,23 +16,55 @@ console.log(greeting({ name: 'Ada', role: 'admin' }))
 `,
 }
 
-// A pair of documents for the diff demo: a changed signature and a changed
-// constant, so the view shows two separate chunks with context in between.
+// A pair of documents for the diff demo: three changed chunks with a stable
+// block in between, so the view shows chunk navigation, the line counts and
+// the collapsed unchanged run.
 export const codeEditorDiffDemoContent = {
-  original: `export function greeting(name: string) {
-  return \`Hello, \${name}!\`
+  original: `export interface FilterOptions {
+  query: string
+  limit?: number
 }
 
-export const separator = ' — '
+const defaultLimit = 20
 
-greeting('Blocove')
+/** Keep only the item titles that match the query. */
+export function normalize(value: string) {
+  return value.trim().toLowerCase()
+}
+
+export function filterItems<T extends { title: string }>(
+  items: T[],
+  { query, limit = defaultLimit }: FilterOptions,
+) {
+  const needle = normalize(query)
+
+  return items
+    .filter(item => normalize(item.title).includes(needle))
+    .slice(0, limit)
+}
 `,
-  modified: `export function greeting(name: string, salutation = 'Hello') {
-  return \`\${salutation}, \${name}!\`
+  modified: `export interface FilterOptions {
+  query: string
+  limit?: number
+  caseSensitive?: boolean
 }
 
-export const separator = ' | '
+const defaultLimit = 20
 
-greeting('Blocove', 'Hi')
+/** Keep only the item titles that match the query. */
+export function normalize(value: string, caseSensitive = false) {
+  return caseSensitive ? value.trim() : value.trim().toLowerCase()
+}
+
+export function filterItems<T extends { title: string }>(
+  items: T[],
+  { query, limit = defaultLimit, caseSensitive = false }: FilterOptions,
+) {
+  const needle = normalize(query, caseSensitive)
+
+  return items
+    .filter(item => normalize(item.title).includes(needle))
+    .slice(0, limit)
+}
 `,
 }

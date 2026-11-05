@@ -8,9 +8,10 @@ export const docsPage: DocsPage = {
   demoDeps: [
     'code-editor',
     'code-editor-shiki',
+    'code-editor-languages',
     'code-editor-line-numbers',
   ],
-  note: 'The diff view is rendered read-only in the demo, but the built-in accept and reject controls keep working: they apply the chunk to the original document instead of editing the buffer. Pair the item with code-editor-shiki and code-editor-languages for colored diffs.',
+  note: 'The demo is editable: type in the buffer and the diff updates against the fixed original. Accept moves the comparison forward, Reject restores the buffer from it, and Accept all or Reject all settle the remaining chunks. Once nothing is left, Reset comparison brings the demo back. Keyboard: Mod Alt Down and Mod Alt Up move between changes, Mod Enter accepts and Shift Mod Enter rejects the chunk under the cursor.',
   examples: [
     {
       title: 'Default',
@@ -19,13 +20,14 @@ export const docsPage: DocsPage = {
         extensions: [
           'CodeEditorDiff',
           'CodeEditorShiki',
+          'CodeEditorLanguages',
           'CodeEditorLineNumbers',
         ],
         language: 'tsx',
         content: codeEditorDiffDemoContent.modified,
         original: codeEditorDiffDemoContent.original,
+        diffProps: ['collapseUnchanged={{ margin: 1, minSize: 3 }}'],
         toolbarActions: ['CodeEditorDiffToolbar'],
-        readOnly: true,
       }),
     },
   ],
@@ -33,7 +35,7 @@ export const docsPage: DocsPage = {
     {
       name: 'CodeEditorDiff',
       description:
-        'Declares the inline diff extension. The editor content is compared against `original`; changing it recreates the editor view, so keep the document stable while chunks are applied.',
+        'Declares the inline diff extension. The editor content is compared against `original`, changed lines are themed with the editor tokens, and every changed chunk gets accept and reject controls. Changing the prop recreates the editor view, so keep the document stable while chunks are applied.',
       rows: [
         { prop: 'original', type: 'string', default: '-' },
         { prop: 'highlightChanges', type: 'boolean', default: 'true' },
@@ -45,14 +47,22 @@ export const docsPage: DocsPage = {
           default: '{ margin: 2, minSize: 4 }',
         },
         { prop: 'allowInlineDiffs', type: 'boolean', default: 'false' },
+        { prop: 'syntaxHighlightDeletions', type: 'boolean', default: 'true' },
+        { prop: 'shortcuts', type: 'boolean', default: 'true' },
+        {
+          prop: 'labels',
+          type: '{ accept?: string, reject?: string }',
+          default: '{ accept: \'Accept\', reject: \'Reject\' }',
+        },
       ],
     },
     {
       name: 'CodeEditorDiffToolbar',
       description:
-        'Toolbar controls for the diff view: jump between changed chunks and show how many are left. Render it inside the editor toolbar.',
+        'Toolbar controls for the diff view: previous and next change with their position and line counts, accept or reject for the chunk under the cursor, accept or reject for every remaining chunk, and a reset once the review settles. Render it inside the editor toolbar.',
       rows: [
         { prop: 'hideCount', type: 'boolean', default: 'false' },
+        { prop: 'hideActions', type: 'boolean', default: 'false' },
       ],
     },
   ],

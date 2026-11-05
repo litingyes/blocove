@@ -66,6 +66,8 @@ export interface CodeEditorUsageOptions {
    * `original` constant and as the `original` prop of `CodeEditorDiff`.
    */
   original?: string
+  /** Extra attributes rendered on `CodeEditorDiff`, mirroring the demo. */
+  diffProps?: string[]
   /** Render the toolbar. */
   toolbar?: boolean
   /** Controls rendered inside the toolbar, next to the built-in ones. */
@@ -86,6 +88,7 @@ export function codeEditorUsage({
   language,
   content,
   original,
+  diffProps,
   toolbar = true,
   toolbarActions,
   statusBar = true,
@@ -103,10 +106,22 @@ export function codeEditorUsage({
     componentNames.push('CodeEditorStatusBar')
   }
 
-  const declaration = (name: CodeEditorExport) =>
-    name === 'CodeEditorDiff' && original
-      ? `      <${name} original={original} />`
+  const declaration = (name: CodeEditorExport) => {
+    if (name !== 'CodeEditorDiff') {
+      return `      <${name} />`
+    }
+
+    const attributes = [
+      ...(original
+        ? ['original={original}']
+        : []),
+      ...(diffProps ?? []),
+    ]
+
+    return attributes.length > 0
+      ? `      <${name} ${attributes.join(' ')} />`
       : `      <${name} />`
+  }
 
   const body: string[] = extensions.map(declaration)
 

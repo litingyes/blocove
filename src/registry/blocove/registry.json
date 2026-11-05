@@ -568,14 +568,16 @@
       "name": "code-editor-diff",
       "type": "registry:ui",
       "title": "Diff View",
-      "description": "Inline diff view for the code editor: highlights changed chunks against an original document, with accept, reject and chunk navigation controls.",
+      "description": "Inline diff view for the code editor: themed changed and deleted lines, chunk navigation with position and line counts, per-chunk and bulk accept or reject actions, and keyboard shortcuts.",
       "dependencies": [
         "@codemirror/merge",
         "@codemirror/state",
+        "@codemirror/view",
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/code-editor"
+        "litingyes/blocove/code-editor",
+        "separator"
       ],
       "categories": [
         "code-editor",

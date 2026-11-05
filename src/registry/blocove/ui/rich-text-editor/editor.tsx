@@ -140,7 +140,10 @@ export function Editor({
       return
     }
 
-    editor.setEditable(editable)
+    // Tiptap emits an `update` event by default when only the editable flag
+    // changes, which would call `onChange` with unchanged HTML on mount and on
+    // every `editable` toggle. Suppress it: `onChange` reports document edits.
+    editor.setEditable(editable, false)
   }, [editor, editable])
 
   useEffect(() => {
@@ -428,6 +431,7 @@ export function EditorBubbleMenu({
   return (
     <BubbleMenu
       editor={editor}
+      data-slot="editor-bubble-menu"
       options={{ placement: 'top' }}
       shouldShow={({ editor: instance, state }) =>
         !state.selection.empty

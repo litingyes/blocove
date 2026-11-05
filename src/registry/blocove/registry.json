@@ -171,6 +171,7 @@
       ],
       "registryDependencies": [
         "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
         "select"
       ],
       "categories": [
@@ -197,7 +198,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -223,7 +225,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -250,6 +253,7 @@
       ],
       "registryDependencies": [
         "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
         "button",
         "input",
         "popover"
@@ -279,6 +283,7 @@
       ],
       "registryDependencies": [
         "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
         "button",
         "popover"
       ],
@@ -306,7 +311,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -332,7 +338,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -358,7 +365,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -384,7 +392,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -410,7 +419,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "litingyes/blocove/rich-text-editor"
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
       ],
       "categories": [
         "rich-text-editor",
@@ -437,6 +447,7 @@
       ],
       "registryDependencies": [
         "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
         "button",
         "input",
         "popover"
@@ -599,6 +610,7 @@
       ],
       "registryDependencies": [
         "litingyes/blocove/code-editor",
+        "litingyes/blocove/code-editor-extension",
         "separator"
       ],
       "categories": [
@@ -633,7 +645,10 @@
         "litingyes/blocove/rich-text-editor-underline",
         "litingyes/blocove/rich-text-editor-strike",
         "litingyes/blocove/rich-text-editor-code",
-        "litingyes/blocove/rich-text-editor-link"
+        "litingyes/blocove/rich-text-editor-link",
+        "litingyes/blocove/rich-text-editor-text",
+        "litingyes/blocove/rich-text-editor-paragraph",
+        "litingyes/blocove/rich-text-editor-hard-break"
       ],
       "categories": [
         "rich-text-editor",

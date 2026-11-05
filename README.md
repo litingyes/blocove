@@ -34,6 +34,8 @@ GitHub address, a URL, or a namespace.
 
 - Node.js >= 22.22
 - pnpm >= 11 (`corepack enable` is enough)
+- Chromium for the browser tests: `pnpm exec playwright install chromium`
+  (one-off; Playwright only drives Vitest's browser mode)
 - A project already set up with shadcn/ui using the `b0` preset:
 
   ```bash
@@ -371,6 +373,12 @@ paths.
 
 ```txt
 registry.json                     # registry catalog entry point (name, homepage, include)
+vitest.config.ts                  # Vitest projects: happy-dom unit suite + Chromium E2E
+tests/
+  setup/unit.ts                   # unit setup: act flag, RTL cleanup, DOM shims
+  helpers/                        # render shells, fixtures, registry manifest reader
+  unit/                           # happy-dom suites (components, libs, distribution contract)
+  e2e/                            # Vitest browser mode suites on real Chromium
 src/registry/blocove/
   registry.json                   # item definitions, included by the root registry
   lib/code-editor-extension.ts          # registry:lib helper for the code editor family
@@ -518,8 +526,11 @@ reference it instead.
    ```
    Every shipped file needs an explicit `target` under `components/blocove/` or
    `lib/blocove/`; `pnpm registry:check` enforces it.
-4. Run `pnpm run registry:prepare` and check `public/r/<name>.json`.
-5. Commit the source and item definition, then tag a release.
+4. Add a suite under `tests/unit/` (component helpers live in `tests/helpers/`).
+   The distribution contract suite picks the new item up automatically, and the
+   coverage gate fails when the item ships untested code.
+5. Run `pnpm run registry:prepare` and check `public/r/<name>.json`.
+6. Commit the source and item definition, then tag a release.
 
 ### Adding a rich text editor extension
 
@@ -549,7 +560,10 @@ reference it instead.
      item name and `richTextEditorUsage(...)` as the example code. Pages are
      auto-registered from the module tree, so no index edit is needed;
    - add the item name to `src/docs/nav.ts` under the `Rich Text Editor` section.
-6. Run `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
+6. Add a suite in `tests/unit/rich-text-editor/` with `renderRichTextEditor` from
+   `tests/helpers/render-rich-text-editor.tsx`; click the toolbar control, assert
+   the emitted HTML and the pressed state.
+7. Run `pnpm test`, `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
 
 ### Adding a code editor extension
 
@@ -578,7 +592,10 @@ reference it instead.
      item name and `codeEditorUsage(...)` as the example code. Pages are
      auto-registered from the module tree, so no index edit is needed;
    - add the item name to `src/docs/nav.ts` under the `Code Editor` section.
-6. Run `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
+6. Add a suite in `tests/unit/code-editor/` with `renderCodeEditor` from
+   `tests/helpers/render-code-editor.tsx`; drive the extension through the view
+   and assert its state or decorations.
+7. Run `pnpm test`, `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
 
 To add a whole editor family, give it its own folder (`ui/<family>/`), item
 prefix, docs section in `src/docs/nav.ts`, demo frame and snippet builder. The
@@ -599,6 +616,42 @@ Conventions:
 - `registry:page` and `registry:file` items require a `target`.
 - `@blocove/base` assumes the consumer project is set up with shadcn/ui: Tailwind
   CSS v4, `shadcn/tailwind.css` and the `@theme inline` color mappings.
+
+## Testing
+
+Vitest runs two projects, defined in `vitest.config.ts`:
+
+- `unit` runs on happy-dom and covers component behaviour, the pure helpers and the
+  distribution contract. It is the fast default.
+- `browser` runs in real Chromium through Vitest browser mode and covers what needs
+  layout and real events: typing, selections, clipboard, highlighting and diff
+  review.
+
+Playwright is only the driver behind Vitest's browser mode. The tests are plain
+Vitest files; there is no Playwright config and no Playwright spec.
+
+| Command                  | What it does                                              |
+| ------------------------ | --------------------------------------------------------- |
+| `pnpm test`              | happy-dom suite (`pnpm run test:watch` for watch mode)    |
+| `pnpm run test:e2e`      | Chromium suite                                            |
+| `pnpm run test:coverage` | happy-dom suite with the coverage gate                    |
+| `pnpm run test:all`      | both projects                                             |
+| `pnpm run check`         | every gate: preset, typecheck, lint, coverage, E2E, build |
+
+Tests live in `tests/` and never inside `src/registry/blocove/`: the docs bundle the
+whole registry directory as raw sources, so a test file there would ship with the site.
+
+The distribution contract is part of the suite. `tests/unit/registry/manifest.test.ts`
+checks that every item file exists and is listed exactly once, that every file targets
+the Blocove namespace, that every `@/` import and npm package is declared by the item
+that uses it, and that pinned versions match `package.json`. `docs.test.ts` checks the
+generated snippets import modules that exist, and `build-artifacts.test.ts` compares
+`public/r/*.json` with the sources (it skips when the artifacts are absent; CI builds
+them first).
+
+Coverage is limited to the shipped registry and the distribution helpers, and it counts
+files that no test imports (`coverage.include`), so a new item without tests lowers the
+gate. Thresholds live in `vitest.config.ts`; raise them, never lower them.
 
 ## Docs site
 

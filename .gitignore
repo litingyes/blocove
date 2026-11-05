@@ -23,5 +23,9 @@ src/generated
 # pnpm project-local store (sandboxed environments)
 .pnpm-store
 
+# test artifacts
+coverage
+.vitest
+
 # logs
 *.log

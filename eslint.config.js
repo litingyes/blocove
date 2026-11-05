@@ -40,6 +40,11 @@ export default antfu(
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {
+    // Test helpers export render functions and JSX frames from the same module.
+    files: ['tests/**/*.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+  {
     // Keep pnpm-workspace.yaml minimal instead of adopting antfu's opinionated
     // pnpm settings (trustPolicy, shellEmulator, ...).
     files: ['pnpm-workspace.yaml'],

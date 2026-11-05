@@ -132,7 +132,7 @@ function Home() {
           <span className="w-fit rounded-full border px-3 py-1 text-xs text-muted-foreground">
             shadcn/ui extension registry
           </span>
-          <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          <h1 className="max-w-4xl font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             Composable building blocks for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
@@ -169,7 +169,7 @@ function Home() {
         <div className="grid gap-6 sm:grid-cols-3">
           {principles.map(principle => (
             <div key={principle.title} className="flex flex-col gap-2">
-              <h3 className="font-semibold">{principle.title}</h3>
+              <h3 className="font-heading font-semibold">{principle.title}</h3>
               <p className="text-sm text-muted-foreground">
                 {principle.body}
               </p>
@@ -284,7 +284,7 @@ function SectionHeading({
       <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
         {eyebrow}
       </p>
-      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+      <h2 className="font-heading text-2xl font-semibold tracking-tight">{title}</h2>
       <p className="max-w-2xl text-muted-foreground">{description}</p>
     </div>
   )

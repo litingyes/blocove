@@ -48,7 +48,7 @@ function ItemPage() {
   if (!item) {
     return (
       <div className="mx-auto flex w-full max-w-5xl flex-col items-start gap-3 px-4 py-24 sm:px-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="font-heading text-2xl font-semibold tracking-tight">
           Item not found
         </h1>
         <p className="text-muted-foreground">

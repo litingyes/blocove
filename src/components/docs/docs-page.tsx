@@ -28,7 +28,7 @@ function Section({
 }) {
   return (
     <section id={id} className="scroll-mt-24 border-t pt-8">
-      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+      <h2 className="font-heading text-lg font-semibold tracking-tight">{title}</h2>
       {description
         ? <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         : null}
@@ -170,7 +170,7 @@ export function DocsPage({
 
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex min-w-0 flex-1 flex-col gap-3">
-              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
                 {item.title}
               </h1>
               <p className="max-w-2xl text-lg text-muted-foreground">

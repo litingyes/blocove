@@ -633,6 +633,211 @@
           "target": "components/blocove/rich-text-editor-playground.tsx"
         }
       ]
+    },
+    {
+      "name": "media-theme",
+      "type": "registry:lib",
+      "title": "Media Theme",
+      "description": "Internal helper that maps the shadcn/ui tokens onto the Video.js skin settings: radius, hairline, font, scale and aspect ratio.",
+      "categories": [
+        "media",
+        "internal"
+      ],
+      "files": [
+        {
+          "path": "lib/media-theme.ts",
+          "type": "registry:lib",
+          "target": "lib/blocove/media-theme.ts"
+        }
+      ]
+    },
+    {
+      "name": "media-tracks",
+      "type": "registry:ui",
+      "title": "Media Tracks",
+      "description": "Internal helper that renders text track declarations as native <track> elements for the video and audio media components.",
+      "categories": [
+        "media",
+        "internal"
+      ],
+      "files": [
+        {
+          "path": "ui/media/tracks.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/tracks.tsx"
+        }
+      ]
+    },
+    {
+      "name": "video-player",
+      "type": "registry:ui",
+      "title": "Video Player",
+      "description": "An on-demand video player built on Video.js 10, with the skin themed by the shadcn/ui tokens, a composable media element and declarative text tracks.",
+      "dependencies": [
+        "@videojs/react@10.3.0",
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/media-theme",
+        "litingyes/blocove/media-tracks"
+      ],
+      "categories": [
+        "media"
+      ],
+      "files": [
+        {
+          "path": "ui/media/video.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/video.tsx"
+        }
+      ]
+    },
+    {
+      "name": "audio-player",
+      "type": "registry:ui",
+      "title": "Audio Player",
+      "description": "An audio-only player built on Video.js 10, with a skin that follows the page color scheme and the shadcn/ui tokens, for episodes, tracks and podcasts.",
+      "dependencies": [
+        "@videojs/react@10.3.0",
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/media-theme",
+        "litingyes/blocove/media-tracks"
+      ],
+      "categories": [
+        "media"
+      ],
+      "files": [
+        {
+          "path": "ui/media/audio.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/audio.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ambient-video",
+      "type": "registry:ui",
+      "title": "Ambient Video",
+      "description": "Chrome-less background video for heroes and section backgrounds: autoplaying, muted and looping, with a slot for the content drawn over it.",
+      "dependencies": [
+        "@videojs/react@10.3.0",
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/media-theme"
+      ],
+      "categories": [
+        "media"
+      ],
+      "files": [
+        {
+          "path": "ui/media/ambient-video.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/ambient-video.tsx"
+        }
+      ]
+    },
+    {
+      "name": "video-hero",
+      "type": "registry:block",
+      "title": "Video Hero",
+      "description": "A hero section with ambient video behind a gradient: a headline, supporting copy and calls to action over a looping muted clip.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/ambient-video",
+        "badge"
+      ],
+      "categories": [
+        "media",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/video-hero.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/video-hero.tsx"
+        }
+      ]
+    },
+    {
+      "name": "video-showcase",
+      "type": "registry:block",
+      "title": "Video Showcase",
+      "description": "A captioned video block: the player followed by the title, description, facts and actions that give it context inside an article or a course.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/video-player",
+        "litingyes/blocove/media-tracks",
+        "badge",
+        "separator"
+      ],
+      "categories": [
+        "media",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/video-showcase.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/video-showcase.tsx"
+        }
+      ]
+    },
+    {
+      "name": "audio-episode-player",
+      "type": "registry:block",
+      "title": "Audio Episode Player",
+      "description": "A podcast episode block: cover art, title, show and facts in the header, the audio player below and the episode actions at the bottom.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/audio-player",
+        "badge",
+        "separator"
+      ],
+      "categories": [
+        "media",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/audio-episode-player.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/audio-episode-player.tsx"
+        }
+      ]
+    },
+    {
+      "name": "video-playlist",
+      "type": "registry:block",
+      "title": "Video Playlist",
+      "description": "A video with a playlist: the player next to the episode list, where selecting an entry swaps the media and the title without recreating the player.",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/video-player",
+        "scroll-area"
+      ],
+      "categories": [
+        "media",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/video-playlist.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/video-playlist.tsx"
+        }
+      ]
     }
   ]
 }

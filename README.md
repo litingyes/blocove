@@ -5,7 +5,7 @@
   <img src="public/brand/blocove-lockup-black.svg" alt="Blocove" width="240" />
 </picture>
 
-**Composable editors for shadcn/ui.** A [shadcn/ui registry](https://ui.shadcn.com/docs/registry)
+**Composable building blocks for shadcn/ui.** A [shadcn/ui registry](https://ui.shadcn.com/docs/registry)
 that **extends** [shadcn/ui](https://ui.shadcn.com) instead of replacing it: a
 Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video
 players, plus the blocks built on them. shadcn/ui is installed first and Blocove

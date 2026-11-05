@@ -9,15 +9,16 @@ the project is named, described and written about; the logo assets live in
 **Composable editors for shadcn/ui.**
 
 The slogan has to answer "what is this repository" in one read, so it names the
-category (`shadcn/ui`) and the core product (`composable editors`). Keep the
-sentence case and the closing period, and use it wherever the brand speaks in one
-line: the site hero, the README subtitle, package metadata, an OG image.
+category (`shadcn/ui`) and what Blocove ships (`building blocks`) without
+promising a specific family. Keep the sentence case and the closing period, and
+use it wherever the brand speaks in one line: the site hero, the README subtitle,
+package metadata, an OG image.
 
-Families grow; the slogan does not. The list of families belongs to the
-[descriptor](#descriptor) and to the enumerations below, so a new family changes
-those lines and leaves the slogan alone.
+Families grow; the slogan does not. Every family is another building block, so
+the list of families belongs to the [descriptor](#descriptor) and to the
+enumerations below, and a new family never costs the slogan a rewrite.
 
-中文写法：**为 shadcn/ui 打造的可组合编辑器。**
+中文写法：**为 shadcn/ui 打造的可组合构件。**
 
 ## Tagline
 
@@ -58,9 +59,9 @@ family: `rich-text-editor-*`, `code-editor-*`, and `video-player`,
 
 | Surface                      | Line                                            |
 | ---------------------------- | ----------------------------------------------- |
-| Site hero `h1`               | Composable editors for shadcn/ui.               |
+| Site hero `h1`               | Composable building blocks for shadcn/ui.       |
 | Hero paragraph               | What Blocove adds, and that nothing is replaced |
-| `meta title`                 | Blocove — composable editors for shadcn/ui      |
+| `meta title`                 | Blocove — composable building blocks for shadcn |
 | `meta description`           | Slogan, then the descriptor, then the tagline   |
 | README subtitle              | **Slogan.** + which families and blocks it adds |
 | `package.json`, PWA manifest | Slogan + descriptor                             |
@@ -69,6 +70,9 @@ family: `rich-text-editor-*`, `code-editor-*`, and `video-player`,
 
 Kept because each earns a surface of its own, but none of them is the slogan:
 
+- **Composable editors for shadcn/ui.** The line Blocove started with: it named
+  the two editor families that existed then, and it read as a promise that every
+  new family had to be weighed against. Kept as an alternate, not the slogan.
 - **Rich text and code editors for shadcn/ui.** The most literal line: it names
   the families and nothing else. Longer and more list-like, and it dated as soon
   as the media family landed, which is why it is an alternate; keep it in mind if

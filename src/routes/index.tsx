@@ -23,11 +23,11 @@ export const Route = createFileRoute('/')({
   component: Home,
   head: () => ({
     meta: [
-      { title: 'Blocove — composable editors for shadcn/ui' },
+      { title: 'Blocove — composable building blocks for shadcn/ui' },
       {
         name: 'description',
         content:
-          'Composable editors for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video players, installed as registry items you own. Extend, never replace.',
+          'Composable building blocks for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video players, installed as registry items you own. Extend, never replace.',
       },
     ],
   }),
@@ -133,7 +133,7 @@ function Home() {
             shadcn/ui extension registry
           </span>
           <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Composable editors for shadcn/ui.
+            Composable building blocks for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
             Blocove adds a Tiptap rich text editor, a CodeMirror code editor and

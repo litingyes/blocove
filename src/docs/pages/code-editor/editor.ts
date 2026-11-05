@@ -100,7 +100,8 @@ export const docsPage: DocsPage = {
     },
     {
       name: 'CodeEditorContent',
-      description: 'The editable surface. Creates the CodeMirror view.',
+      description:
+        'The editable surface. Creates the CodeMirror view, or hands the container to the surface a declaration asked for — the split diff renders two editors there.',
       rows: [
         { prop: 'className', type: 'string', default: '-' },
       ],

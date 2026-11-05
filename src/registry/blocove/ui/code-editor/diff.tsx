@@ -1,14 +1,20 @@
 import type { Chunk } from '@codemirror/merge'
-import type { EditorState, Extension } from '@codemirror/state'
+import type { Extension } from '@codemirror/state'
+import type {
+  CodeEditorSurfaceMountContext,
+  CodeEditorSurfaceOptions,
+} from '@/lib/blocove/code-editor-extension'
 import {
   acceptChunk,
   getChunks,
   getOriginalDoc,
+  MergeView,
+  mergeViewSiblings,
   rejectChunk,
   unifiedMergeView,
   updateOriginalDoc,
 } from '@codemirror/merge'
-import { ChangeSet, Prec, Text } from '@codemirror/state'
+import { ChangeSet, Compartment, EditorState, Prec, Text } from '@codemirror/state'
 import { EditorView, keymap, ViewPlugin } from '@codemirror/view'
 import {
   CheckCheckIcon,
@@ -37,31 +43,44 @@ export interface CodeEditorDiffLabels {
 export interface CodeEditorDiffProps {
   /** Document the editor content is compared against. */
   original: string
+  /**
+   * How the two documents are laid out. `inline` compares them inside one view,
+   * `split` renders them side by side.
+   */
+  mode?: 'inline' | 'split'
+  /**
+   * Split only: show a control between the panes that copies a chunk across.
+   * `a-to-b` writes `original` back into the editor content, `b-to-a` writes the
+   * editor content into `original`. Pass `false` to hide it.
+   */
+  revertControls?: 'a-to-b' | 'b-to-a' | false
+  /** Split only: which document is rendered first. Defaults to `a-b`. */
+  orientation?: 'a-b' | 'b-a'
   /** Mark the inserted and deleted text inside changed chunks. */
   highlightChanges?: boolean
   /** Show a gutter marker next to changed lines. */
   gutter?: boolean
-  /** Show the built-in accept and reject controls for every chunk. */
+  /** Inline only: show the accept and reject controls for every chunk. */
   mergeControls?: boolean
   /**
    * Collapse long stretches of unchanged text. Pass `false` to keep every line
    * visible, or an object with the `margin` and `minSize` of the collapse.
    */
   collapseUnchanged?: false | { margin?: number, minSize?: number }
-  /** Show inline diffs for chunks that only change a few words. */
+  /** Inline only: show inline diffs for chunks that only change a few words. */
   allowInlineDiffs?: boolean
   /**
-   * Syntax-highlight the deleted lines. Requires a language item declared
-   * inside the editor, since the deleted text is tokenized with the document
-   * language. Defaults to true.
+   * Inline only: syntax-highlight the deleted lines. Requires a language item
+   * declared inside the editor, since the deleted text is tokenized with the
+   * document language. Defaults to true.
    */
   syntaxHighlightDeletions?: boolean
   /**
-   * Register the diff keyboard shortcuts: previous and next change, accept and
-   * reject the chunk under the cursor. Defaults to true.
+   * Inline only: register the diff keyboard shortcuts — previous and next
+   * change, accept and reject the chunk under the cursor. Defaults to true.
    */
   shortcuts?: boolean
-  /** Labels of the per-chunk accept and reject controls. */
+  /** Inline only: labels of the per-chunk accept and reject controls. */
   labels?: CodeEditorDiffLabels
 }
 
@@ -98,6 +117,15 @@ const diffTheme = EditorView.theme({
   },
   '&.cm-merge-b .cm-changedText': {
     background: 'color-mix(in oklab, var(--code-diff-add) 26%, transparent)',
+    borderRadius: '2px',
+  },
+  // Side by side, the original document is the comparison base, so its changed
+  // lines carry the removal tint instead of the addition tint.
+  '&.cm-merge-a .cm-changedLine': {
+    backgroundColor: 'color-mix(in oklab, var(--code-diff-remove) 12%, transparent)',
+  },
+  '&.cm-merge-a .cm-changedText': {
+    background: 'color-mix(in oklab, var(--code-diff-remove) 26%, transparent)',
     borderRadius: '2px',
   },
   '& .cm-deletedChunk': {
@@ -205,6 +233,19 @@ function getDiffChunks(state: EditorState): readonly Chunk[] {
   return getChunks(state)?.chunks ?? []
 }
 
+/**
+ * The document the chunks are compared against. A unified view keeps it in the
+ * editor state; in a split view the original is the sibling editor, so the
+ * chunk positions have to be resolved there.
+ */
+function comparisonDoc(view: EditorView): Text {
+  const siblings = mergeViewSiblings(view)
+
+  return siblings
+    ? siblings.a.state.doc
+    : getOriginalDoc(view.state)
+}
+
 function countLines(doc: Text, from: number, to: number) {
   if (from === to) {
     return 0
@@ -265,7 +306,7 @@ function computeDiffReview(view: EditorView | null): DiffReview {
     }
   }
 
-  const { added, removed } = diffStats(chunks, state.doc, getOriginalDoc(state))
+  const { added, removed } = diffStats(chunks, state.doc, comparisonDoc(view))
 
   return {
     chunks,
@@ -484,35 +525,146 @@ function renderMergeControls(labels: ResolvedDiffLabels) {
  * chunks are highlighted with their deleted lines above the new ones, and the
  * built-in controls apply or revert a chunk.
  */
-export const CodeEditorDiff = defineCodeEditorExtension<CodeEditorDiffProps>(
-  'diff',
-  (props: CodeEditorDiffProps): Extension[] => {
-    const labels: ResolvedDiffLabels = {
-      accept: props.labels?.accept ?? 'Accept',
-      reject: props.labels?.reject ?? 'Reject',
+function inlineDiff(props: CodeEditorDiffProps): Extension[] {
+  const labels: ResolvedDiffLabels = {
+    accept: props.labels?.accept ?? 'Accept',
+    reject: props.labels?.reject ?? 'Reject',
+  }
+
+  return [
+    unifiedMergeView({
+      original: props.original,
+      highlightChanges: props.highlightChanges ?? true,
+      gutter: props.gutter ?? true,
+      mergeControls: props.mergeControls === false
+        ? false
+        : renderMergeControls(labels),
+      allowInlineDiffs: props.allowInlineDiffs ?? false,
+      syntaxHighlightDeletions: props.syntaxHighlightDeletions ?? true,
+      collapseUnchanged: props.collapseUnchanged === false
+        ? undefined
+        : props.collapseUnchanged ?? { margin: 2, minSize: 4 },
+    }),
+    diffTheme,
+    recordDiffBaseline(props.original),
+    ...(props.shortcuts === false
+      ? []
+      : [diffShortcuts]),
+  ]
+}
+
+/**
+ * Split diff view. Two editors are aligned chunk by chunk, the original on the
+ * left and the editor content on the right. Only the right side reports the
+ * document, so reverting a chunk never looks like an edit of the buffer.
+ */
+function splitDiff(props: CodeEditorDiffProps) {
+  if (props.mode !== 'split') {
+    return null
+  }
+
+  return ({
+    host,
+    doc,
+    primaryExtensions,
+    secondaryExtensions,
+    options,
+  }: CodeEditorSurfaceMountContext) => {
+    const originalEditable = new Compartment()
+    const contentEditable = new Compartment()
+    const originalWrapping = new Compartment()
+    const contentWrapping = new Compartment()
+    const wrap = options.lineWrapping
+      ? EditorView.lineWrapping
+      : []
+
+    const merge = new MergeView({
+      a: {
+        doc: props.original,
+        extensions: [
+          ...secondaryExtensions,
+          originalEditable.of([
+            EditorView.editable.of(false),
+            EditorState.readOnly.of(true),
+          ]),
+          originalWrapping.of(wrap),
+        ],
+      },
+      b: {
+        doc,
+        extensions: [
+          ...primaryExtensions,
+          contentEditable.of([
+            EditorView.editable.of(options.editable && !options.readOnly),
+            EditorState.readOnly.of(options.readOnly),
+          ]),
+          contentWrapping.of(wrap),
+        ],
+      },
+      parent: host,
+      orientation: props.orientation,
+      revertControls: props.revertControls === false
+        ? undefined
+        : props.revertControls ?? 'a-to-b',
+      highlightChanges: props.highlightChanges ?? true,
+      gutter: props.gutter ?? true,
+      collapseUnchanged: props.collapseUnchanged === false
+        ? undefined
+        : props.collapseUnchanged ?? { margin: 2, minSize: 4 },
+    })
+
+    // The merge view scrolls as one block, so it has to fill the surface. The
+    // divider keeps the panes apart when no revert column is rendered.
+    merge.dom.style.height = '100%'
+
+    merge.dom.querySelectorAll<HTMLElement>('.cm-mergeViewEditor').forEach((pane, index) => {
+      if (index > 0) {
+        pane.style.borderLeft = '1px solid var(--border)'
+      }
+    })
+
+    if (options.autoFocus) {
+      merge.b.focus()
     }
 
-    return [
-      unifiedMergeView({
-        original: props.original,
-        highlightChanges: props.highlightChanges ?? true,
-        gutter: props.gutter ?? true,
-        mergeControls: props.mergeControls === false
-          ? false
-          : renderMergeControls(labels),
-        allowInlineDiffs: props.allowInlineDiffs ?? false,
-        syntaxHighlightDeletions: props.syntaxHighlightDeletions ?? true,
-        collapseUnchanged: props.collapseUnchanged === false
-          ? undefined
-          : props.collapseUnchanged ?? { margin: 2, minSize: 4 },
-      }),
-      diffTheme,
-      recordDiffBaseline(props.original),
-      ...(props.shortcuts === false
-        ? []
-        : [diffShortcuts]),
-    ]
-  },
+    return {
+      view: merge.b,
+      update(next: CodeEditorSurfaceOptions) {
+        const nextWrap = next.lineWrapping
+          ? EditorView.lineWrapping
+          : []
+
+        merge.a.dispatch({
+          effects: originalWrapping.reconfigure(nextWrap),
+        })
+        merge.b.dispatch({
+          effects: [
+            contentEditable.reconfigure([
+              EditorView.editable.of(next.editable && !next.readOnly),
+              EditorState.readOnly.of(next.readOnly),
+            ]),
+            contentWrapping.reconfigure(nextWrap),
+          ],
+        })
+      },
+      destroy() {
+        merge.destroy()
+      },
+    }
+  }
+}
+
+/**
+ * Diff view for the code editor. The editor content is compared against
+ * `original`, either inline in one view or side by side with `mode="split"`.
+ */
+export const CodeEditorDiff = defineCodeEditorExtension<CodeEditorDiffProps>(
+  'diff',
+  (props: CodeEditorDiffProps): Extension[] =>
+    props.mode === 'split'
+      ? [diffTheme]
+      : inlineDiff(props),
+  { surface: splitDiff },
 )
 
 export interface CodeEditorDiffToolbarProps {
@@ -610,7 +762,15 @@ export function CodeEditorDiffToolbar({
 
   useCodeEditorState()
 
-  if (!view || (hideCount && hideActions)) {
+  if (!view) {
+    return null
+  }
+
+  // Accept and reject rewrite the comparison document, which only the unified
+  // view owns; a split view reverts chunks between the panes instead.
+  const actionsHidden = hideActions || mergeViewSiblings(view) !== null
+
+  if (hideCount && actionsHidden) {
     return null
   }
 
@@ -653,7 +813,7 @@ export function CodeEditorDiffToolbar({
               removed={removed}
             />
           )}
-      {hideActions
+      {actionsHidden
         ? null
         : (
             <>

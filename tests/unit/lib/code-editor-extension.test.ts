@@ -7,6 +7,7 @@ import {
   defineCodeEditorExtension,
   isCodeEditorExtensionComponent,
   resolveCodeEditorExtensions,
+  resolveCodeEditorSurface,
 } from '@/lib/blocove/code-editor-extension'
 import { isExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
@@ -96,6 +97,25 @@ describe('collectCodeEditorChildren', () => {
     expect(warn).toHaveBeenCalledTimes(1)
     expect(warn.mock.calls[0][0]).toContain('Duplicate extension "diff"')
   })
+
+  it('reports the first declaration that replaces the content surface', () => {
+    const first = defineCodeEditorExtension<TestProps>('diff', () => [], {
+      surface: () => null,
+    })
+    const second = defineCodeEditorExtension<TestProps>('other', () => [], {
+      surface: () => null,
+    })
+    const plain = makeExtension('line-numbers')
+
+    const { surface } = collectCodeEditorChildren([
+      createElement(plain),
+      createElement(first, { language: 'tsx' }),
+      createElement(second),
+    ])
+
+    expect(surface?.component).toBe(first)
+    expect(surface?.props).toEqual({ language: 'tsx' })
+  })
 })
 
 describe('resolveCodeEditorExtensions', () => {
@@ -124,6 +144,49 @@ describe('resolveCodeEditorExtensions', () => {
     ])
 
     expect(factory).toHaveBeenCalledWith({}, {})
+  })
+})
+
+describe('resolveCodeEditorSurface', () => {
+  it('returns null when no declaration asks for its own surface', () => {
+    expect(resolveCodeEditorSurface(undefined)).toBeNull()
+    expect(resolveCodeEditorSurface({
+      component: makeExtension('line-numbers'),
+      props: {},
+    })).toBeNull()
+  })
+
+  it('passes the props and the editor context to the surface factory', () => {
+    const mount = vi.fn()
+    const surface = vi.fn(() => mount)
+    const component = defineCodeEditorExtension<TestProps>(
+      'diff',
+      () => [],
+      { surface },
+    )
+
+    const resolved = resolveCodeEditorSurface(
+      {
+        component,
+        props: { language: 'tsx' },
+      },
+      { language: 'tsx' },
+    )
+
+    expect(surface).toHaveBeenCalledWith({ language: 'tsx' }, { language: 'tsx' })
+    expect(resolved).toBe(mount)
+  })
+
+  it('lets a declaration keep the default surface by returning null', () => {
+    const component = defineCodeEditorExtension<TestProps>(
+      'diff',
+      () => [],
+      {
+        surface: () => null,
+      },
+    )
+
+    expect(resolveCodeEditorSurface({ component, props: {} })).toBeNull()
   })
 })
 

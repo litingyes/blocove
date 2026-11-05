@@ -132,6 +132,36 @@ it('reviews and accepts a diff chunk', async () => {
   await expect.element(review).toMatchTextContent(/No changes/)
 })
 
+it('renders a split diff side by side', async () => {
+  await render(
+    <CodeEditor defaultValue={'const answer = 42\n'} language="typescript">
+      <CodeEditorDiff original={'const answer = 41\n'} mode="split" />
+      <CodeEditorToolbar>
+        <CodeEditorDiffToolbar />
+      </CodeEditorToolbar>
+      <CodeEditorContent />
+    </CodeEditor>,
+  )
+
+  const panes = [
+    ...document.querySelectorAll<HTMLElement>('.cm-mergeViewEditor'),
+  ]
+
+  expect(panes).toHaveLength(2)
+
+  const [left, right] = panes.map(pane => pane.getBoundingClientRect())
+
+  expect(left.width).toBeGreaterThan(0)
+  expect(Math.abs(left.width - right.width)).toBeLessThan(4)
+  expect(right.left).toBeGreaterThan(left.left)
+  expect(left.top).toBe(right.top)
+  expect(document.querySelector('.cm-merge-revert')).not.toBeNull()
+
+  // Reverting happens between the panes, so the inline review actions go away.
+  expect(document.querySelector('[aria-label="Next change"]')).not.toBeNull()
+  expect(document.querySelector('[aria-label="Accept change"]')).toBeNull()
+})
+
 it('renders read-only documents without accepting input', async () => {
   await render(
     <CodeEditor defaultValue="const answer = 42" readOnly>

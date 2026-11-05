@@ -439,9 +439,10 @@
       "name": "code-editor-extension",
       "type": "registry:lib",
       "title": "Code Editor Extension",
-      "description": "Internal helper for declaring CodeMirror extensions as code editor components.",
+      "description": "Internal helper for declaring CodeMirror extensions as code editor components, including items that replace the editor surface.",
       "dependencies": [
-        "@codemirror/state"
+        "@codemirror/state",
+        "@codemirror/view"
       ],
       "categories": [
         "code-editor",
@@ -572,7 +573,7 @@
       "name": "code-editor-diff",
       "type": "registry:ui",
       "title": "Diff View",
-      "description": "Inline diff view for the code editor: themed changed and deleted lines, chunk navigation with position and line counts, per-chunk and bulk accept or reject actions, and keyboard shortcuts.",
+      "description": "Diff view for the code editor: themed changed and deleted lines, chunk navigation with position and line counts, per-chunk and bulk accept or reject actions, keyboard shortcuts, and a side-by-side mode with revert controls between the panes.",
       "dependencies": [
         "@codemirror/merge",
         "@codemirror/state",

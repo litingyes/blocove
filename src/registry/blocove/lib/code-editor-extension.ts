@@ -1,4 +1,5 @@
 import type { Extension } from '@codemirror/state'
+import type { EditorView } from '@codemirror/view'
 import type { ReactNode } from 'react'
 import { Fragment, isValidElement } from 'react'
 
@@ -22,10 +23,76 @@ export type CodeEditorExtensionFactory<P extends object = Record<string, never>>
   context: CodeEditorExtensionContext,
 ) => readonly Extension[]
 
+/**
+ * The editor-level options an item may have changed by the time the surface is
+ * created, or afterwards through the root props.
+ */
+export interface CodeEditorSurfaceOptions {
+  editable: boolean
+  readOnly: boolean
+  lineWrapping: boolean
+  autoFocus: boolean
+}
+
+/**
+ * What the editor hands a surface so it can build its own views. A surface
+ * replaces the single editor view, so it is responsible for creating the
+ * primary view and for applying the options above.
+ */
+export interface CodeEditorSurfaceMountContext {
+  /** Element the surface is appended to. */
+  host: HTMLElement
+  /** Document of the primary, editable side. */
+  doc: string
+  /**
+   * Extensions for the primary side: the shared ones plus the listener that
+   * reports document changes through `onChange`.
+   */
+  primaryExtensions: Extension[]
+  /**
+   * Extensions for any comparison side: the shared ones plus the listener that
+   * only refreshes the editor chrome.
+   */
+  secondaryExtensions: Extension[]
+  options: CodeEditorSurfaceOptions
+}
+
+export interface CodeEditorSurfaceInstance {
+  /**
+   * The view the toolbar, the status bar and the item controls drive. The
+   * controlled document is synced on it.
+   */
+  view: EditorView
+  /** Re-apply the editor-level options to every view the surface owns. */
+  update: (options: CodeEditorSurfaceOptions) => void
+  destroy: () => void
+}
+
+/**
+ * Builds the mount function for a declaration, or returns `null` to keep the
+ * default single-editor surface. The factory runs when the editor is created,
+ * so props are still treated as static configuration.
+ */
+export type CodeEditorSurfaceFactory<P extends object = Record<string, never>> = (
+  props: P,
+  context: CodeEditorExtensionContext,
+) => ((mount: CodeEditorSurfaceMountContext) => CodeEditorSurfaceInstance) | null
+
+/** A declaration that asked for its own content surface. */
+export interface CodeEditorSurfaceConfig {
+  component: CodeEditorExtensionComponent<any>
+  props: Record<string, unknown>
+}
+
 export interface CodeEditorExtensionComponent<P extends object = Record<string, never>> {
   (props: P): ReactNode
   displayName?: string
   extension: CodeEditorExtensionFactory<P>
+  /**
+   * Optional content surface. Items that need more than one editor — the split
+   * diff owns two — declare it here and keep the default shell untouched.
+   */
+  surface?: CodeEditorSurfaceFactory<P>
   extensionName: string
 }
 
@@ -36,23 +103,36 @@ export interface CodeEditorExtensionConfig {
 
 export interface CodeEditorChildren {
   extensions: CodeEditorExtensionConfig[]
+  /** The declaration that replaces the content surface, if any. */
+  surface?: CodeEditorSurfaceConfig
   content: ReactNode[]
+}
+
+export interface CodeEditorExtensionOptions<P extends object = Record<string, never>> {
+  surface?: CodeEditorSurfaceFactory<P>
 }
 
 /**
  * Declares a CodeMirror extension as a React component. The component renders
  * nothing; the base CodeEditor collects it from its children and appends the
- * extension to the editor configuration.
+ * extension to the editor configuration. Pass `surface` to replace the single
+ * editor view with a richer one, such as the side-by-side diff.
  */
 export function defineCodeEditorExtension<P extends object = Record<string, never>>(
   name: string,
   extension: CodeEditorExtensionFactory<P>,
+  options: CodeEditorExtensionOptions<P> = {},
 ): CodeEditorExtensionComponent<P> {
   const ExtensionComponent = ((_props: P): ReactNode => null) as CodeEditorExtensionComponent<P>
 
   ExtensionComponent.displayName = `CodeEditorExtension(${name})`
   ExtensionComponent.extensionName = name
   ExtensionComponent.extension = extension
+
+  if (options.surface) {
+    ExtensionComponent.surface = options.surface
+  }
+
   Object.defineProperty(ExtensionComponent, extensionComponentMarker, {
     value: true,
   })
@@ -70,9 +150,9 @@ export function isCodeEditorExtensionComponent(
 }
 
 /**
- * Splits editor children into extension declarations and renderable content.
- * Fragments and arrays are traversed so extension components can be grouped
- * without losing their declaration order.
+ * Splits editor children into extension declarations, the optional content
+ * surface and renderable content. Fragments and arrays are traversed so
+ * extension components can be grouped without losing their declaration order.
  */
 export function collectCodeEditorChildren(children: ReactNode): CodeEditorChildren {
   const extensions: CodeEditorExtensionConfig[] = []
@@ -126,7 +206,20 @@ export function collectCodeEditorChildren(children: ReactNode): CodeEditorChildr
     return true
   })
 
-  return { extensions: deduped, content }
+  // The first declaration that asks for its own surface wins, mirroring how the
+  // extensions are deduped above.
+  const surfaceConfig = deduped.find(config => config.component.surface)
+
+  return {
+    extensions: deduped,
+    surface: surfaceConfig
+      ? {
+          component: surfaceConfig.component,
+          props: surfaceConfig.props,
+        }
+      : undefined,
+    content,
+  }
 }
 
 export function resolveCodeEditorExtensions(
@@ -136,6 +229,26 @@ export function resolveCodeEditorExtensions(
   return configs.flatMap(({ component, props }) => [
     ...component.extension(props, context),
   ])
+}
+
+/**
+ * Resolves the content surface declared by the children. Returns `null` when no
+ * declaration asks for one, or when the declaration keeps the default surface,
+ * so the editor can fall back to a single CodeMirror view.
+ */
+export function resolveCodeEditorSurface(
+  config: CodeEditorSurfaceConfig | undefined,
+  context: CodeEditorExtensionContext = {},
+): ((mount: CodeEditorSurfaceMountContext) => CodeEditorSurfaceInstance) | null {
+  if (!config) {
+    return null
+  }
+
+  const resolve = config.component.surface
+
+  return resolve
+    ? resolve(config.props, context)
+    : null
 }
 
 /**

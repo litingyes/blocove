@@ -276,6 +276,12 @@ accepts and `Shift Mod Enter` rejects the chunk under the cursor; pass
 comparison base forward, rejecting restores the buffer from it, so both keep
 working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 
+Pass `mode="split"` to render the two documents side by side instead: the editor
+content stays on the right and `original` on the left, and `revertControls`
+(default `'a-to-b'`) adds a control between the panes that copies a chunk across.
+Navigation and the change counter keep working in both modes; the accept and
+reject actions are hidden in split, where reverting happens between the panes.
+
 ### Code editor item graph
 
 - `code-editor` depends on `code-editor-extension` (internal helper) and the
@@ -283,8 +289,9 @@ working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 - `code-editor-shiki`, `code-editor-languages` and `code-editor-line-numbers`
   depend on `code-editor-extension`; combine them with the shell.
 - `code-editor-diff` depends on `code-editor` (it reuses the toolbar button) and
-  on the `separator` primitive, and adds the themed diff view plus the review
-  toolbar.
+  `code-editor-extension` (it replaces the editor surface when rendering side by
+  side), and on the `separator` primitive; it adds the themed diff view plus the
+  review toolbar.
 - `code-editor-shiki` also installs `lib/blocove/code-editor-shiki.ts`, the shiki
   highlighter shared by the docs code panels and the editor.
 
@@ -314,7 +321,7 @@ working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 | `code-editor-shiki`           | `registry:ui`    | Shiki syntax highlighting for the editor                              |
 | `code-editor-languages`       | `registry:ui`    | CodeMirror language support for indentation, brackets and folding     |
 | `code-editor-line-numbers`    | `registry:ui`    | Line numbers, fold gutter and active line highlight                   |
-| `code-editor-diff`            | `registry:ui`    | Inline diff view with accept, reject and chunk navigation             |
+| `code-editor-diff`            | `registry:ui`    | Inline or side-by-side diff with accept, revert and chunk navigation  |
 
 Every Blocove file declares an explicit `target`, so items install into the
 Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*` and

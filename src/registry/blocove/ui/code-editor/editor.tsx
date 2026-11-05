@@ -1,6 +1,10 @@
 import type { Extension } from '@codemirror/state'
 import type { ComponentProps, ReactNode, RefObject } from 'react'
-import type { CodeEditorExtensionConfig } from '@/lib/blocove/code-editor-extension'
+import type {
+  CodeEditorExtensionConfig,
+  CodeEditorSurfaceConfig,
+  CodeEditorSurfaceInstance,
+} from '@/lib/blocove/code-editor-extension'
 import {
   defaultKeymap,
   history,
@@ -42,6 +46,7 @@ import {
   codeEditorExtensionSignature,
   collectCodeEditorChildren,
   resolveCodeEditorExtensions,
+  resolveCodeEditorSurface,
 } from '@/lib/blocove/code-editor-extension'
 
 export interface CodeEditorProps {
@@ -87,6 +92,11 @@ interface CodeEditorComponentConfig {
   language?: string
   /** Extension declarations collected from the children. */
   declared: CodeEditorExtensionConfig[]
+  /**
+   * The declaration that replaces the single-editor surface, if any. Only the
+   * split diff uses it, so the shell keeps one view by default.
+   */
+  surface?: CodeEditorSurfaceConfig
   /** Extra extensions passed through the `extensions` prop. */
   extra?: Extension
 }
@@ -195,7 +205,7 @@ export function CodeEditor({
   className,
   children,
 }: CodeEditorProps) {
-  const { extensions: declared, content } = collectCodeEditorChildren(children)
+  const { extensions: declared, surface, content } = collectCodeEditorChildren(children)
   const signature = codeEditorExtensionSignature(declared)
   const [view, setView] = useState<EditorView | null>(null)
   const [internalLineWrapping, setInternalLineWrapping] = useState(lineWrapping ?? false)
@@ -210,6 +220,7 @@ export function CodeEditor({
     placeholder,
     language,
     declared,
+    surface,
     extra: extensions,
   })
 
@@ -222,6 +233,7 @@ export function CodeEditor({
     placeholder,
     language,
     declared,
+    surface,
     extra: extensions,
   }
 
@@ -277,7 +289,9 @@ export type CodeEditorContentProps = ComponentProps<'div'>
 
 /**
  * The editable surface. Creates the CodeMirror view once the container is
- * mounted and keeps it in sync with the controlled document.
+ * mounted and keeps it in sync with the controlled document. When a declaration
+ * asks for its own surface — the split diff owns two editors — that surface
+ * builds the views instead and the single editor is skipped.
  */
 export function CodeEditorContent({
   className,
@@ -302,6 +316,7 @@ export function CodeEditorContent({
   const lineWrappingRef = useRef(lineWrapping)
   const notifyRef = useRef(notify)
   const lastEmittedRef = useRef<string | null>(null)
+  const surfaceRef = useRef<CodeEditorSurfaceInstance | null>(null)
 
   editableRef.current = editable
   readOnlyRef.current = readOnly
@@ -320,20 +335,87 @@ export function CodeEditorContent({
 
     lastEmittedRef.current = doc
 
+    const head: Extension[] = [
+      history(),
+      drawSelection(),
+      dropCursor(),
+      EditorState.allowMultipleSelections.of(true),
+      keymap.of([
+        ...defaultKeymap,
+        ...historyKeymap,
+        indentWithTab,
+      ]),
+      placeholderExtension(config.placeholder),
+      baseTheme,
+    ]
+    const tail: Extension[] = [
+      ...resolveCodeEditorExtensions(config.declared, {
+        language: config.language,
+      }),
+      ...(config.extra
+        ? [config.extra]
+        : []),
+    ]
+    // Only the primary side reports the document: a comparison side recreates
+    // text too, and that must not look like an edit.
+    const contentListener = EditorView.updateListener.of((update) => {
+      if (update.docChanged) {
+        const next = update.state.doc.toString()
+
+        if (next !== lastEmittedRef.current) {
+          lastEmittedRef.current = next
+          configRef.current.onChange?.(next)
+        }
+      }
+
+      notifyRef.current()
+    })
+    const chromeListener = EditorView.updateListener.of(() => {
+      notifyRef.current()
+    })
+
+    const mount = resolveCodeEditorSurface(config.surface, {
+      language: config.language,
+    })
+    const surfaceInstance = mount
+      ? mount({
+          host,
+          doc,
+          primaryExtensions: [
+            ...head,
+            ...tail,
+            contentListener,
+          ],
+          secondaryExtensions: [
+            ...head,
+            ...tail,
+            chromeListener,
+          ],
+          options: {
+            editable: editableRef.current,
+            readOnly: readOnlyRef.current,
+            lineWrapping: lineWrappingRef.current,
+            autoFocus: config.autoFocus,
+          },
+        })
+      : null
+
+    if (surfaceInstance) {
+      surfaceRef.current = surfaceInstance
+      setView(surfaceInstance.view)
+      config.onReady?.(surfaceInstance.view)
+
+      return () => {
+        surfaceRef.current = null
+        setView(null)
+        surfaceInstance.destroy()
+      }
+    }
+
     const state = EditorState.create({
       doc,
       extensions: [
-        history(),
-        drawSelection(),
-        dropCursor(),
-        EditorState.allowMultipleSelections.of(true),
-        keymap.of([
-          ...defaultKeymap,
-          ...historyKeymap,
-          indentWithTab,
-        ]),
-        placeholderExtension(config.placeholder),
-        baseTheme,
+        ...head,
         editableCompartmentRef.current.of([
           EditorView.editable.of(editableRef.current && !readOnlyRef.current),
           EditorState.readOnly.of(readOnlyRef.current),
@@ -343,24 +425,8 @@ export function CodeEditorContent({
             ? EditorView.lineWrapping
             : [],
         ),
-        ...resolveCodeEditorExtensions(config.declared, {
-          language: config.language,
-        }),
-        ...(config.extra
-          ? [config.extra]
-          : []),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            const next = update.state.doc.toString()
-
-            if (next !== lastEmittedRef.current) {
-              lastEmittedRef.current = next
-              configRef.current.onChange?.(next)
-            }
-          }
-
-          notifyRef.current()
-        }),
+        ...tail,
+        contentListener,
       ],
     })
 
@@ -386,6 +452,18 @@ export function CodeEditorContent({
   ])
 
   useEffect(() => {
+    const surface = surfaceRef.current
+
+    if (surface) {
+      surface.update({
+        editable: editableRef.current,
+        readOnly: readOnlyRef.current,
+        lineWrapping: lineWrappingRef.current,
+        autoFocus: false,
+      })
+      return
+    }
+
     if (!view) {
       return
     }
@@ -399,6 +477,18 @@ export function CodeEditorContent({
   }, [editable, readOnly, view])
 
   useEffect(() => {
+    const surface = surfaceRef.current
+
+    if (surface) {
+      surface.update({
+        editable: editableRef.current,
+        readOnly: readOnlyRef.current,
+        lineWrapping: lineWrappingRef.current,
+        autoFocus: false,
+      })
+      return
+    }
+
     if (!view) {
       return
     }

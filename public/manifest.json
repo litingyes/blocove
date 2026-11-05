@@ -1,7 +1,7 @@
 {
   "short_name": "Blocove",
   "name": "Blocove Registry",
-  "description": "Composable editors for shadcn/ui.",
+  "description": "Composable editors for shadcn/ui. A registry of rich text, code editor and media items.",
   "icons": [
     {
       "src": "/favicon.ico",

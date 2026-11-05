@@ -3,8 +3,10 @@ import {
   ArrowUpRightIcon,
   BlocksIcon,
   BracesIcon,
+  CodeIcon,
   PaletteIcon,
   PenLineIcon,
+  PlayIcon,
   TerminalIcon,
   TypeIcon,
 } from 'lucide-react'
@@ -25,7 +27,7 @@ export const Route = createFileRoute('/')({
       {
         name: 'description',
         content:
-          'Composable editors for shadcn/ui: a Tiptap rich text editor and a CodeMirror code editor, installed as registry items you own. Extend, never replace.',
+          'Composable editors for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video players, installed as registry items you own. Extend, never replace.',
       },
     ],
   }),
@@ -51,6 +53,16 @@ const features = [
     icon: PenLineIcon,
     title: 'Rich text editor',
     body: 'A Tiptap editor shell with toolbar, bubble menu and character count. Nodes and marks install separately, so the editor is exactly the one you composed.',
+  },
+  {
+    icon: CodeIcon,
+    title: 'Code editor',
+    body: 'A CodeMirror shell with shiki highlighting and a diff view. Extensions install separately, like the editor nodes.',
+  },
+  {
+    icon: PlayIcon,
+    title: 'Audio and video',
+    body: 'Video.js players with skins themed by your shadcn/ui tokens: on-demand video, audio episodes and ambient background video.',
   },
   {
     icon: BlocksIcon,
@@ -100,6 +112,16 @@ const docsLinks = [
     title: 'Marks',
     body: 'Bold, italic, underline, strikethrough, inline code and links.',
   },
+  {
+    name: 'video-player',
+    title: 'Video player',
+    body: 'The Video.js shell with its themed skin, the media element and track declarations.',
+  },
+  {
+    name: 'video-hero',
+    title: 'Media blocks',
+    body: 'Heroes, showcases, episodes and playlists composed from the players.',
+  },
 ]
 
 function Home() {
@@ -114,10 +136,10 @@ function Home() {
             Composable editors for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
-            Blocove adds a Tiptap rich text editor and a CodeMirror code editor
-            to the shadcn/ui project you already have. Every node, mark and
-            extension installs on its own, and nothing you already own is
-            replaced.
+            Blocove adds a Tiptap rich text editor, a CodeMirror code editor and
+            Video.js audio and video players to the shadcn/ui project you already
+            have. Every node, mark, control and block installs on its own, and
+            nothing you already own is replaced.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -160,7 +182,7 @@ function Home() {
         <SectionHeading
           eyebrow="Features"
           title="What you get"
-          description="Everything is a registry item: the editor shell, each node, each mark and a complete block."
+          description="Everything is a registry item: an editor shell, each node and mark, a media player and the blocks built on them."
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => {
@@ -209,7 +231,7 @@ function Home() {
       <section className="flex flex-col gap-6 border-t pt-10">
         <SectionHeading
           eyebrow="Documentation"
-          title="Start with the editor"
+          title="Start with the editors and players"
           description="Every item page has a live preview, the install command, a manual file walkthrough and an API reference."
         />
         <div className="grid gap-4 sm:grid-cols-2">

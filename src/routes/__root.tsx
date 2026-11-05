@@ -20,12 +20,12 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Blocove — extend shadcn/ui',
+        title: 'Blocove — composable editors for shadcn/ui',
       },
       {
         name: 'description',
         content:
-          'Composable editors for shadcn/ui. A registry of rich text and code editor items that extend shadcn/ui instead of replacing it.',
+          'Composable editors for shadcn/ui. A registry of rich text, code editor and media items that extend shadcn/ui instead of replacing it.',
       },
       {
         name: 'theme-color',

@@ -7,27 +7,30 @@
 
 **Composable editors for shadcn/ui.** A [shadcn/ui registry](https://ui.shadcn.com/docs/registry)
 that **extends** [shadcn/ui](https://ui.shadcn.com) instead of replacing it: a
-Tiptap rich text editor and a CodeMirror code editor, plus the blocks built on
-them. shadcn/ui is installed first and Blocove only adds the blocks and
-components it needs.
+Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video
+players, plus the blocks built on them. shadcn/ui is installed first and Blocove
+only adds the blocks and components it needs.
 
 Blocove is developed against the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font), but it ships no
 theme of its own: no base config, no theme tokens and no fonts. Items inherit
 the shadcn/ui setup of the project they are added to, so your own preset and
-theme stay in place. The flagship additions are two editor families: a
-composable [Tiptap](https://tiptap.dev) rich text editor, whose shell, nodes and
-marks are separate registry items with their own documentation page and whose
-content is typeset with [shadcn/typeset](https://ui.shadcn.com/docs/typeset),
-and a [CodeMirror](https://codemirror.net) code editor with
+theme stay in place. The flagship additions are three families: a composable
+[Tiptap](https://tiptap.dev) rich text editor, whose shell, nodes and marks are
+separate registry items with their own documentation page and whose content is
+typeset with [shadcn/typeset](https://ui.shadcn.com/docs/typeset); a
+[CodeMirror](https://codemirror.net) code editor with
 [shiki](https://shiki.style) highlighting, split into a shell and composable
-extensions.
+extensions; and a media family of [Video.js](https://videojs.org) audio and video
+players whose skins are themed by the shadcn/ui tokens of the project they are
+added to.
 
-Items are grouped per editor family. The rich text editor lives under the
+Items are grouped per family. The rich text editor lives under the
 `rich-text-editor-*` prefix and installs into `components/blocove/rich-text-editor/`,
-the code editor under `code-editor-*` into `components/blocove/code-editor/`, so a
-new family can be added next to them without renaming existing items. Blocove owns
-its own namespace, so its files never mix with shadcn/ui's `components/ui`.
+the code editor under `code-editor-*` into `components/blocove/code-editor/`, and
+the media items into `components/blocove/media/`, so a new family can be added
+next to them without renaming existing items. Blocove owns its own namespace, so
+its files never mix with shadcn/ui's `components/ui`.
 
 The site is built with [TanStack Start](https://tanstack.com/start) and the
 registry itself is plain JSON, so the same items work with the shadcn CLI from a
@@ -57,6 +60,10 @@ npx shadcn@latest add litingyes/blocove/rich-text-editor
 
 # Add only the nodes and marks you compose into the editor.
 npx shadcn@latest add litingyes/blocove/rich-text-editor-heading litingyes/blocove/rich-text-editor-bold
+
+# A video player with the themed Video.js skin, or the hero block around it.
+npx shadcn@latest add litingyes/blocove/video-player
+npx shadcn@latest add litingyes/blocove/video-hero
 ```
 
 Pin a release for reproducible installs:
@@ -508,7 +515,7 @@ src/registry/blocove/
   blocks/video-playlist.tsx
 src/docs/
   types.ts                        # DocsPage and DocsPageData types
-  nav.ts                          # docs navigation, grouped per editor family
+  nav.ts                          # docs navigation, grouped per family
   pages/                          # docs pages, auto-registered from the module tree
   examples/                       # demo components shown on each page
   snippets/                       # generated usage snippets for the code panels

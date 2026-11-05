@@ -9,9 +9,13 @@ the project is named, described and written about; the logo assets live in
 **Composable editors for shadcn/ui.**
 
 The slogan has to answer "what is this repository" in one read, so it names the
-category (`shadcn/ui`) and the product (`composable editors`). Keep the sentence
-case and the closing period, and use it wherever the brand speaks in one line:
-the site hero, the README subtitle, package metadata, an OG image.
+category (`shadcn/ui`) and the core product (`composable editors`). Keep the
+sentence case and the closing period, and use it wherever the brand speaks in one
+line: the site hero, the README subtitle, package metadata, an OG image.
+
+Families grow; the slogan does not. The list of families belongs to the
+[descriptor](#descriptor) and to the enumerations below, so a new family changes
+those lines and leaves the slogan alone.
 
 中文写法：**为 shadcn/ui 打造的可组合编辑器。**
 
@@ -32,7 +36,23 @@ and still has to ask what Blocove is.
 
 One sentence for metadata and directories:
 
-> A shadcn/ui registry of composable rich text and code editor items.
+> A shadcn/ui registry of composable rich text, code editor and media items.
+
+## Families
+
+The registry ships three families, in this order:
+
+1. **Rich text editor** — a Tiptap shell with composable nodes and marks, typeset
+   with shadcn/typeset.
+2. **Code editor** — a CodeMirror shell with composable extensions, highlighted
+   with shiki.
+3. **Media** — Video.js audio and video players whose skins are themed by the
+   project's shadcn/ui tokens, plus the blocks built on them.
+
+Copy lists the families in that order, and names the technology (Tiptap,
+CodeMirror, Video.js) when it is the reason to care. Registry names follow the
+family: `rich-text-editor-*`, `code-editor-*`, and `video-player`,
+`audio-player`, `ambient-video` for the media items.
 
 ## Where each line goes
 
@@ -42,7 +62,7 @@ One sentence for metadata and directories:
 | Hero paragraph               | What Blocove adds, and that nothing is replaced |
 | `meta title`                 | Blocove — composable editors for shadcn/ui      |
 | `meta description`           | Slogan, then the descriptor, then the tagline   |
-| README subtitle              | **Slogan.** + which editors and blocks it adds  |
+| README subtitle              | **Slogan.** + which families and blocks it adds |
 | `package.json`, PWA manifest | Slogan + descriptor                             |
 
 ## Alternates
@@ -50,9 +70,9 @@ One sentence for metadata and directories:
 Kept because each earns a surface of its own, but none of them is the slogan:
 
 - **Rich text and code editors for shadcn/ui.** The most literal line: it names
-  both families and nothing else. Longer and more list-like, and it dates once
-  another family lands, but it is the clearest possible `h1` if clarity ever
-  wins over brevity.
+  the families and nothing else. Longer and more list-like, and it dated as soon
+  as the media family landed, which is why it is an alternate; keep it in mind if
+  clarity ever wins over brevity.
 - **The editor layer for shadcn/ui.** Built on the project's own "layer" noun.
   One notch more abstract than the slogan, and it asks the reader to know what
   an extension layer is.
@@ -75,4 +95,4 @@ Avoid lines that put Blocove above shadcn/ui — "replaces", "shadcn 2.0",
 - Registry things are **items**. A _block_ is a `registry:block` item; a
   _component_ is a React component.
 - Name the technology when it is the reason to care: Tiptap, CodeMirror, shiki,
-  typeset.
+  typeset, Video.js.

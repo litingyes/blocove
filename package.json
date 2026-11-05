@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "packageManager": "pnpm@12.16.1",
-  "description": "Composable editors for shadcn/ui: a registry of rich text and code editor items, installed as source you own.",
+  "description": "Composable editors for shadcn/ui: a registry of rich text, code editor and media items, installed as source you own.",
   "engines": {
     "node": ">=22.22.1"
   },

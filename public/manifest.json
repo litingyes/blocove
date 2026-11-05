@@ -1,6 +1,7 @@
 {
   "short_name": "Blocove",
   "name": "Blocove Registry",
+  "description": "Composable editors for shadcn/ui.",
   "icons": [
     {
       "src": "/favicon.ico",

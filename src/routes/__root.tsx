@@ -20,12 +20,12 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Blocove Registry',
+        title: 'Blocove — extend shadcn/ui',
       },
       {
         name: 'description',
         content:
-          'A shadcn/ui extension registry: composable Blocove items layered on top of shadcn/ui.',
+          'Composable editors for shadcn/ui. A registry of rich text and code editor items that extend shadcn/ui instead of replacing it.',
       },
       {
         name: 'theme-color',

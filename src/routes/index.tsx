@@ -21,11 +21,11 @@ export const Route = createFileRoute('/')({
   component: Home,
   head: () => ({
     meta: [
-      { title: 'Blocove — extensions for shadcn/ui' },
+      { title: 'Blocove — composable editors for shadcn/ui' },
       {
         name: 'description',
         content:
-          'Blocove extends shadcn/ui with composable registry items: a rich text editor built on Tiptap, plus the blocks and components you add to your own shadcn/ui project.',
+          'Composable editors for shadcn/ui: a Tiptap rich text editor and a CodeMirror code editor, installed as registry items you own. Extend, never replace.',
       },
     ],
   }),
@@ -110,14 +110,14 @@ function Home() {
           <span className="w-fit rounded-full border px-3 py-1 text-xs text-muted-foreground">
             shadcn/ui extension registry
           </span>
-          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Blocove extensions for shadcn/ui.
+          <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            Composable editors for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
-            Blocove extends shadcn/ui for specific scenarios. It is not a
-            replacement: add it to your existing shadcn/ui project and install
-            only the items you compose, starting with a composable rich text
-            editor built on Tiptap.
+            Blocove adds a Tiptap rich text editor and a CodeMirror code editor
+            to the shadcn/ui project you already have. Every node, mark and
+            extension installs on its own, and nothing you already own is
+            replaced.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

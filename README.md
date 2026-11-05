@@ -5,10 +5,11 @@
   <img src="public/brand/blocove-lockup-black.svg" alt="Blocove" width="240" />
 </picture>
 
-A [shadcn/ui registry](https://ui.shadcn.com/docs/registry) that **extends**
-[shadcn/ui](https://ui.shadcn.com) for specific scenarios. Blocove is not a
-replacement for shadcn/ui: it builds on top of it, so shadcn/ui is installed
-first and Blocove only adds the blocks and components it needs.
+**Composable editors for shadcn/ui.** A [shadcn/ui registry](https://ui.shadcn.com/docs/registry)
+that **extends** [shadcn/ui](https://ui.shadcn.com) instead of replacing it: a
+Tiptap rich text editor and a CodeMirror code editor, plus the blocks built on
+them. shadcn/ui is installed first and Blocove only adds the blocks and
+components it needs.
 
 Blocove is developed against the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font), but it ships no
@@ -388,6 +389,7 @@ paths.
 ## Project layout
 
 ```txt
+BRAND.md                          # slogan, voice and naming rules for the brand
 registry.json                     # registry catalog entry point (name, homepage, include)
 vitest.config.ts                  # Vitest projects: happy-dom unit suite + Chromium E2E
 tests/

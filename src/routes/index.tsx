@@ -25,7 +25,7 @@ export const Route = createFileRoute('/')({
       {
         name: 'description',
         content:
-          'Blocove extends shadcn/ui with composable registry items: a rich text editor built on Tiptap, plus the blocks and components you add on top of the b0 preset.',
+          'Blocove extends shadcn/ui with composable registry items: a rich text editor built on Tiptap, plus the blocks and components you add to your own shadcn/ui project.',
       },
     ],
   }),
@@ -34,7 +34,7 @@ export const Route = createFileRoute('/')({
 const principles = [
   {
     title: 'Extends, never replaces',
-    body: 'Blocove sits on top of shadcn/ui. Initialize with the b0 preset first, then add Blocove items: theme tokens and primitives stay owned by shadcn/ui.',
+    body: 'Blocove sits on top of shadcn/ui. Add items to your existing shadcn/ui project: theme tokens and primitives stay owned by shadcn/ui, so your theme is never replaced.',
   },
   {
     title: 'Composable by design',
@@ -64,8 +64,8 @@ const features = [
   },
   {
     icon: PaletteIcon,
-    title: 'b0 preset baseline',
-    body: 'Blocove defaults to the b0 preset: Base UI, base-nova style, neutral palette, Lucide icons and Inter.',
+    title: 'Your theme stays yours',
+    body: 'Blocove ships no base config or theme tokens. Items inherit the shadcn/ui theme you already use; b0 is only the baseline Blocove is developed against.',
   },
   {
     icon: TerminalIcon,
@@ -115,7 +115,7 @@ function Home() {
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
             Blocove extends shadcn/ui for specific scenarios. It is not a
-            replacement: install shadcn/ui with the b0 preset first, then add
+            replacement: add it to your existing shadcn/ui project and install
             only the items you compose, starting with a composable rich text
             editor built on Tiptap.
           </p>
@@ -185,18 +185,18 @@ function Home() {
         <SectionHeading
           eyebrow="Quick start"
           title="Add Blocove to an existing project"
-          description="Start from shadcn/ui with the b0 preset, then install the items you need."
+          description="Start from your existing shadcn/ui project, then install the items you need."
         />
         <div className="grid gap-4 md:grid-cols-3">
           <CommandCard
             title="1. Set up shadcn/ui"
-            command="npx shadcn@latest init --preset b0"
-            note="Blocove defaults to the b0 preset."
+            command="npx shadcn@latest init"
+            note="Blocove is built against the b0 preset; your own theme can differ."
           />
           <CommandCard
             title="2. Install from GitHub"
-            command="npx shadcn@latest add litingyes/blocove/base"
-            note="No registry configuration required."
+            command="npx shadcn@latest add litingyes/blocove/rich-text-editor"
+            note="The editor shell plus the basic nodes."
           />
           <CommandCard
             title="3. Install an editor block"

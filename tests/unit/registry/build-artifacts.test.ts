@@ -50,6 +50,15 @@ describe.skipIf(!builtExists)('built registry payloads', () => {
     expect(missing).toEqual([])
   })
 
+  it('serves no stale payloads', () => {
+    const expected = new Set(manifest.items.map(item => `${item.name}.json`))
+    const extra = fs
+      .readdirSync(builtRegistryRoot)
+      .filter(name => name.endsWith('.json') && name !== 'registry.json' && !expected.has(name))
+
+    expect(extra).toEqual([])
+  })
+
   for (const item of manifest.items) {
     it(`inlines the shipped sources of ${item.name}`, () => {
       const payload = JSON.parse(

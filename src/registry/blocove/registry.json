@@ -2,35 +2,6 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
-      "name": "base",
-      "type": "registry:base",
-      "title": "Blocove Base",
-      "description": "Installs the shadcn/ui (b0 preset) primitives that Blocove extensions compose with.",
-      "config": {
-        "style": "base-nova",
-        "tailwind": {
-          "baseColor": "neutral"
-        },
-        "iconLibrary": "lucide",
-        "rtl": false,
-        "menuColor": "default",
-        "menuAccent": "subtle"
-      },
-      "dependencies": [
-        "@base-ui/react",
-        "class-variance-authority",
-        "cn",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "font-inter",
-        "button",
-        "card",
-        "input",
-        "label"
-      ]
-    },
-    {
       "name": "rich-text-editor-extension",
       "type": "registry:lib",
       "title": "Rich Text Editor Extension",

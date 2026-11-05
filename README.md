@@ -10,13 +10,15 @@ A [shadcn/ui registry](https://ui.shadcn.com/docs/registry) that **extends**
 replacement for shadcn/ui: it builds on top of it, so shadcn/ui is installed
 first and Blocove only adds the blocks and components it needs.
 
-The default and supported baseline is the shadcn/ui **`b0` preset** (Base UI,
-`base-nova` style, neutral palette, Lucide icons, Inter font). The flagship
-additions are two editor families: a composable [Tiptap](https://tiptap.dev)
-rich text editor, whose shell, nodes and marks are separate registry items with
-their own documentation page and whose content is typeset with
-[shadcn/typeset](https://ui.shadcn.com/docs/typeset), and a
-[CodeMirror](https://codemirror.net) code editor with
+Blocove is developed against the shadcn/ui **`b0` preset** (Base UI,
+`base-nova` style, neutral palette, Lucide icons, Inter font), but it ships no
+theme of its own: no base config, no theme tokens and no fonts. Items inherit
+the shadcn/ui setup of the project they are added to, so your own preset and
+theme stay in place. The flagship additions are two editor families: a
+composable [Tiptap](https://tiptap.dev) rich text editor, whose shell, nodes and
+marks are separate registry items with their own documentation page and whose
+content is typeset with [shadcn/typeset](https://ui.shadcn.com/docs/typeset),
+and a [CodeMirror](https://codemirror.net) code editor with
 [shiki](https://shiki.style) highlighting, split into a shell and composable
 extensions.
 
@@ -36,7 +38,9 @@ GitHub address, a URL, or a namespace.
 - pnpm >= 11 (`corepack enable` is enough)
 - Chromium for the browser tests: `pnpm exec playwright install chromium`
   (one-off; Playwright only drives Vitest's browser mode)
-- A project already set up with shadcn/ui using the `b0` preset:
+- A project already set up with shadcn/ui using Base UI primitives. Blocove is
+  developed against the `b0` preset but ships no theme, so your own preset and
+  colors stay in place:
 
   ```bash
   npx shadcn@latest init --preset b0
@@ -47,9 +51,6 @@ GitHub address, a URL, or a namespace.
 From a project with `components.json` and shadcn/ui installed:
 
 ```bash
-# The Blocove baseline: official shadcn/ui components used by Blocove items.
-npx shadcn@latest add litingyes/blocove/base
-
 # The rich text editor shell. It installs the basic nodes as well.
 npx shadcn@latest add litingyes/blocove/rich-text-editor
 
@@ -289,32 +290,31 @@ working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 
 ## Items
 
-| Item                          | Type             | Description                                                            |
-| ----------------------------- | ---------------- | ---------------------------------------------------------------------- |
-| `base`                        | `registry:base`  | Installs the shadcn/ui (b0) primitives Blocove extensions compose with |
-| `rich-text-editor`            | `registry:ui`    | Rich text editor shell: root, content, toolbar, bubble menu and count  |
-| `rich-text-editor-playground` | `registry:block` | Complete editor block: every node, mark, control and the count         |
-| `rich-text-editor-extension`  | `registry:lib`   | Internal helper for declaring Tiptap extensions as components          |
-| `rich-text-editor-text`       | `registry:ui`    | Tiptap Text node                                                       |
-| `rich-text-editor-paragraph`  | `registry:ui`    | Tiptap Paragraph node                                                  |
-| `rich-text-editor-hard-break` | `registry:ui`    | Tiptap HardBreak node                                                  |
-| `rich-text-editor-heading`    | `registry:ui`    | Heading node and toolbar selector                                      |
-| `rich-text-editor-code-block` | `registry:ui`    | Code block node and toolbar toggle                                     |
-| `rich-text-editor-details`    | `registry:ui`    | Collapsible details node with a React node view                        |
-| `rich-text-editor-image`      | `registry:ui`    | Image node and URL insert control                                      |
-| `rich-text-editor-table`      | `registry:ui`    | Table kit and command menu                                             |
-| `rich-text-editor-bold`       | `registry:ui`    | Bold mark and toolbar toggle                                           |
-| `rich-text-editor-italic`     | `registry:ui`    | Italic mark and toolbar toggle                                         |
-| `rich-text-editor-underline`  | `registry:ui`    | Underline mark and toolbar toggle                                      |
-| `rich-text-editor-strike`     | `registry:ui`    | Strikethrough mark and toolbar toggle                                  |
-| `rich-text-editor-code`       | `registry:ui`    | Inline code mark and toolbar toggle                                    |
-| `rich-text-editor-link`       | `registry:ui`    | Link mark and URL popover                                              |
-| `code-editor`                 | `registry:ui`    | Code editor shell: root, surface, toolbar and status bar               |
-| `code-editor-extension`       | `registry:lib`   | Internal helper for declaring CodeMirror extensions as components      |
-| `code-editor-shiki`           | `registry:ui`    | Shiki syntax highlighting for the editor                               |
-| `code-editor-languages`       | `registry:ui`    | CodeMirror language support for indentation, brackets and folding      |
-| `code-editor-line-numbers`    | `registry:ui`    | Line numbers, fold gutter and active line highlight                    |
-| `code-editor-diff`            | `registry:ui`    | Inline diff view with accept, reject and chunk navigation              |
+| Item                          | Type             | Description                                                           |
+| ----------------------------- | ---------------- | --------------------------------------------------------------------- |
+| `rich-text-editor`            | `registry:ui`    | Rich text editor shell: root, content, toolbar, bubble menu and count |
+| `rich-text-editor-playground` | `registry:block` | Complete editor block: every node, mark, control and the count        |
+| `rich-text-editor-extension`  | `registry:lib`   | Internal helper for declaring Tiptap extensions as components         |
+| `rich-text-editor-text`       | `registry:ui`    | Tiptap Text node                                                      |
+| `rich-text-editor-paragraph`  | `registry:ui`    | Tiptap Paragraph node                                                 |
+| `rich-text-editor-hard-break` | `registry:ui`    | Tiptap HardBreak node                                                 |
+| `rich-text-editor-heading`    | `registry:ui`    | Heading node and toolbar selector                                     |
+| `rich-text-editor-code-block` | `registry:ui`    | Code block node and toolbar toggle                                    |
+| `rich-text-editor-details`    | `registry:ui`    | Collapsible details node with a React node view                       |
+| `rich-text-editor-image`      | `registry:ui`    | Image node and URL insert control                                     |
+| `rich-text-editor-table`      | `registry:ui`    | Table kit and command menu                                            |
+| `rich-text-editor-bold`       | `registry:ui`    | Bold mark and toolbar toggle                                          |
+| `rich-text-editor-italic`     | `registry:ui`    | Italic mark and toolbar toggle                                        |
+| `rich-text-editor-underline`  | `registry:ui`    | Underline mark and toolbar toggle                                     |
+| `rich-text-editor-strike`     | `registry:ui`    | Strikethrough mark and toolbar toggle                                 |
+| `rich-text-editor-code`       | `registry:ui`    | Inline code mark and toolbar toggle                                   |
+| `rich-text-editor-link`       | `registry:ui`    | Link mark and URL popover                                             |
+| `code-editor`                 | `registry:ui`    | Code editor shell: root, surface, toolbar and status bar              |
+| `code-editor-extension`       | `registry:lib`   | Internal helper for declaring CodeMirror extensions as components     |
+| `code-editor-shiki`           | `registry:ui`    | Shiki syntax highlighting for the editor                              |
+| `code-editor-languages`       | `registry:ui`    | CodeMirror language support for indentation, brackets and folding     |
+| `code-editor-line-numbers`    | `registry:ui`    | Line numbers, fold gutter and active line highlight                   |
+| `code-editor-diff`            | `registry:ui`    | Inline diff view with accept, reject and chunk navigation             |
 
 Every Blocove file declares an explicit `target`, so items install into the
 Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*` and
@@ -326,14 +326,23 @@ The block ships `blocks/rich-text-editor-playground.tsx`. It targets
 `components/blocove/rich-text-editor-playground.tsx`; it depends on the shell and
 every node and mark item, so a single install produces a complete editor.
 
-`base` ships no files of its own: it declares the official shadcn/ui items
-(`font-inter`, `button`, `card`, `input`, `label`) and the npm packages those
-components need. Theme tokens stay owned by shadcn/ui and come from your `b0`
-initialization; Blocove does not overwrite them.
+Blocove ships no base config: every item installs files into your project and
+official shadcn/ui components arrive as that item's `registryDependencies`. Your
+shadcn/ui preset, fonts and theme tokens stay authoritative; Blocove does not
+overwrite them.
 
 `rich-text-editor-extension` is internal: it is installed as a dependency of the
 rich text editor items and is hidden from the site catalog and documentation
 navigation.
+
+### Removed: the base item
+
+The `base` item was removed. It only declared the official shadcn/ui components
+and Blocove's own default configuration (b0 preset, neutral palette, Lucide
+icons, Inter), a setup that belongs to the consuming project. It shipped no
+files, so nothing has to be deleted from existing projects: drop
+`litingyes/blocove/base` from install scripts and install the items you use.
+Installs pinned to a tag that still lists `base` keep working.
 
 ### Upgrading from v0.1
 
@@ -614,8 +623,10 @@ Conventions:
   items out of shadcn/ui's `components/ui` namespace; `pnpm registry:check`
   fails the build when a file drifts.
 - `registry:page` and `registry:file` items require a `target`.
-- `@blocove/base` assumes the consumer project is set up with shadcn/ui: Tailwind
-  CSS v4, `shadcn/tailwind.css` and the `@theme inline` color mappings.
+- Blocove ships no base config or theme tokens: the consumer's shadcn/ui setup
+  (Tailwind CSS v4, `shadcn/tailwind.css`, the `@theme inline` color mappings and
+  preset) stays authoritative. Items are built against the Base UI primitives of
+  the `b0` preset.
 
 ## Testing
 

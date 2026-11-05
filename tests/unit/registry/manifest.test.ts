@@ -72,11 +72,10 @@ describe('manifest structure', () => {
     expect(problems).toEqual([])
   })
 
-  it('ships a base item without files', () => {
-    const base = manifest.items.find(item => item.type === 'registry:base')
+  it('ships no base config item', () => {
+    const baseItems = manifest.items.filter(item => item.type === 'registry:base')
 
-    expect(base).toBeDefined()
-    expect(base?.files ?? []).toEqual([])
+    expect(baseItems).toEqual([])
   })
 })
 

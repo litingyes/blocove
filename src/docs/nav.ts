@@ -19,14 +19,6 @@ export interface DocsNavSection {
  */
 export const docsNav: DocsNavSection[] = [
   {
-    label: 'Base',
-    groups: [
-      {
-        items: ['base'],
-      },
-    ],
-  },
-  {
     label: 'Rich Text Editor',
     groups: [
       {

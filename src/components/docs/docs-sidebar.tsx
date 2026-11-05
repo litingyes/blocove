@@ -17,8 +17,8 @@ function DocsNav({ catalog }: { catalog: RegistryCatalog }) {
   })
   const items = new Map(catalog.items.map(item => [item.name, item]))
 
-  // Sections group families (Base, Rich Text Editor, ...); each family keeps its own
-  // subgroups so a new family only adds a section.
+  // Sections group families (Rich Text Editor, Code Editor, ...); each family
+  // keeps its own subgroups so a new family only adds a section.
   const sections = docsNav
     .map(section => ({
       label: section.label,

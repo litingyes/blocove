@@ -171,12 +171,9 @@ describe('docs navigation', () => {
     expect([...internalNames].filter(name => navItems.includes(name))).toEqual([])
   })
 
-  it('has a docs page for every linked item, except the base which is command-only', () => {
+  it('has a docs page for every linked item', () => {
     const pageItems = readDocsPageItems()
-    const pageAllowlist = new Set(['base'])
-    const missingPages = navItems.filter(
-      name => !pageItems.has(name) && !pageAllowlist.has(name),
-    )
+    const missingPages = navItems.filter(name => !pageItems.has(name))
 
     expect(missingPages).toEqual([])
   })

@@ -25,7 +25,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'A shadcn/ui extension registry: Blocove blocks and tokens layered on top of shadcn/ui.',
+          'A shadcn/ui extension registry: composable Blocove items layered on top of shadcn/ui.',
       },
       {
         name: 'theme-color',
@@ -118,7 +118,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           <footer className="border-t">
             <div className="mx-auto flex w-full max-w-[96rem] flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground sm:px-6">
               <span>
-                Requires shadcn/ui with the b0 preset, then add items with
+                Requires shadcn/ui, then add items with
                 {' '}
                 <code className="rounded bg-muted px-1 py-0.5">
                   npx shadcn@latest add litingyes/blocove/&lt;item&gt;

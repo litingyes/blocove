@@ -123,18 +123,15 @@ function CommandInstall({
 
       <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
         <p>
-          Requires a project set up with shadcn/ui and the
+          Requires a shadcn/ui project set up with Base UI primitives. Blocove
+          is developed against the
           {' '}
           <code className="rounded bg-muted px-1 py-0.5 text-xs">
             b0
           </code>
           {' '}
-          preset:
-          {' '}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">
-            npx shadcn@latest init --preset b0
-          </code>
-          .
+          preset, but it installs no base config or theme tokens: your own
+          preset, fonts and colors stay in place.
         </p>
         <p>
           Or install from the namespace after adding the registry:
@@ -253,9 +250,7 @@ function ManualInstall({
         {fileSources.length === 0
           ? (
               <p className="text-sm text-muted-foreground">
-                {item.type === 'registry:base'
-                  ? 'This item ships no files of its own. It declares the shadcn/ui prerequisites and dependencies that the other items compose with.'
-                  : 'This item ships no files.'}
+                This item ships no files.
               </p>
             )
           : (

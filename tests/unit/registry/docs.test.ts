@@ -3,6 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { docsNav } from '@/docs/nav'
 import { codeEditorUsage } from '@/docs/snippets/code-editor'
+import { audioPlayerUsage, videoPlayerUsage } from '@/docs/snippets/media'
 import { richTextEditorUsage } from '@/docs/snippets/rich-text-editor'
 import { codeSamples } from '../../helpers/fixtures'
 import { projectRoot, readManifest } from '../../helpers/manifest'
@@ -15,6 +16,10 @@ const richTextModules = import.meta.glob(
 ) as Record<string, Record<string, unknown>>
 const codeEditorModules = import.meta.glob(
   '/src/registry/blocove/ui/code-editor/*.tsx',
+  { eager: true },
+) as Record<string, Record<string, unknown>>
+const mediaModules = import.meta.glob(
+  '/src/registry/blocove/ui/media/*.tsx',
   { eager: true },
 ) as Record<string, Record<string, unknown>>
 
@@ -121,6 +126,30 @@ describe('docs snippets', () => {
     })
 
     expectSnippetToResolve(code, installRootOf('rich-text-editor'), modulesByStem(richTextModules))
+  })
+
+  it('import the shipped media modules', () => {
+    const video = videoPlayerUsage({
+      title: 'Composable media components',
+      poster: '/poster.jpg',
+      src: '/clip.mp4',
+      tracks: [
+        {
+          src: '/en.vtt',
+          label: 'English',
+          srcLang: 'en',
+          default: true,
+        },
+      ],
+    })
+    const audio = audioPlayerUsage({
+      title: 'Episode twelve',
+      poster: '/cover.jpg',
+      src: '/episode.m4a',
+    })
+
+    expectSnippetToResolve(video, installRootOf('video-player'), modulesByStem(mediaModules))
+    expectSnippetToResolve(audio, installRootOf('audio-player'), modulesByStem(mediaModules))
   })
 
   it('import the shipped code editor modules', () => {

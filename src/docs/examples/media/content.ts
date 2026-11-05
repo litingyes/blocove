@@ -1,0 +1,69 @@
+import type { MediaTrack } from '@/components/blocove/media/tracks'
+
+/**
+ * Sample media shipped in `public/media`, shared by every demo so the docs play
+ * without a network request.
+ */
+export const mediaSamples = {
+  video: '/media/sample-video.mp4',
+  videoAlt: '/media/sample-video-alt.mp4',
+  audio: '/media/sample-audio.m4a',
+  poster: '/media/sample-poster.jpg',
+  posterAlt: '/media/sample-poster-alt.jpg',
+  cover: '/media/sample-cover.jpg',
+  captions: '/media/sample-captions.vtt',
+}
+
+/** One caption track, so every demo shows a working captions menu. */
+export const mediaDemoTracks: MediaTrack[] = [
+  {
+    src: mediaSamples.captions,
+    label: 'English',
+    srcLang: 'en',
+    default: true,
+  },
+]
+
+/** Episodes for the playlist demo; the two sample clips alternate. */
+export const videoPlaylistDemoItems = [
+  {
+    id: 'compose-the-shell',
+    title: 'Composing the shell',
+    src: mediaSamples.video,
+    poster: mediaSamples.poster,
+    duration: '00:08',
+    description:
+      'The shell owns the player and the skin. The media element stays a separate item, so it can be swapped without touching the interface.',
+  },
+  {
+    id: 'swap-the-media',
+    title: 'Swapping the media',
+    src: mediaSamples.videoAlt,
+    poster: mediaSamples.posterAlt,
+    duration: '00:08',
+    description:
+      'Selecting another episode replaces the media element. The player, the controls and the playlist keep their state.',
+  },
+  {
+    id: 'declare-the-tracks',
+    title: 'Declaring the tracks',
+    src: mediaSamples.video,
+    poster: mediaSamples.poster,
+    duration: '00:08',
+    description:
+      'Tracks are data: pass them to the media element and the captions menu, the availability check and the labels follow.',
+  },
+]
+
+/** The episode the audio block demo renders. */
+export const audioEpisodeDemo = {
+  title: 'Composable media, one item at a time',
+  show: 'The Blocove Podcast',
+  cover: mediaSamples.cover,
+  src: mediaSamples.audio,
+  episode: 12,
+  duration: '00:20',
+  publishedAt: 'November 2026',
+  description:
+    'A short sample episode. The cover art doubles as the player poster, and the header keeps the facts the interface does not show.',
+}

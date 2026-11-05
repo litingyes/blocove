@@ -296,6 +296,90 @@ reject actions are hidden in split, where reverting happens between the panes.
 - `code-editor-shiki` also installs `lib/blocove/code-editor-shiki.ts`, the shiki
   highlighter shared by the docs code panels and the editor.
 
+## Media
+
+Video and audio come as small composable items built on [Video.js 10](https://videojs.org)
+(`@videojs/react`). A shell owns the Video.js player and its packaged skin, the
+media element is a separate item, and the skin is themed through the settings the
+packaged skins publish: the radius, hairline, font and scale are mapped from your
+shadcn/ui tokens, while the accent keeps the skin's contrasting default unless you
+pass `accentColor`.
+
+The family installs into `components/blocove/media/`, so imports are namespaced:
+`@/components/blocove/media/video`, `@/components/blocove/media/audio`,
+`@/components/blocove/media/ambient-video`, and the two internal helpers in
+`@/lib/blocove/media-theme` and `@/components/blocove/media/tracks`.
+
+```tsx
+import { VideoMedia, VideoPlayer } from '@/components/blocove/media/video'
+
+export function Clip() {
+  return (
+    <VideoPlayer title="Episode one" poster="/poster.jpg">
+      <VideoMedia src="/clip.mp4" />
+    </VideoPlayer>
+  )
+}
+```
+
+`VideoPlayer` is the Video.js video preset and its skin; `VideoMedia` is the
+native `<video>` element. Because the media element registers itself with the
+player on mount, the shell never needs to change when the source does, and
+`tracks` on the media element becomes the captions menu:
+
+```tsx
+<VideoPlayer title="Captioned clip" aspectRatio="video">
+  <VideoMedia
+    src="/clip.mp4"
+    tracks={[
+      {
+        src: '/captions.vtt',
+        label: 'English',
+        srcLang: 'en',
+        default: true
+      }
+    ]}
+  />
+</VideoPlayer>
+```
+
+`audio-player` pairs `AudioPlayer` with `AudioMedia` and a skin that follows the
+inherited `color-scheme`, so a dark page gets a dark player. `ambient-video`
+renders the chrome-less background preset — muted, looped and autoplaying — with
+a slot for the content drawn over it.
+
+The items pass the aspect ratio, the accent and the object fit as props, and
+forward `className`/`style` to the skin, which is the only styling surface the
+packaged skins consider public.
+
+### Media item graph
+
+- `video-player` depends on `media-theme` and `media-tracks` (internal helpers),
+  `@videojs/react` and `cn`.
+- `audio-player` depends on the same helpers, plus `@videojs/react`.
+- `ambient-video` depends on `media-theme` and `@videojs/react`.
+- `video-hero` depends on `ambient-video` and the `badge` primitive.
+- `video-showcase` depends on `video-player`, `media-tracks`, `badge` and
+  `separator`.
+- `audio-episode-player` depends on `audio-player`, `badge` and `separator`.
+- `video-playlist` depends on `video-player` and `scroll-area`.
+
+### Sample media
+
+`public/media/` holds the sample clips the docs demos and the browser suite play.
+They are committed so the docs and the tests run without a network request.
+`scripts/generate-media-samples.mjs` regenerates them with ffmpeg
+(`node scripts/generate-media-samples.mjs`):
+
+- `sample-video.mp4`, `sample-video-alt.mp4` and `sample-audio.m4a` are the
+  documentation previews: H.264/AAC, which every desktop browser decodes.
+- `sample-video.webm`, `sample-video-alt.webm` and `sample-audio.webm` are for the
+  browser suite: the Chromium build Vitest drives ships no H.264 or AAC decoder,
+  so the tests play VP9/Opus.
+- `sample-poster.jpg`, `sample-poster-alt.jpg` and `sample-cover.jpg` are frames
+  of those clips, so previews stay visually consistent, and
+  `sample-captions.vtt` backs the captions demos.
+
 ## Items
 
 | Item                          | Type             | Description                                                           |
@@ -323,12 +407,22 @@ reject actions are hidden in split, where reverting happens between the panes.
 | `code-editor-languages`       | `registry:ui`    | CodeMirror language support for indentation, brackets and folding     |
 | `code-editor-line-numbers`    | `registry:ui`    | Line numbers, fold gutter and active line highlight                   |
 | `code-editor-diff`            | `registry:ui`    | Inline or side-by-side diff with accept, revert and chunk navigation  |
+| `video-player`                | `registry:ui`    | Video player shell: themed skin, native media and track declarations  |
+| `audio-player`                | `registry:ui`    | Audio player shell with a skin that follows the page color scheme     |
+| `ambient-video`               | `registry:ui`    | Chrome-less background video with a slot for the content over it      |
+| `media-theme`                 | `registry:lib`   | Internal helper mapping shadcn/ui tokens to the skin settings         |
+| `media-tracks`                | `registry:ui`    | Internal helper rendering track declarations as native `<track>`s     |
+| `video-hero`                  | `registry:block` | Hero section with ambient video, a headline and calls to action       |
+| `video-showcase`              | `registry:block` | Captioned video: player, title, description, facts and actions        |
+| `audio-episode-player`        | `registry:block` | Podcast episode: cover art, facts, player and actions                 |
+| `video-playlist`              | `registry:block` | Video next to a selectable playlist that swaps the media              |
 
 Every Blocove file declares an explicit `target`, so items install into the
-Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*` and
-`code-editor-*` UI items land in `components/blocove/rich-text-editor/` and
-`components/blocove/code-editor/`, and the helpers in `lib/blocove/`. Projects
-that use a `src` directory get the same paths under `src/`.
+Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*`,
+`code-editor-*` and media UI items land in `components/blocove/rich-text-editor/`,
+`components/blocove/code-editor/` and `components/blocove/media/`, the media
+blocks in `components/blocove/`, and the helpers in `lib/blocove/`. Projects that
+use a `src` directory get the same paths under `src/`.
 
 The block ships `blocks/rich-text-editor-playground.tsx`. It targets
 `components/blocove/rich-text-editor-playground.tsx`; it depends on the shell and
@@ -339,8 +433,9 @@ official shadcn/ui components arrive as that item's `registryDependencies`. Your
 shadcn/ui preset, fonts and theme tokens stay authoritative; Blocove does not
 overwrite them.
 
-`rich-text-editor-extension` is internal: it is installed as a dependency of the
-rich text editor items and is hidden from the site catalog and documentation
+`rich-text-editor-extension`, `code-editor-extension` and the media helpers
+(`media-theme`, `media-tracks`) are internal: they are installed as dependencies
+of their family's items and are hidden from the site catalog and documentation
 navigation.
 
 ### Removed: the base item
@@ -402,9 +497,15 @@ src/registry/blocove/
   lib/code-editor-extension.ts          # registry:lib helper for the code editor family
   lib/code-editor-shiki.ts              # registry:lib shiki highlighter for the code editor
   lib/rich-text-editor-extension.ts     # registry:lib helper for the rich text editor family
+  lib/media-theme.ts                    # registry:lib helper mapping shadcn/ui tokens to the skins
   ui/code-editor/                       # registry:ui items (shell, highlighting, languages, chrome)
+  ui/media/                             # registry:ui items (video, audio, tracks, ambient video)
   ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
   blocks/rich-text-editor-playground.tsx # registry:block item (complete editor)
+  blocks/video-hero.tsx                 # registry:block items (hero, showcase, episode, playlist)
+  blocks/video-showcase.tsx
+  blocks/audio-episode-player.tsx
+  blocks/video-playlist.tsx
 src/docs/
   types.ts                        # DocsPage and DocsPageData types
   nav.ts                          # docs navigation, grouped per editor family
@@ -426,15 +527,17 @@ scripts/build-catalog.mjs         # public/r/registry.json -> src/generated/regi
 scripts/clean-registry.mjs        # clears generated registry artifacts before a build
 scripts/check-preset.mjs          # asserts the project still resolves to the b0 preset
 scripts/check-registry-paths.mjs   # asserts every item targets the Blocove namespace
+scripts/generate-media-samples.mjs # regenerates the committed sample clips with ffmpeg
 public/r/                         # generated registry JSON (gitignored)
+public/media/                     # committed sample clips, posters and captions
 ```
 
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.
   Items are grouped by family: the rich text editor lives in
   `ui/rich-text-editor/`, the complete editor block in `blocks/`, the code editor
-  in `ui/code-editor/`, and a new family gets its own folder and item prefix.
-  Every shipped file declares a `target` under `components/blocove/...` or
-  `lib/blocove/...`.
+  in `ui/code-editor/`, the Video.js items in `ui/media/`, and a new family gets
+  its own folder and item prefix. Every shipped file declares a `target` under
+  `components/blocove/...` or `lib/blocove/...`.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
   the whole shadcn/ui surface is available as context for composing new
@@ -447,7 +550,8 @@ public/r/                         # generated registry JSON (gitignored)
 Docs demos import registry files through the repository path
 (`@/registry/blocove/ui/rich-text-editor/bold`). The shipped items themselves use the
 exact paths consumers get (`@/components/blocove/rich-text-editor/*`,
-`@/components/blocove/code-editor/*`, `@/lib/blocove/*`), so the site resolves
+`@/components/blocove/code-editor/*`, `@/components/blocove/media/*`,
+`@/lib/blocove/*`), so the site resolves
 those specifiers to the registry sources in `tsconfig.json` and
 `vite.config.ts`. The family mappings cover every node and mark, which is what
 lets the playground block run its shipped imports in the docs preview. Add a
@@ -615,9 +719,31 @@ reference it instead.
    and assert its state or decorations.
 7. Run `pnpm test`, `pnpm run typecheck`, `pnpm run lint` and `pnpm run build`.
 
+### Adding a media item
+
+1. Create `src/registry/blocove/ui/media/<name>.tsx` for a component, or
+   `src/registry/blocove/blocks/<name>.tsx` for a block.
+2. Build on the published Video.js surface: import the preset and the skin from
+   `@videojs/react/<preset>`, import the preset stylesheet once, and style the
+   skin through `mediaThemeStyle` from `@/lib/blocove/media-theme`. Do not copy
+   the packaged skin source into the registry, and do not reach into its internal
+   class names: only the published CSS custom properties and the `style`/`className`
+   props are stable.
+3. Shipped imports use the installed namespaces (`@/components/blocove/media/*`,
+   `@/lib/blocove/*`), and the media helpers go in `registryDependencies`.
+4. Map the family once in `tsconfig.json` and `vite.config.ts` so the docs site and
+   the tests resolve those specifiers to `src/registry/blocove/ui/media`.
+5. Document it: a demo in `src/docs/examples/media/`, a page in
+   `src/docs/pages/media/`, the item name in `src/docs/nav.ts` under `Media`, and a
+   snippet from `src/docs/snippets/media.ts` (blocks show their shipped source
+   instead).
+6. Test it: unit tests mock the `@videojs/react` presets and assert the composed
+   props and markup; the browser suite covers real playback with the WebM samples.
+   Blocks also get a suite in `tests/unit/media/blocks.test.tsx`.
+
 To add a whole editor family, give it its own folder (`ui/<family>/`), item
 prefix, docs section in `src/docs/nav.ts`, demo frame and snippet builder. The
-rich text editor and code editor items are unaffected.
+rich text editor, code editor and media items are unaffected.
 
 Conventions:
 
@@ -644,8 +770,11 @@ Vitest runs two projects, defined in `vitest.config.ts`:
 - `unit` runs on happy-dom and covers component behaviour, the pure helpers and the
   distribution contract. It is the fast default.
 - `browser` runs in real Chromium through Vitest browser mode and covers what needs
-  layout and real events: typing, selections, clipboard, highlighting and diff
-  review.
+  layout and real events: typing, selections, clipboard, highlighting, diff
+  review and media playback. The media suite plays the committed WebM samples
+  through the shipped items: play and pause, captions, audio playback, ambient
+  autoplay and the playlist swap. It uses WebM on purpose, because the Chromium
+  build Vitest drives has no H.264 or AAC decoder.
 
 Playwright is only the driver behind Vitest's browser mode. The tests are plain
 Vitest files; there is no Playwright config and no Playwright spec.
@@ -686,8 +815,8 @@ gate. Thresholds live in `vitest.config.ts`; raise them, never lower them.
   Page copies. The Copy Page split button opens it through “View as Markdown”.
   The suffix is part of the route segment, so `.md` requests never render the
   item page.
-- The left navigation groups pages per editor family: `Base`, `Rich Text Editor`
-  and `Code Editor`. The rich text editor family starts with its complete block
+- The left navigation groups pages per family: `Rich Text Editor`, `Code Editor`
+  and `Media`. The rich text editor family starts with its complete block
   and the shell (no group label), then lists `Nodes` and `Marks`; other families
   lead with an overview and their extensions. A new family is another section,
   not a second nav tree. The right column tracks the current section.
@@ -698,6 +827,35 @@ gate. Thresholds live in `vitest.config.ts`; raise them, never lower them.
   shows the shipped block source instead of a generated snippet.
 - The installation section reads the built registry JSON, so the commands, file
   targets and dependency lists always match what `shadcn add` installs.
+
+## Media limitations
+
+The media items wrap the branded skins that ship inside `@videojs/react`. Read
+these before planning on top of them:
+
+- **React StrictMode.** `@videojs/react` 10.3.0 loops inside its menu state when
+  React runs the player's layout effects twice, which unmounts the page
+  ([videojs/video.js#9261](https://github.com/videojs/video.js/issues/9261), open).
+  The docs site therefore serves its dev client entry with a passthrough element
+  instead of `StrictMode` (`relaxStrictMode` in `vite.config.ts`), and `react` and
+  `react-dom` are pinned to `19.3.0`: on `19.3.1` the same loop fires even without
+  a captions track. If your app enables StrictMode, keep the React pin and expect
+  the player to be sensitive to it until upstream ships a fix; production builds
+  never double-invoke effects and are unaffected.
+- **Packaged skins, not skin source.** Blocove themes the published skin settings
+  and never copies the skin source, so the control markup and layout belong to
+  Video.js. Adding, removing or rearranging controls means adding the skin source
+  from the [Video.js shadcn registry](https://videojs.org/docs/guides/installation/shadcn)
+  to your project first; a Blocove-style skin of our own is a separate project.
+- **Streaming is not shipped yet.** The HLS and live presets are deliberately out
+  of scope for this family. Their bundled engine resolves absolute manifest URLs
+  and performs its own network fetch, so an offline sample cannot exercise them and
+  we would rather not ship an item the suite cannot verify. Use the native
+  `VideoMedia` today, or compose `HlsVideo` from `@videojs/react/media/hls-video`
+  yourself.
+- **Sample media is committed.** The clips in `public/media/` are binary assets
+  generated by `scripts/generate-media-samples.mjs`; rerun that script instead of
+  editing them by hand.
 
 ## Verify an install
 
@@ -711,6 +869,8 @@ npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-heading.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-table.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-playground.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/video-player.json    # targets: components/blocove/media/...
+npx shadcn@latest add --dry-run http://localhost:3000/r/video-hero.json
 
 curl -sS http://localhost:3000/items/rich-text-editor-playground.md | head
 ```

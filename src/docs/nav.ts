@@ -68,6 +68,27 @@ export const docsNav: DocsNavSection[] = [
       },
     ],
   },
+  {
+    label: 'Media',
+    groups: [
+      {
+        items: ['video-player', 'audio-player'],
+      },
+      {
+        label: 'Blocks',
+        items: [
+          'video-hero',
+          'video-showcase',
+          'audio-episode-player',
+          'video-playlist',
+        ],
+      },
+      {
+        label: 'Ambient',
+        items: ['ambient-video'],
+      },
+    ],
+  },
 ]
 
 export const docsNavOrder = docsNav.flatMap(section =>

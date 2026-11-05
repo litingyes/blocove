@@ -23,6 +23,10 @@ src/generated
 # pnpm project-local store (sandboxed environments)
 .pnpm-store
 
+# Agent workspace: installed skills and git worktrees live here
+.agents/
+skills-lock.json
+
 # test artifacts
 coverage
 .vitest

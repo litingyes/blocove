@@ -28,9 +28,11 @@ const namespaceRoots = {
 const legacySpecifiers = [
   '@/components/ui/rich-text-editor/',
   '@/components/ui/code-editor/',
+  '@/components/ui/media/',
   '@/lib/rich-text-editor-extension',
   '@/lib/code-editor-extension',
   '@/lib/code-editor-shiki',
+  '@/lib/media-theme',
 ]
 
 const errors = []

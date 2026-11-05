@@ -20,6 +20,9 @@
       "@/components/blocove/code-editor/*": [
         "./src/registry/blocove/ui/code-editor/*"
       ],
+      "@/components/blocove/media/*": [
+        "./src/registry/blocove/ui/media/*"
+      ],
       "@/lib/blocove/*": ["./src/registry/blocove/lib/*"],
       "@/*": ["./src/*"]
     },

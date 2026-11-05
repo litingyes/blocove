@@ -5,7 +5,7 @@ import {
   highlightActiveLineGutter,
   lineNumbers,
 } from '@codemirror/view'
-import { defineCodeEditorExtension } from '@/lib/code-editor-extension'
+import { defineCodeEditorExtension } from '@/lib/blocove/code-editor-extension'
 
 export interface CodeEditorLineNumbersProps {
   /** Render the fold gutter next to the line numbers. */

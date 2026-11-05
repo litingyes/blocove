@@ -1,38 +1,38 @@
 import { cn } from 'cn'
 import { useState } from 'react'
-import { EditorBold, EditorBoldToolbar } from '@/components/ui/rich-text-editor/bold'
-import { EditorCode, EditorCodeToolbar } from '@/components/ui/rich-text-editor/code'
+import { EditorBold, EditorBoldToolbar } from '@/components/blocove/rich-text-editor/bold'
+import { EditorCode, EditorCodeToolbar } from '@/components/blocove/rich-text-editor/code'
 import {
   EditorCodeBlock,
   EditorCodeBlockToolbar,
-} from '@/components/ui/rich-text-editor/code-block'
+} from '@/components/blocove/rich-text-editor/code-block'
 import {
   EditorDetails,
   EditorDetailsToolbar,
-} from '@/components/ui/rich-text-editor/details'
+} from '@/components/blocove/rich-text-editor/details'
 import {
   Editor,
   EditorBubbleMenu,
   EditorCharacterCount,
   EditorContent,
   EditorToolbar,
-} from '@/components/ui/rich-text-editor/editor'
-import { EditorHardBreak } from '@/components/ui/rich-text-editor/hard-break'
+} from '@/components/blocove/rich-text-editor/editor'
+import { EditorHardBreak } from '@/components/blocove/rich-text-editor/hard-break'
 import {
   EditorHeading,
   EditorHeadingToolbar,
-} from '@/components/ui/rich-text-editor/heading'
-import { EditorImage, EditorImageToolbar } from '@/components/ui/rich-text-editor/image'
-import { EditorItalic, EditorItalicToolbar } from '@/components/ui/rich-text-editor/italic'
-import { EditorLink, EditorLinkToolbar } from '@/components/ui/rich-text-editor/link'
-import { EditorParagraph } from '@/components/ui/rich-text-editor/paragraph'
-import { EditorStrike, EditorStrikeToolbar } from '@/components/ui/rich-text-editor/strike'
-import { EditorTable, EditorTableToolbar } from '@/components/ui/rich-text-editor/table'
-import { EditorText } from '@/components/ui/rich-text-editor/text'
+} from '@/components/blocove/rich-text-editor/heading'
+import { EditorImage, EditorImageToolbar } from '@/components/blocove/rich-text-editor/image'
+import { EditorItalic, EditorItalicToolbar } from '@/components/blocove/rich-text-editor/italic'
+import { EditorLink, EditorLinkToolbar } from '@/components/blocove/rich-text-editor/link'
+import { EditorParagraph } from '@/components/blocove/rich-text-editor/paragraph'
+import { EditorStrike, EditorStrikeToolbar } from '@/components/blocove/rich-text-editor/strike'
+import { EditorTable, EditorTableToolbar } from '@/components/blocove/rich-text-editor/table'
+import { EditorText } from '@/components/blocove/rich-text-editor/text'
 import {
   EditorUnderline,
   EditorUnderlineToolbar,
-} from '@/components/ui/rich-text-editor/underline'
+} from '@/components/blocove/rich-text-editor/underline'
 
 /**
  * A complete editor: every node, every mark, the toolbar, the bubble menu and

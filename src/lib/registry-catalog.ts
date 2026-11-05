@@ -39,9 +39,11 @@ export const itemTypeLabels: Record<string, string> = {
   'registry:hook': 'Hooks',
 }
 
-// Alias root the CLI installs each file type into. See `resolveNestedFilePath`
-// in @shadcn/registry: the installed path keeps everything after the alias
-// folder, so nested registry folders (ui/rich-text-editor/...) survive installation.
+// Alias root the CLI falls back to for files without an explicit target. See
+// `resolveNestedFilePath` in @shadcn/registry: the installed path keeps
+// everything after the alias folder, so nested registry folders survive
+// installation. Blocove items always set a target under `components/blocove`
+// or `lib/blocove`, so this only covers future items that omit one.
 const installedRoots: Record<string, string> = {
   'registry:ui': 'components/ui',
   'registry:lib': 'lib',

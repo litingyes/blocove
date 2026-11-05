@@ -243,10 +243,12 @@ function ManualInstall({
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-semibold">3. Add the files</h3>
         <p className="text-xs text-muted-foreground">
-          Paths follow the aliases in your
+          Paths are where the CLI writes each file, relative to your project
+          root (`src/` is prepended in projects that use a
           {' '}
-          <code className="rounded bg-muted px-1 py-0.5">components.json</code>
-          .
+          <code className="rounded bg-muted px-1 py-0.5">src</code>
+          {' '}
+          directory).
         </p>
         {fileSources.length === 0
           ? (

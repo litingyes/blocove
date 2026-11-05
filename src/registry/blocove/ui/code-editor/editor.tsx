@@ -1,6 +1,6 @@
 import type { Extension } from '@codemirror/state'
 import type { ComponentProps, ReactNode, RefObject } from 'react'
-import type { CodeEditorExtensionConfig } from '@/lib/code-editor-extension'
+import type { CodeEditorExtensionConfig } from '@/lib/blocove/code-editor-extension'
 import {
   defaultKeymap,
   history,
@@ -42,7 +42,7 @@ import {
   codeEditorExtensionSignature,
   collectCodeEditorChildren,
   resolveCodeEditorExtensions,
-} from '@/lib/code-editor-extension'
+} from '@/lib/blocove/code-editor-extension'
 
 export interface CodeEditorProps {
   /** Controlled document. */

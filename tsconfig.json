@@ -8,24 +8,19 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "paths": {
-      "@/components/ui/code-editor/editor": [
-        "./src/registry/blocove/ui/code-editor/editor.tsx"
-      ],
-      "@/components/ui/rich-text-editor/editor": [
+      "@/components/blocove/rich-text-editor/editor": [
         "./src/registry/blocove/ui/rich-text-editor/editor.tsx"
       ],
-      "@/components/ui/rich-text-editor/*": [
+      "@/components/blocove/rich-text-editor/*": [
         "./src/registry/blocove/ui/rich-text-editor/*"
       ],
-      "@/lib/code-editor-extension": [
-        "./src/registry/blocove/lib/code-editor-extension.ts"
+      "@/components/blocove/code-editor/editor": [
+        "./src/registry/blocove/ui/code-editor/editor.tsx"
       ],
-      "@/lib/code-editor-shiki": [
-        "./src/registry/blocove/lib/code-editor-shiki.ts"
+      "@/components/blocove/code-editor/*": [
+        "./src/registry/blocove/ui/code-editor/*"
       ],
-      "@/lib/rich-text-editor-extension": [
-        "./src/registry/blocove/lib/rich-text-editor-extension.ts"
-      ],
+      "@/lib/blocove/*": ["./src/registry/blocove/lib/*"],
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,

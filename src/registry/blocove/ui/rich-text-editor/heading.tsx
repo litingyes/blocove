@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 const defaultLevels: Level[] = [1, 2, 3]
 

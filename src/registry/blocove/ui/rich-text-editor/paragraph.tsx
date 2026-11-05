@@ -1,6 +1,6 @@
 import type { ParagraphOptions } from '@tiptap/extension-paragraph'
 import { Paragraph } from '@tiptap/extension-paragraph'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 export type EditorParagraphProps = Partial<ParagraphOptions>
 

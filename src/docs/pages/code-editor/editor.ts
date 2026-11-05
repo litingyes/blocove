@@ -5,8 +5,8 @@ import CodeEditorReadOnlyDemo from '@/docs/examples/code-editor/readonly'
 import { codeEditorUsage } from '@/docs/snippets/code-editor'
 
 const controlledUsage = `import { useState } from "react"
-import { CodeEditor, CodeEditorContent, CodeEditorStatusBar, CodeEditorToolbar } from "@/components/ui/code-editor/editor"
-import { CodeEditorShiki } from "@/components/ui/code-editor/shiki"
+import { CodeEditor, CodeEditorContent, CodeEditorStatusBar, CodeEditorToolbar } from "@/components/blocove/code-editor/editor"
+import { CodeEditorShiki } from "@/components/blocove/code-editor/shiki"
 
 export function Example() {
   const [code, setCode] = useState('const answer = 42')

@@ -1,6 +1,6 @@
 import type { HardBreakOptions } from '@tiptap/extension-hard-break'
 import { HardBreak } from '@tiptap/extension-hard-break'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 export type EditorHardBreakProps = Partial<HardBreakOptions>
 

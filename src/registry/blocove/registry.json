@@ -45,7 +45,8 @@
       "files": [
         {
           "path": "lib/rich-text-editor-extension.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "lib/blocove/rich-text-editor-extension.ts"
         }
       ]
     },
@@ -83,7 +84,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/editor.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/editor.tsx"
         }
       ]
     },
@@ -105,7 +107,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/text.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/text.tsx"
         }
       ]
     },
@@ -127,7 +130,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/paragraph.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/paragraph.tsx"
         }
       ]
     },
@@ -149,7 +153,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/hard-break.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/hard-break.tsx"
         }
       ]
     },
@@ -175,7 +180,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/heading.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/heading.tsx"
         }
       ]
     },
@@ -200,7 +206,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/code-block.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/code-block.tsx"
         }
       ]
     },
@@ -225,7 +232,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/details.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/details.tsx"
         }
       ]
     },
@@ -253,7 +261,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/image.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/image.tsx"
         }
       ]
     },
@@ -280,7 +289,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/table.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/table.tsx"
         }
       ]
     },
@@ -305,7 +315,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/bold.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/bold.tsx"
         }
       ]
     },
@@ -330,7 +341,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/italic.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/italic.tsx"
         }
       ]
     },
@@ -355,7 +367,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/underline.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/underline.tsx"
         }
       ]
     },
@@ -380,7 +393,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/strike.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/strike.tsx"
         }
       ]
     },
@@ -405,7 +419,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/code.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/code.tsx"
         }
       ]
     },
@@ -433,7 +448,8 @@
       "files": [
         {
           "path": "ui/rich-text-editor/link.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/link.tsx"
         }
       ]
     },
@@ -452,7 +468,8 @@
       "files": [
         {
           "path": "lib/code-editor-extension.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "lib/blocove/code-editor-extension.ts"
         }
       ]
     },
@@ -480,7 +497,8 @@
       "files": [
         {
           "path": "ui/code-editor/editor.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/code-editor/editor.tsx"
         }
       ]
     },
@@ -504,11 +522,13 @@
       "files": [
         {
           "path": "lib/code-editor-shiki.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "lib/blocove/code-editor-shiki.ts"
         },
         {
           "path": "ui/code-editor/shiki.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/code-editor/shiki.tsx"
         }
       ]
     },
@@ -536,7 +556,8 @@
       "files": [
         {
           "path": "ui/code-editor/languages.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/code-editor/languages.tsx"
         }
       ]
     },
@@ -560,7 +581,8 @@
       "files": [
         {
           "path": "ui/code-editor/line-numbers.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/code-editor/line-numbers.tsx"
         }
       ]
     },
@@ -586,7 +608,8 @@
       "files": [
         {
           "path": "ui/code-editor/diff.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "components/blocove/code-editor/diff.tsx"
         }
       ]
     },
@@ -619,7 +642,8 @@
       "files": [
         {
           "path": "blocks/rich-text-editor-playground.tsx",
-          "type": "registry:block"
+          "type": "registry:block",
+          "target": "components/blocove/rich-text-editor-playground.tsx"
         }
       ]
     }

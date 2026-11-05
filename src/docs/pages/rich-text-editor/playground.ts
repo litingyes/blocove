@@ -18,7 +18,7 @@ export const docsPage: DocsPage = {
   usage: [
     {
       title: 'Use the block',
-      code: `import { RichTextEditorPlayground } from "@/components/rich-text-editor-playground"
+      code: `import { RichTextEditorPlayground } from "@/components/blocove/rich-text-editor-playground"
 
 export function DocumentEditor() {
   return (

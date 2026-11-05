@@ -3,8 +3,8 @@ import type { Editor } from '@tiptap/react'
 import { CodeBlock } from '@tiptap/extension-code-block'
 import { useCurrentEditor, useEditorState } from '@tiptap/react'
 import { SquareCodeIcon } from 'lucide-react'
-import { EditorToolbarButton } from '@/components/ui/rich-text-editor/editor'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { EditorToolbarButton } from '@/components/blocove/rich-text-editor/editor'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 export type EditorCodeBlockProps = Partial<CodeBlockOptions>
 

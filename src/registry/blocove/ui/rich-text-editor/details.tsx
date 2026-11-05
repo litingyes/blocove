@@ -1,6 +1,6 @@
 import type { DetailsOptions } from '@tiptap/extension-details'
 import type { Editor, ReactNodeViewProps } from '@tiptap/react'
-import type { ExtensionComponent } from '@/lib/rich-text-editor-extension'
+import type { ExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-details'
 import {
   NodeViewContent,
@@ -12,8 +12,8 @@ import {
 import { cn } from 'cn'
 import { ChevronRightIcon, ListCollapseIcon } from 'lucide-react'
 import { useEffect, useRef } from 'react'
-import { EditorToolbarButton } from '@/components/ui/rich-text-editor/editor'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { EditorToolbarButton } from '@/components/blocove/rich-text-editor/editor'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 export type EditorDetailsProps = Partial<DetailsOptions>
 

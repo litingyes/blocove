@@ -1,15 +1,15 @@
 import type { LinkOptions } from '@tiptap/extension-link'
 import type { Editor } from '@tiptap/react'
-import type { ExtensionComponent } from '@/lib/rich-text-editor-extension'
+import type { ExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 import { Link } from '@tiptap/extension-link'
 import { useCurrentEditor, useEditorState } from '@tiptap/react'
 import { LinkIcon } from 'lucide-react'
 import { useState } from 'react'
+import { EditorToolbarButton } from '@/components/blocove/rich-text-editor/editor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { EditorToolbarButton } from '@/components/ui/rich-text-editor/editor'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 // Matches an explicit URL protocol: `https:`, `mailto:`, `tel:`, …
 const protocolPattern = /^[a-z][\w+.-]*:/i

@@ -6,7 +6,6 @@ import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { apiId } from '@/lib/docs-anchor'
 import { buildPageMarkdown } from '@/lib/docs-markdown'
-import { toConsumerSource } from '@/lib/docs-source'
 import { itemTypeLabels } from '@/lib/registry-catalog'
 import { ApiReference } from './api-reference'
 import { CodePanel } from './code-panel'
@@ -224,7 +223,7 @@ export function DocsPage({
                       <ComponentPreview
                         key={example.title}
                         title={example.title}
-                        code={toConsumerSource(example.code)}
+                        code={example.code}
                         language={example.language ?? 'tsx'}
                         previewClassName={example.previewClassName}
                       >

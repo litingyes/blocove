@@ -23,9 +23,9 @@ import {
   CodeEditorToolbarButton,
   useCodeEditor,
   useCodeEditorState,
-} from '@/components/ui/code-editor/editor'
+} from '@/components/blocove/code-editor/editor'
 import { Separator } from '@/components/ui/separator'
-import { defineCodeEditorExtension } from '@/lib/code-editor-extension'
+import { defineCodeEditorExtension } from '@/lib/blocove/code-editor-extension'
 
 export interface CodeEditorDiffLabels {
   /** Text of the per-chunk accept control. */
@@ -121,6 +121,19 @@ const diffTheme = EditorView.theme({
     display: 'flex',
     gap: '0.25rem',
   },
+  // Pure insertions have no deleted lines: give the controls their own row so
+  // they never float over the inserted code.
+  '& .cm-deletedChunk:not(:has(.cm-deletedLine))': {
+    minHeight: '1.75rem',
+    paddingBlock: '0.125rem',
+    background: 'transparent',
+    borderBlock: 'none',
+  },
+  '& .cm-deletedChunk:not(:has(.cm-deletedLine)) .cm-chunkButtons': {
+    position: 'static',
+    justifyContent: 'flex-end',
+    paddingInlineEnd: '0.375rem',
+  },
   '& .cm-deletedChunk .cm-diff-control': {
     margin: '0',
     padding: '0.0625rem 0.375rem',
@@ -168,7 +181,9 @@ const diffTheme = EditorView.theme({
     background: 'var(--code-diff-add)',
   },
   '& .cm-deletedLineGutter': {
-    background: 'var(--code-diff-remove)',
+    // Marks where the deletion widget sits. A neutral rail avoids claiming a
+    // removal on pure insertions, where the widget carries no deleted text.
+    background: 'color-mix(in oklab, var(--foreground) 24%, transparent)',
   },
 })
 
@@ -390,18 +405,26 @@ function resetDiff(view: EditorView) {
     original.length,
   )
 
+  // Only rewrite the document when it drifted from the baseline, so resetting
+  // after accepting every chunk keeps the collapsed unchanged ranges.
+  const docChanged = !view.state.doc.eq(baseline.doc)
+
   view.dispatch({
-    changes: {
-      from: 0,
-      to: view.state.doc.length,
-      insert: baseline.doc.toString(),
-    },
+    ...(docChanged
+      ? {
+          changes: {
+            from: 0,
+            to: view.state.doc.length,
+            insert: baseline.doc.toString(),
+          },
+          selection: { anchor: 0 },
+          scrollIntoView: true,
+        }
+      : {}),
     effects: updateOriginalDoc.of({
       doc: changes.apply(original),
       changes,
     }),
-    selection: { anchor: 0 },
-    scrollIntoView: true,
     userEvent: 'revert',
   })
 

@@ -21,9 +21,10 @@ their own documentation page and whose content is typeset with
 extensions.
 
 Items are grouped per editor family. The rich text editor lives under the
-`rich-text-editor-*` prefix and installs into `components/ui/rich-text-editor/`,
-the code editor under `code-editor-*` into `components/ui/code-editor/`, so a new
-family can be added next to them without renaming existing items.
+`rich-text-editor-*` prefix and installs into `components/blocove/rich-text-editor/`,
+the code editor under `code-editor-*` into `components/blocove/code-editor/`, so a
+new family can be added next to them without renaming existing items. Blocove owns
+its own namespace, so its files never mix with shadcn/ui's `components/ui`.
 
 The site is built with [TanStack Start](https://tanstack.com/start) and the
 registry itself is plain JSON, so the same items work with the shadcn CLI from a
@@ -97,25 +98,25 @@ its extension, and the base editor collects them from its children. The
 `rich-text-editor` item installs the shell and the basic nodes; add the nodes and marks
 you compose on top.
 
-The family installs as a folder under the consumer's `ui` alias, so imports are
-namespaced: `@/components/ui/rich-text-editor/editor`,
-`@/components/ui/rich-text-editor/bold`, and so on. The internal helper installs as
-`@/lib/rich-text-editor-extension`.
+The family installs into `components/blocove/rich-text-editor/`, so imports are
+namespaced: `@/components/blocove/rich-text-editor/editor`,
+`@/components/blocove/rich-text-editor/bold`, and so on. The internal helper
+installs as `@/lib/blocove/rich-text-editor-extension`.
 
 ```tsx
-import { EditorBold, EditorBoldToolbar } from '@/components/ui/rich-text-editor/bold'
+import { EditorBold, EditorBoldToolbar } from '@/components/blocove/rich-text-editor/bold'
 import {
   Editor,
   EditorBubbleMenu,
   EditorCharacterCount,
   EditorContent,
   EditorToolbar,
-} from '@/components/ui/rich-text-editor/editor'
-import { EditorHardBreak } from '@/components/ui/rich-text-editor/hard-break'
-import { EditorHeading, EditorHeadingToolbar } from '@/components/ui/rich-text-editor/heading'
-import { EditorLink, EditorLinkToolbar } from '@/components/ui/rich-text-editor/link'
-import { EditorParagraph } from '@/components/ui/rich-text-editor/paragraph'
-import { EditorText } from '@/components/ui/rich-text-editor/text'
+} from '@/components/blocove/rich-text-editor/editor'
+import { EditorHardBreak } from '@/components/blocove/rich-text-editor/hard-break'
+import { EditorHeading, EditorHeadingToolbar } from '@/components/blocove/rich-text-editor/heading'
+import { EditorLink, EditorLinkToolbar } from '@/components/blocove/rich-text-editor/link'
+import { EditorParagraph } from '@/components/blocove/rich-text-editor/paragraph'
+import { EditorText } from '@/components/blocove/rich-text-editor/text'
 
 export function RichTextEditorExample() {
   return (
@@ -203,10 +204,10 @@ each capability — highlighting, language support, editor chrome — is a separ
 item declared as a component inside `<CodeEditor>`. The `code-editor` item installs
 the shell; add the extensions you compose on top.
 
-The family installs as a folder under the consumer's `ui` alias, so imports are
-namespaced: `@/components/ui/code-editor/editor`,
-`@/components/ui/code-editor/shiki`, and so on. The helpers install as
-`@/lib/code-editor-extension` and `@/lib/code-editor-shiki`.
+The family installs into `components/blocove/code-editor/`, so imports are
+namespaced: `@/components/blocove/code-editor/editor`,
+`@/components/blocove/code-editor/shiki`, and so on. The helpers install as
+`@/lib/blocove/code-editor-extension` and `@/lib/blocove/code-editor-shiki`.
 
 ```tsx
 import {
@@ -214,10 +215,10 @@ import {
   CodeEditorContent,
   CodeEditorStatusBar,
   CodeEditorToolbar,
-} from '@/components/ui/code-editor/editor'
-import { CodeEditorLanguages } from '@/components/ui/code-editor/languages'
-import { CodeEditorLineNumbers } from '@/components/ui/code-editor/line-numbers'
-import { CodeEditorShiki } from '@/components/ui/code-editor/shiki'
+} from '@/components/blocove/code-editor/editor'
+import { CodeEditorLanguages } from '@/components/blocove/code-editor/languages'
+import { CodeEditorLineNumbers } from '@/components/blocove/code-editor/line-numbers'
+import { CodeEditorShiki } from '@/components/blocove/code-editor/shiki'
 
 export function CodeEditorExample() {
   return (
@@ -281,7 +282,7 @@ working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 - `code-editor-diff` depends on `code-editor` (it reuses the toolbar button) and
   on the `separator` primitive, and adds the themed diff view plus the review
   toolbar.
-- `code-editor-shiki` also installs `lib/code-editor-shiki.ts`, the shiki
+- `code-editor-shiki` also installs `lib/blocove/code-editor-shiki.ts`, the shiki
   highlighter shared by the docs code panels and the editor.
 
 ## Items
@@ -313,15 +314,15 @@ working in a `readOnly` editor; `labels` localizes the per-chunk controls.
 | `code-editor-line-numbers`    | `registry:ui`    | Line numbers, fold gutter and active line highlight                    |
 | `code-editor-diff`            | `registry:ui`    | Inline diff view with accept, reject and chunk navigation              |
 
-The `rich-text-editor-*` and `code-editor-*` UI items have no `target`: their
-registry paths keep the family folder, so the CLI installs them into
-`components/ui/rich-text-editor/` and `components/ui/code-editor/`, and the
-helpers into `lib/rich-text-editor-extension.ts` and `lib/code-editor-extension.ts`.
+Every Blocove file declares an explicit `target`, so items install into the
+Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*` and
+`code-editor-*` UI items land in `components/blocove/rich-text-editor/` and
+`components/blocove/code-editor/`, and the helpers in `lib/blocove/`. Projects
+that use a `src` directory get the same paths under `src/`.
 
-The block ships `blocks/rich-text-editor-playground.tsx`. Blocks install next to
-the components, so the CLI writes it to
-`components/rich-text-editor-playground.tsx`; it depends on the shell and every
-node and mark item, so a single install produces a complete editor.
+The block ships `blocks/rich-text-editor-playground.tsx`. It targets
+`components/blocove/rich-text-editor-playground.tsx`; it depends on the shell and
+every node and mark item, so a single install produces a complete editor.
 
 `base` ships no files of its own: it declares the official shadcn/ui items
 (`font-inter`, `button`, `card`, `input`, `label`) and the npm packages those
@@ -349,6 +350,23 @@ The rich text editor items were renamed to the `rich-text-editor-*` family (prev
 `v0.2.0` release. Nothing was tagged with the old names, so no aliases are kept
 and `/r/editor*.json` URLs no longer exist.
 
+### Upgrading install paths
+
+Blocove items no longer install into shadcn/ui's `components/ui` namespace:
+
+| Before                                       | After                                                |
+| -------------------------------------------- | ---------------------------------------------------- |
+| `components/ui/rich-text-editor/<name>.tsx`  | `components/blocove/rich-text-editor/<name>.tsx`     |
+| `components/ui/code-editor/<name>.tsx`       | `components/blocove/code-editor/<name>.tsx`          |
+| `components/rich-text-editor-playground.tsx` | `components/blocove/rich-text-editor-playground.tsx` |
+| `lib/rich-text-editor-extension.ts`          | `lib/blocove/rich-text-editor-extension.ts`          |
+| `lib/code-editor-extension.ts`               | `lib/blocove/code-editor-extension.ts`               |
+| `lib/code-editor-shiki.ts`                   | `lib/blocove/code-editor-shiki.ts`                   |
+
+Re-run `shadcn add` for the items you use, delete the files left at the old
+paths, and update the imports. shadcn/ui primitives keep their `components/ui`
+paths.
+
 ## Project layout
 
 ```txt
@@ -371,7 +389,6 @@ src/components/docs/              # docs shell: sidebar, TOC, preview tabs, code
 src/typeset.css                   # vendored shadcn/typeset stylesheet
 src/lib/docs-commands.ts          # CLI commands used by the installation section
 src/lib/docs-markdown.ts          # Copy Page markdown and the .md endpoint
-src/lib/docs-source.ts            # registry paths -> consumer paths for demos
 src/lib/download-file.ts          # code panel download file names and blobs
 src/lib/registry-source.ts        # raw registry sources for the manual install
 src/components/ui/                # official shadcn/ui components (installed with the CLI)
@@ -382,6 +399,7 @@ src/styles.css                    # Tailwind CSS entry (b0 preset theme + typese
 scripts/build-catalog.mjs         # public/r/registry.json -> src/generated/registry.json
 scripts/clean-registry.mjs        # clears generated registry artifacts before a build
 scripts/check-preset.mjs          # asserts the project still resolves to the b0 preset
+scripts/check-registry-paths.mjs   # asserts every item targets the Blocove namespace
 public/r/                         # generated registry JSON (gitignored)
 ```
 
@@ -389,6 +407,8 @@ public/r/                         # generated registry JSON (gitignored)
   Items are grouped by family: the rich text editor lives in
   `ui/rich-text-editor/`, the complete editor block in `blocks/`, the code editor
   in `ui/code-editor/`, and a new family gets its own folder and item prefix.
+  Every shipped file declares a `target` under `components/blocove/...` or
+  `lib/blocove/...`.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
   the whole shadcn/ui surface is available as context for composing new
@@ -400,14 +420,13 @@ public/r/                         # generated registry JSON (gitignored)
 
 Docs demos import registry files through the repository path
 (`@/registry/blocove/ui/rich-text-editor/bold`). The shipped items themselves use the
-exact paths consumers get (`@/components/ui/rich-text-editor/*`,
-`@/lib/rich-text-editor-extension`, `@/components/ui/code-editor/editor`,
-`@/lib/code-editor-extension`, `@/lib/code-editor-shiki`), so the site resolves
+exact paths consumers get (`@/components/blocove/rich-text-editor/*`,
+`@/components/blocove/code-editor/*`, `@/lib/blocove/*`), so the site resolves
 those specifiers to the registry sources in `tsconfig.json` and
-`vite.config.ts`. The `@/components/ui/rich-text-editor/*` mapping covers every
-node and mark, which is what lets the playground block run its shipped imports
-in the docs preview. Add a mapping there when a registry item imports another
-item that has no local file under `src/components/ui`.
+`vite.config.ts`. The family mappings cover every node and mark, which is what
+lets the playground block run its shipped imports in the docs preview. Add a
+mapping there when a registry item imports another item that has no local file
+under `src/components/ui` or `src/lib`.
 
 ## Local development
 
@@ -418,16 +437,17 @@ pnpm dev             # http://localhost:3000, regenerates public/r first
 
 Useful scripts:
 
-| Script                   | Description                                         |
-| ------------------------ | --------------------------------------------------- |
-| `pnpm registry:build`    | Clear `public/r` and run `shadcn build`             |
-| `pnpm registry:prepare`  | Build registry JSON and generate the site catalog   |
-| `pnpm registry:validate` | Validate `litingyes/blocove` from GitHub            |
-| `pnpm preset:check`      | Fail unless the project resolves to the `b0` preset |
-| `pnpm typecheck`         | TypeScript                                          |
-| `pnpm lint`              | ESLint: lint and formatting                         |
-| `pnpm lint:fix`          | ESLint with autofix                                 |
-| `pnpm check`             | preset check, typecheck, lint and production build  |
+| Script                   | Description                                            |
+| ------------------------ | ------------------------------------------------------ |
+| `pnpm registry:build`    | Clear `public/r` and run `shadcn build`                |
+| `pnpm registry:check`    | Fail unless every item targets the Blocove namespace   |
+| `pnpm registry:prepare`  | Build registry JSON, check paths, generate the catalog |
+| `pnpm registry:validate` | Validate `litingyes/blocove` from GitHub               |
+| `pnpm preset:check`      | Fail unless the project resolves to the `b0` preset    |
+| `pnpm typecheck`         | TypeScript                                             |
+| `pnpm lint`              | ESLint: lint and formatting                            |
+| `pnpm lint:fix`          | ESLint with autofix                                    |
+| `pnpm check`             | preset check, typecheck, lint and production build     |
 
 The generated files (`public/r`, `src/generated`) are gitignored. `predev`,
 `prebuild` and `pretypecheck` regenerate them automatically.
@@ -474,8 +494,9 @@ Blocove only ships extensions. Never copy a shadcn/ui component into the registr
 reference it instead.
 
 1. Put the source files under `src/registry/blocove/` (`lib/`, `ui/`, `blocks/`, ...).
-2. Import shadcn/ui components from `@/components/ui/*`. The CLI rewrites those
-   imports to the consumer's `ui` alias on install.
+2. Import shadcn/ui components from `@/components/ui/*` and other Blocove items
+   from `@/components/blocove/*` or `@/lib/blocove/*`. The CLI rewrites those
+   specifiers to the consumer's aliases on install.
 3. Add an item to `src/registry/blocove/registry.json`. Paths are relative to that
    file:
    ```json
@@ -490,11 +511,13 @@ reference it instead.
        {
          "path": "blocks/settings-dialog/components/settings-dialog.tsx",
          "type": "registry:component",
-         "target": "components/settings-dialog.tsx"
+         "target": "components/blocove/settings-dialog.tsx"
        }
      ]
    }
    ```
+   Every shipped file needs an explicit `target` under `components/blocove/` or
+   `lib/blocove/`; `pnpm registry:check` enforces it.
 4. Run `pnpm run registry:prepare` and check `public/r/<name>.json`.
 5. Commit the source and item definition, then tag a release.
 
@@ -504,7 +527,7 @@ reference it instead.
 2. Declare the extension with the shared helper:
    ```tsx
    import { Heading } from '@tiptap/extension-heading'
-   import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+   import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
    export const EditorHeading = defineExtensionComponent('heading', props => [
      Heading.configure(props),
@@ -512,11 +535,11 @@ reference it instead.
    ```
 3. Export a toolbar control when the extension needs one. Controls use
    `useCurrentEditor()` and `EditorToolbarButton` from
-   `@/components/ui/rich-text-editor/editor`; guard the null editor, then read active
+   `@/components/blocove/rich-text-editor/editor`; guard the null editor, then read active
    state in an inner component with `useEditorState`.
 4. Add the item to `src/registry/blocove/registry.json` with
-   `type: "registry:ui"`, path `ui/rich-text-editor/<name>.tsx` (no `target`: the CLI
-   installs it as `components/ui/rich-text-editor/<name>.tsx`), the Tiptap package in
+   `type: "registry:ui"`, path `ui/rich-text-editor/<name>.tsx` and
+   `target: "components/blocove/rich-text-editor/<name>.tsx"`, the Tiptap package in
    `dependencies`, and `registryDependencies: ["litingyes/blocove/rich-text-editor"]`
    plus the shadcn/ui primitives the control uses.
 5. Document it:
@@ -534,7 +557,7 @@ reference it instead.
 2. Declare the CodeMirror extension with the shared helper:
    ```tsx
    import { lineNumbers } from '@codemirror/view'
-   import { defineCodeEditorExtension } from '@/lib/code-editor-extension'
+   import { defineCodeEditorExtension } from '@/lib/blocove/code-editor-extension'
 
    export const CodeEditorNumbers = defineCodeEditorExtension('numbers', () => [
      lineNumbers(),
@@ -543,8 +566,8 @@ reference it instead.
 3. The factory receives the declaration props and the editor root context, so a
    declaration can fall back to the `language` set once on `<CodeEditor>`.
 4. Add the item to `src/registry/blocove/registry.json` with
-   `type: "registry:ui"`, path `ui/code-editor/<name>.tsx` (no `target`: the CLI
-   installs it as `components/ui/code-editor/<name>.tsx`), the CodeMirror or
+   `type: "registry:ui"`, path `ui/code-editor/<name>.tsx` and
+   `target: "components/blocove/code-editor/<name>.tsx"`, the CodeMirror or
    shiki packages in `dependencies`, and
    `registryDependencies: ["litingyes/blocove/code-editor-extension"]` plus the
    shadcn/ui primitives the declaration renders.
@@ -569,9 +592,10 @@ Conventions:
   (`litingyes/blocove/<item>`).
 - Give every item a `title` and `description`; they are surfaced in the catalog
   and are useful for LLM tooling.
-- Blocove UI and lib items omit `target`, so the CLI installs them through the
-  consumer's `ui` and `lib` aliases. Blocks and files that must land at a fixed
-  path keep an explicit `target`.
+- Every Blocove file sets an explicit `target`: UI and block files under
+  `components/blocove/`, lib helpers under `lib/blocove/`. This keeps Blocove
+  items out of shadcn/ui's `components/ui` namespace; `pnpm registry:check`
+  fails the build when a file drifts.
 - `registry:page` and `registry:file` items require a `target`.
 - `@blocove/base` assumes the consumer project is set up with shadcn/ui: Tailwind
   CSS v4, `shadcn/tailwind.css` and the `@theme inline` color mappings.
@@ -609,7 +633,7 @@ pnpm run preset:check        # project still resolves to b0
 pnpm run registry:prepare
 pnpm dev
 
-npx shadcn@latest view http://localhost:3000/r/rich-text-editor.json
+npx shadcn@latest view http://localhost:3000/r/rich-text-editor.json  # targets: components/blocove/...
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-heading.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-table.json

@@ -1,11 +1,11 @@
 import type { StrikeOptions } from '@tiptap/extension-strike'
 import type { Editor } from '@tiptap/react'
-import type { ExtensionComponent } from '@/lib/rich-text-editor-extension'
+import type { ExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 import { Strike } from '@tiptap/extension-strike'
 import { useCurrentEditor, useEditorState } from '@tiptap/react'
 import { StrikethroughIcon } from 'lucide-react'
-import { EditorToolbarButton } from '@/components/ui/rich-text-editor/editor'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { EditorToolbarButton } from '@/components/blocove/rich-text-editor/editor'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 /**
  * Registers the Tiptap Strike mark.

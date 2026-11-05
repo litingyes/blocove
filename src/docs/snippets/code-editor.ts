@@ -1,6 +1,6 @@
 // The code editor docs share one composition builder: every page shows the same
 // shell, so imports and children stay in sync with the shipped items.
-/** Export name -> module stem inside `components/ui/code-editor`. */
+/** Export name -> module stem inside `components/blocove/code-editor`. */
 const codeEditorModules = {
   CodeEditor: 'editor',
   CodeEditorContent: 'editor',
@@ -25,7 +25,7 @@ const moduleOrder = [
   'diff',
 ] as const
 
-const importRoot = '@/components/ui/code-editor'
+const importRoot = '@/components/blocove/code-editor'
 
 function importBlock(names: CodeEditorExport[]) {
   const used = new Set(names)

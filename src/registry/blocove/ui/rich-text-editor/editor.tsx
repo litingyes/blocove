@@ -35,7 +35,7 @@ import {
   collectEditorChildren,
   extensionSignature,
   resolveExtensions,
-} from '@/lib/rich-text-editor-extension'
+} from '@/lib/blocove/rich-text-editor-extension'
 
 export interface EditorProps {
   /** Controlled HTML content. */

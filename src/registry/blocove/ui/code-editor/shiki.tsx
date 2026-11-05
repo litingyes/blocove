@@ -1,15 +1,15 @@
 import type { Extension } from '@codemirror/state'
 import type { DecorationSet, ViewUpdate } from '@codemirror/view'
-import type { CodeEditorExtensionContext } from '@/lib/code-editor-extension'
-import type { CodeEditorColorScheme } from '@/lib/code-editor-shiki'
+import type { CodeEditorExtensionContext } from '@/lib/blocove/code-editor-extension'
+import type { CodeEditorColorScheme } from '@/lib/blocove/code-editor-shiki'
 import { StateEffect, StateField } from '@codemirror/state'
 import { Decoration, EditorView, ViewPlugin } from '@codemirror/view'
-import { defineCodeEditorExtension } from '@/lib/code-editor-extension'
+import { defineCodeEditorExtension } from '@/lib/blocove/code-editor-extension'
 import {
   getCodeEditorColorScheme,
   subscribeCodeEditorColorScheme,
   tokenizeCodeEditor,
-} from '@/lib/code-editor-shiki'
+} from '@/lib/blocove/code-editor-shiki'
 
 export interface CodeEditorShikiProps {
   /** Language used by shiki. Falls back to the language of the editor root. */

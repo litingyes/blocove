@@ -1,8 +1,8 @@
 import type { Extension } from '@codemirror/state'
-import type { CodeEditorExtensionContext } from '@/lib/code-editor-extension'
+import type { CodeEditorExtensionContext } from '@/lib/blocove/code-editor-extension'
 import { Compartment } from '@codemirror/state'
 import { ViewPlugin } from '@codemirror/view'
-import { defineCodeEditorExtension } from '@/lib/code-editor-extension'
+import { defineCodeEditorExtension } from '@/lib/blocove/code-editor-extension'
 
 export interface CodeEditorLanguagesProps {
   /** Language used by the editing extensions. Falls back to the root language. */

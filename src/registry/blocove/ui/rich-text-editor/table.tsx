@@ -1,7 +1,7 @@
 import type { TableKitOptions } from '@tiptap/extension-table'
 import type { Editor } from '@tiptap/react'
 import type { ReactNode } from 'react'
-import type { ExtensionComponent } from '@/lib/rich-text-editor-extension'
+import type { ExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 import { TableKit } from '@tiptap/extension-table'
 import { useCurrentEditor, useEditorState } from '@tiptap/react'
 import { cn } from 'cn'
@@ -15,14 +15,14 @@ import {
   Trash2Icon,
 } from 'lucide-react'
 import { useState } from 'react'
+import { EditorToolbarButton } from '@/components/blocove/rich-text-editor/editor'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { EditorToolbarButton } from '@/components/ui/rich-text-editor/editor'
-import { defineExtensionComponent } from '@/lib/rich-text-editor-extension'
+import { defineExtensionComponent } from '@/lib/blocove/rich-text-editor-extension'
 
 /**
  * Registers the Tiptap table node family through the table kit. Options pass

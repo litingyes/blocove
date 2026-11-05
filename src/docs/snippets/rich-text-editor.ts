@@ -1,6 +1,6 @@
 // The rich text editor docs share one composition builder: every page shows the
 // same shell, so imports and children stay in sync with the shipped items.
-/** Export name -> module stem inside `components/ui/rich-text-editor`. */
+/** Export name -> module stem inside `components/blocove/rich-text-editor`. */
 const richTextEditorModules = {
   // Shell
   Editor: 'editor',
@@ -59,7 +59,7 @@ const moduleOrder = [
   'link',
 ] as const
 
-const importRoot = '@/components/ui/rich-text-editor'
+const importRoot = '@/components/blocove/rich-text-editor'
 
 function importBlock(names: RichTextEditorExport[]) {
   const used = new Set(names)

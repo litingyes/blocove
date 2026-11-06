@@ -1,9 +1,12 @@
+import type { Extensions } from '@tiptap/core'
 import type { Editor as TiptapEditor } from '@tiptap/react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Extension } from '@tiptap/core'
 import { describe, expect, it, vi } from 'vitest'
 import {
   Editor,
   EditorContent,
+  EditorFloatingMenu,
   EditorToolbar,
 } from '@/components/blocove/rich-text-editor/editor'
 import { EditorParagraph } from '@/components/blocove/rich-text-editor/paragraph'
@@ -15,6 +18,8 @@ function EditorShell({
   defaultValue,
   editable,
   placeholder,
+  history,
+  extensions,
   onChange,
   onReady,
 }: {
@@ -22,6 +27,8 @@ function EditorShell({
   defaultValue?: string
   editable?: boolean
   placeholder?: string
+  history?: boolean
+  extensions?: Extensions
   onChange?: (html: string) => void
   onReady?: (editor: TiptapEditor) => void
 }) {
@@ -31,6 +38,8 @@ function EditorShell({
       defaultValue={defaultValue}
       editable={editable}
       placeholder={placeholder}
+      history={history}
+      extensions={extensions}
       onChange={onChange}
       onReady={onReady}
     >
@@ -39,6 +48,21 @@ function EditorShell({
       <EditorContent />
     </Editor>
   )
+}
+
+function hasExtension(editor: TiptapEditor, name: string) {
+  return editor.extensionManager.extensions.some(extension => extension.name === name)
+}
+
+async function renderShellEditor(props: Parameters<typeof EditorShell>[0] = {}) {
+  let resolveEditor!: (editor: TiptapEditor) => void
+  const editorCreated = new Promise<TiptapEditor>((resolve) => {
+    resolveEditor = resolve
+  })
+
+  render(<EditorShell {...props} onReady={editor => resolveEditor(editor)} />)
+
+  return editorCreated
 }
 
 describe('editor content', () => {
@@ -168,6 +192,95 @@ describe('editor content', () => {
     await waitFor(() => {
       expect(container.querySelector('.ProseMirror')?.getAttribute('contenteditable')).toBe('true')
     })
+  })
+})
+
+describe('editor history', () => {
+  it('registers undo and redo by default', async () => {
+    const editor = await renderShellEditor({ value: '<p>History</p>' })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(true)
+  })
+
+  it('omits undo and redo when history is false', async () => {
+    const editor = await renderShellEditor({ value: '<p>No history</p>', history: false })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(false)
+  })
+
+  it('omits undo and redo when a collaboration extension is declared', async () => {
+    const collaboration = Extension.create({ name: 'collaboration' })
+    const editor = await renderShellEditor({
+      value: '<p>Collaborative</p>',
+      extensions: [collaboration],
+    })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(false)
+  })
+
+  it('keeps undo and redo when history is explicitly enabled next to collaboration', async () => {
+    const collaboration = Extension.create({ name: 'collaboration' })
+    const editor = await renderShellEditor({
+      value: '<p>Explicit</p>',
+      history: true,
+      extensions: [collaboration],
+    })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(true)
+  })
+})
+
+describe('editor floating menu', () => {
+  it('renders nothing outside an editor and without controls', () => {
+    const { container } = render(
+      <EditorFloatingMenu>
+        <span>controls</span>
+      </EditorFloatingMenu>,
+    )
+    const standalone = render(<EditorFloatingMenu />)
+
+    expect(container.querySelector('[data-slot="editor-floating-menu"]')).toBeNull()
+    expect(standalone.container.querySelector('[data-slot="editor-floating-menu"]')).toBeNull()
+  })
+
+  it('mounts the controls on an empty block', async () => {
+    let resolveEditor!: (editor: TiptapEditor) => void
+    const editorCreated = new Promise<TiptapEditor>((resolve) => {
+      resolveEditor = resolve
+    })
+
+    render(
+      <Editor value="" onReady={editor => resolveEditor(editor)}>
+        <EditorText />
+        <EditorParagraph />
+        <EditorFloatingMenu>
+          <button type="button">Insert</button>
+        </EditorFloatingMenu>
+        <EditorContent />
+      </Editor>,
+    )
+
+    await editorCreated
+
+    await waitFor(() => {
+      expect(document.querySelector('[data-slot="editor-floating-menu"]')).not.toBeNull()
+    })
+    expect(screen.getByRole('button', { name: 'Insert' })).toBeTruthy()
+  })
+
+  it('hides the controls once the selected block has content', async () => {
+    render(
+      <Editor defaultValue="<p>Hello</p>">
+        <EditorText />
+        <EditorParagraph />
+        <EditorFloatingMenu>
+          <button type="button">Insert</button>
+        </EditorFloatingMenu>
+        <EditorContent />
+      </Editor>,
+    )
+
+    expect(screen.queryByRole('button', { name: 'Insert' })).toBeNull()
   })
 })
 

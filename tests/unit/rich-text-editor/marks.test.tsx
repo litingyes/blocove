@@ -6,6 +6,12 @@ import { EditorCode, EditorCodeToolbar } from '@/components/blocove/rich-text-ed
 import { EditorItalic, EditorItalicToolbar } from '@/components/blocove/rich-text-editor/italic'
 import { EditorLink, EditorLinkToolbar } from '@/components/blocove/rich-text-editor/link'
 import { EditorStrike, EditorStrikeToolbar } from '@/components/blocove/rich-text-editor/strike'
+import {
+  EditorColor,
+  EditorFontSize,
+  EditorTextStyle,
+  EditorTextStyleToolbar,
+} from '@/components/blocove/rich-text-editor/text-style'
 import { EditorUnderline, EditorUnderlineToolbar } from '@/components/blocove/rich-text-editor/underline'
 import { renderRichTextEditor } from '../../helpers/render-rich-text-editor'
 
@@ -195,5 +201,74 @@ describe('duplicate declarations', () => {
     })
 
     expect(editor.getHTML()).toContain('href="https://example.com"')
+  })
+})
+
+describe('text style marks', () => {
+  it('registers the text style mark when only an attribute item is declared', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Color</p>',
+      extensions: <EditorColor />,
+    })
+
+    expect(
+      editor.extensionManager.extensions.some(extension => extension.name === 'textStyle'),
+    ).toBe(true)
+  })
+
+  it('registers the text style mark once when declared next to its attributes', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Color</p>',
+      extensions: (
+        <>
+          <EditorTextStyle />
+          <EditorColor />
+          <EditorFontSize />
+        </>
+      ),
+    })
+
+    expect(
+      editor.extensionManager.extensions.filter(extension => extension.name === 'textStyle'),
+    ).toHaveLength(1)
+  })
+
+  it('applies a font size and a color from the toolbar', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Styled</p>',
+      extensions: (
+        <>
+          <EditorTextStyle />
+          <EditorColor />
+          <EditorFontSize />
+        </>
+      ),
+      toolbar: <EditorTextStyleToolbar />,
+    })
+
+    act(() => {
+      editor.commands.selectAll()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Text style' }))
+
+    const size = await screen.findByLabelText('Font size')
+
+    fireEvent.change(size, {
+      target: { value: '1.5em' },
+    })
+    fireEvent.keyDown(size, { key: 'Enter' })
+
+    await waitFor(() => {
+      expect(editor.getHTML()).toContain('font-size: 1.5em')
+    })
+
+    fireEvent.change(screen.getByLabelText('Text color'), {
+      target: { value: '#dc2626' },
+    })
+
+    await waitFor(() => {
+      expect(editor.getHTML()).toContain('#dc2626')
+    })
   })
 })

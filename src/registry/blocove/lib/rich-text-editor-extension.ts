@@ -114,8 +114,37 @@ export function collectEditorChildren(children: ReactNode): EditorChildren {
   return { extensions: deduped, content }
 }
 
+/**
+ * Keeps the first extension registered under each name.
+ *
+ * Items declare the extensions they depend on, so the same extension is
+ * routinely produced twice: every text style attribute item carries the text
+ * style mark, and every list item carries the list item node and the list
+ * keymap. That is the intended composition, which is why the duplicate is
+ * dropped silently. A declaration that repeats an extension on purpose is
+ * reported by `collectEditorChildren` instead.
+ */
+export function dedupeExtensions(extensions: Extensions): Extensions {
+  const registered = new Set<string>()
+
+  return extensions.filter((extension) => {
+    if (registered.has(extension.name)) {
+      return false
+    }
+
+    registered.add(extension.name)
+    return true
+  })
+}
+
+/**
+ * Expands the declarations into Tiptap extensions, dropping extensions two
+ * declarations both provide.
+ */
 export function resolveExtensions(configs: ExtensionConfig[]): Extensions {
-  return configs.flatMap(({ component, props }) => component.extension(props))
+  return dedupeExtensions(
+    configs.flatMap(({ component, props }) => component.extension(props)),
+  )
 }
 
 /**

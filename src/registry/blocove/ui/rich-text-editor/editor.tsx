@@ -10,7 +10,7 @@ import {
   useEditor,
   useEditorState,
 } from '@tiptap/react'
-import { BubbleMenu } from '@tiptap/react/menus'
+import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus'
 import { cn } from 'cn'
 import {
   AlignCenterIcon,
@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/tooltip'
 import {
   collectEditorChildren,
+  dedupeExtensions,
   extensionSignature,
   resolveExtensions,
 } from '@/lib/blocove/rich-text-editor-extension'
@@ -54,6 +55,13 @@ export interface EditorProps {
   characterLimit?: number
   /** Additional Tiptap extensions, appended after the declared ones. */
   extensions?: Extensions
+  /**
+   * Whether the editor registers its own undo/redo history.
+   *
+   * Defaults to `false` when a collaboration extension is present, because
+   * collaboration carries its own undo manager, and to `true` otherwise.
+   */
+  history?: boolean
   /** Called once the editor instance is created. */
   onReady?: (editor: TiptapEditor) => void
   className?: string
@@ -76,6 +84,7 @@ export function Editor({
   autoFocus = false,
   characterLimit,
   extensions,
+  history,
   onReady,
   className,
   editorProps,
@@ -89,6 +98,14 @@ export function Editor({
   const onChangeRef = useRef(onChange)
   const onReadyRef = useRef(onReady)
   const lastEmittedRef = useRef<string | null>(null)
+  const declaredExtensions = [
+    ...resolveExtensions(extensionConfigs),
+    ...(extensions ?? []),
+  ]
+  // Collaboration ships its own undo manager, so registering the editor's
+  // history next to it would fight over the same transaction metadata.
+  const historyEnabled = history
+    ?? !declaredExtensions.some(extension => extension.name === 'collaboration')
 
   onChangeRef.current = onChange
   onReadyRef.current = onReady
@@ -99,17 +116,18 @@ export function Editor({
       autofocus: autoFocus ? 'end' : false,
       editable,
       content: value ?? defaultValue ?? '',
-      extensions: [
+      extensions: dedupeExtensions([
         Document,
-        UndoRedo,
+        ...declaredExtensions,
         Placeholder.configure({ placeholder }),
         CharacterCount.configure({ limit: characterLimit }),
         TextAlign.configure({
           types: ['heading', 'paragraph'],
         }),
-        ...resolveExtensions(extensionConfigs),
-        ...(extensions ?? []),
-      ],
+        ...(historyEnabled
+          ? [UndoRedo]
+          : []),
+      ]),
       editorProps: {
         attributes: {
           'aria-label': 'Rich text editor',
@@ -132,7 +150,7 @@ export function Editor({
         onChangeRef.current?.(html)
       },
     },
-    [configSignature, rawExtensionSignature],
+    [configSignature, rawExtensionSignature, historyEnabled],
   )
 
   useEffect(() => {
@@ -444,6 +462,47 @@ export function EditorBubbleMenu({
     >
       <TooltipProvider>{children}</TooltipProvider>
     </BubbleMenu>
+  )
+}
+
+export interface EditorFloatingMenuProps {
+  className?: string
+  /** Controls rendered inside the floating menu. */
+  children?: ReactNode
+}
+
+/**
+ * Floating menu anchored to the block the caret sits in. It only shows on an
+ * empty block, which is where an insertion affordance such as a slash menu or a
+ * quick insert control belongs.
+ */
+export function EditorFloatingMenu({
+  className,
+  children,
+}: EditorFloatingMenuProps) {
+  const { editor } = useCurrentEditor()
+
+  if (!editor || !children) {
+    return null
+  }
+
+  return (
+    <FloatingMenu
+      editor={editor}
+      data-slot="editor-floating-menu"
+      options={{ placement: 'bottom-start' }}
+      shouldShow={({ editor: instance, state }) =>
+        instance.isEditable
+        && state.selection.empty
+        && !instance.isActive('codeBlock')
+        && state.selection.$from.parent.content.size === 0}
+      className={cn(
+        'flex items-center gap-0.5 rounded-lg border bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10',
+        className,
+      )}
+    >
+      <TooltipProvider>{children}</TooltipProvider>
+    </FloatingMenu>
   )
 }
 

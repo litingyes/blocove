@@ -125,6 +125,25 @@ describe('resolveExtensions', () => {
     expect(factory).toHaveBeenCalledWith({ label: 'hello' })
     expect(resolved).toEqual([firstExtension])
   })
+
+  it('keeps only the first extension when two declarations register the same name', () => {
+    // Prerequisite declarations are expected, so the duplicate is dropped
+    // without reporting it.
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const shared = { name: 'textStyle' } as unknown as Extensions[number]
+    const color = { name: 'color' } as unknown as Extensions[number]
+    const textStyle = defineExtensionComponent('text-style', () => [shared])
+    const colorComponent = defineExtensionComponent('color', () => [shared, color])
+
+    const resolved = resolveExtensions([
+      { component: textStyle, props: {} },
+      { component: colorComponent, props: {} },
+    ])
+
+    expect(resolved.map(extension => extension.name)).toEqual(['textStyle', 'color'])
+    expect(resolved[0]).toBe(shared)
+    expect(warn).not.toHaveBeenCalled()
+  })
 })
 
 describe('extensionSignature', () => {

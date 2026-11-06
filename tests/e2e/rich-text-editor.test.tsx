@@ -56,6 +56,52 @@ it('toggles marks from the toolbar for the current selection', async () => {
   await expect.element(bold).not.toHaveAttribute('aria-pressed', 'true')
 })
 
+it('toggles a blockquote from the toolbar', async () => {
+  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+
+  await editableSurface().click()
+
+  const blockquote = toolbar().getByRole('button', { name: 'Blockquote' })
+  await blockquote.click()
+
+  await expect.element(blockquote).toHaveAttribute('aria-pressed', 'true')
+  await vi.waitFor(() => {
+    expect(document.querySelector('[aria-label="Rich text editor"] blockquote')).not.toBeNull()
+  })
+
+  await blockquote.click()
+  await expect.element(blockquote).not.toHaveAttribute('aria-pressed', 'true')
+})
+
+it('toggles a highlight for the selected word', async () => {
+  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+
+  await editableSurface().click()
+  await userEvent.keyboard('{Home}')
+  await userEvent.keyboard('{Shift>}{End}{/Shift}')
+
+  const highlight = toolbar().getByRole('button', { name: 'Highlight' })
+  await highlight.click()
+
+  await expect.element(highlight).toHaveAttribute('aria-pressed', 'true')
+  await vi.waitFor(() => {
+    expect(document.querySelector('[aria-label="Rich text editor"] mark')).not.toBeNull()
+  })
+})
+
+it('turns the paragraph into a task list', async () => {
+  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+
+  await editableSurface().click()
+  await toolbar().getByRole('button', { name: 'Task list' }).click()
+
+  await vi.waitFor(() => {
+    const list = document.querySelector('[aria-label="Rich text editor"] ul[data-type="taskList"]')
+    expect(list).not.toBeNull()
+    expect(list?.className).toContain('contains-task-list')
+  })
+})
+
 it('changes the block type through the select', async () => {
   await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
 

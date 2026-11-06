@@ -20,6 +20,10 @@ export default antfu(
       'src/lib/highlighter.tsx',
       // Downloaded shadcn/typeset stylesheet, kept identical to upstream.
       'src/typeset.css',
+      // Design and plan documents. Their fenced snippets are illustrative
+      // sketches of code that lives elsewhere, so linting them as source
+      // reports rules the real files already enforce.
+      'docs/**',
     ],
   },
   {

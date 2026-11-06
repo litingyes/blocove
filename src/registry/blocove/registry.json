@@ -347,6 +347,118 @@
       ]
     },
     {
+      "name": "rich-text-editor-emoji",
+      "type": "registry:ui",
+      "title": "Emoji",
+      "description": "Emoji nodes with a shortcode suggestion and a toolbar picker.",
+      "dependencies": [
+        "@tiptap/extension-emoji@3.32.2",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
+        "litingyes/blocove/rich-text-editor-suggestion",
+        "popover"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "node"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/emoji.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/emoji.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-mathematics",
+      "type": "registry:ui",
+      "title": "Mathematics",
+      "description": "Inline and block formulas rendered with KaTeX.",
+      "dependencies": [
+        "@tiptap/extension-mathematics@3.32.2",
+        "katex@0.19.1",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
+        "button",
+        "input",
+        "popover"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "node"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/mathematics.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/mathematics.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-mention",
+      "type": "registry:ui",
+      "title": "Mention",
+      "description": "Mention nodes fed by your own records through a suggestion list.",
+      "dependencies": [
+        "@tiptap/extension-mention@3.32.2"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
+        "litingyes/blocove/rich-text-editor-suggestion"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "node"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/mention.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/mention.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-text-style",
+      "type": "registry:ui",
+      "title": "Text Style",
+      "description": "The text style mark with color, background, font family, font size and line height controls.",
+      "dependencies": [
+        "@tiptap/extension-text-style@3.32.2",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
+        "button",
+        "input",
+        "popover"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "mark"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/text-style.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/text-style.tsx"
+        }
+      ]
+    },
+    {
       "name": "rich-text-editor-bold",
       "type": "registry:ui",
       "title": "Bold",
@@ -508,6 +620,113 @@
           "path": "ui/rich-text-editor/link.tsx",
           "type": "registry:ui",
           "target": "components/blocove/rich-text-editor/link.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-highlight",
+      "type": "registry:ui",
+      "title": "Highlight",
+      "description": "The highlight mark with a toolbar toggle.",
+      "dependencies": [
+        "@tiptap/extension-highlight@3.32.2",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "mark"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/highlight.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/highlight.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-ruby",
+      "type": "registry:ui",
+      "title": "Ruby",
+      "description": "Ruby annotations above the base text, edited from a toolbar popover.",
+      "dependencies": [
+        "@tiptap/extension-ruby-text@3.32.2",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension",
+        "button",
+        "input",
+        "popover"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "mark"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/ruby.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/ruby.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-subscript",
+      "type": "registry:ui",
+      "title": "Subscript",
+      "description": "The subscript mark with a toolbar toggle.",
+      "dependencies": [
+        "@tiptap/extension-subscript@3.32.2",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "mark"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/subscript.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/subscript.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-superscript",
+      "type": "registry:ui",
+      "title": "Superscript",
+      "description": "The superscript mark with a toolbar toggle.",
+      "dependencies": [
+        "@tiptap/extension-superscript@3.32.2",
+        "@tiptap/react@3.32.2",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "mark"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/superscript.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/superscript.tsx"
         }
       ]
     },

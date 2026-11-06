@@ -68,6 +68,85 @@ export const richTextEditorDemoContent = {
     '<ul data-type="taskList"><li data-type="taskItem" data-checked="true"><p>Shipped the component</p></li><li data-type="taskItem" data-checked="false"><p>Write the docs</p></li></ul>',
   ].join(''),
 
+  emoji: [
+    '<p>Emoji are inline nodes, so they flow with the surrounding text like any other character.</p>',
+    '<p>Type <code>:smile</code> to open the picker, or insert one from the toolbar: <span data-type="emoji" data-name="smile"></span></p>',
+  ].join(''),
+
+  mathematics: [
+    '<p>Mathematics renders through KaTeX, both inline and as its own block.</p>',
+    '<p>Energy and mass: <span data-type="inline-math" data-latex="E = mc^2"></span></p>',
+    '<div data-type="block-math" data-latex="\sum_{i=1}^{n} x_i = X"></div>',
+    '<p>Use the toolbar to insert either form and edit the LaTeX source.</p>',
+  ].join(''),
+
+  mention: [
+    '<p>Mentions are inline nodes that point at a record in your own data.</p>',
+    '<p>Morning standup with <span data-type="mention" data-id="ada" data-label="Ada Lovelace"></span> and <span data-type="mention" data-id="alan" data-label="Alan Turing"></span>.</p>',
+    '<p>Type <code>@</code> to open the suggestion list.</p>',
+  ].join(''),
+
+  highlight: [
+    '<p>This paragraph contains <mark>highlighted text</mark> next to regular text.</p>',
+    '<p>Select a word and toggle the mark from the toolbar or the bubble menu.</p>',
+  ].join(''),
+
+  ruby: [
+    '<p>Ruby annotations place a reading above the base text: <ruby>漢字<rt>かんじ</rt></ruby>.</p>',
+    '<p>Select a word, open the toolbar control and give it the annotation.</p>',
+  ].join(''),
+
+  subscript: [
+    '<p>Chemical formulas use the mark: H<sub>2</sub>O and CO<sub>2</sub>.</p>',
+    '<p>Select a word and toggle the mark from the toolbar.</p>',
+  ].join(''),
+
+  superscript: [
+    '<p>Exponents use the mark: E = mc<sup>2</sup> and x<sup>2</sup> + y<sup>2</sup>.</p>',
+    '<p>Select a word and toggle the mark from the toolbar.</p>',
+  ].join(''),
+
+  textStyle: [
+    '<p>The text style mark carries <span style="color: #dc2626">a color</span>, <span style="font-size: 22px">a font size</span> and <span style="font-family: Georgia, serif">a font family</span>.</p>',
+    '<p>Select a word, then pick a value from the text style control in the toolbar.</p>',
+  ].join(''),
+
+  dragHandle: [
+    '<p>Hover the left edge of a block to reveal the drag handle.</p>',
+    '<p>Drag a block to move it above or below its neighbours, including the blocks nested inside lists and quotes.</p>',
+    '<ul><li><p>Nested blocks can be dragged on their own.</p></li></ul>',
+  ].join(''),
+
+  fileHandler: [
+    '<p>Paste or drop a file onto the editor and the handler inserts it as an image.</p>',
+    '<p>Images pasted from the clipboard become data URLs, so the document stays self-contained.</p>',
+  ].join(''),
+
+  findAndReplace: [
+    '<p>The word editor appears more than once in this document: editor.</p>',
+    '<p>Open the toolbar control, search for editor and step through the results.</p>',
+  ].join(''),
+
+  behavior: [
+    '<p>This document wires the focus ring, the gap cursor and the trailing node.</p>',
+    '<p>Click outside the editor to see the focus ring appear, and place the caret between blocks to see the gap cursor.</p>',
+  ].join(''),
+
+  typography: [
+    '<p>Type two hyphens for an em dash, three dots for an ellipsis, or quotes for smart punctuation.</p>',
+    '<p>The rules rewrite "--", "..." and straight quotes as you type.</p>',
+  ].join(''),
+
+  uniqueId: [
+    '<p>Every block gets a stable id attribute the first time it is parsed.</p>',
+    '<p>Open the HTML panel to see the generated ids on each block.</p>',
+  ].join(''),
+
+  invisibleCharacters: [
+    '<p>Toggle the control to reveal the spaces and the paragraph marks in this document.</p>',
+    '<p>Invisible characters are decorations: they never enter the document itself.</p>',
+  ].join(''),
+
   bold: [
     '<p>This paragraph contains <strong>bold text</strong> next to regular text.</p>',
     '<p>Select a word and use the toolbar or the bubble menu to toggle the mark.</p>',

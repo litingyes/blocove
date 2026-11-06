@@ -144,6 +144,14 @@ export const docsPage: DocsPage = {
       ],
     },
     {
+      name: 'EditorFloatingMenu',
+      description: 'Menu anchored to the block holding the caret. It only shows while that block is empty, which is where an insert affordance belongs.',
+      rows: [
+        { prop: 'className', type: 'string', default: '-' },
+        { prop: 'children', type: 'ReactNode', default: '-' },
+      ],
+    },
+    {
       name: 'EditorCharacterCount',
       description: 'Live character and word count for the current document.',
       rows: [

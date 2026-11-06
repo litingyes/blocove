@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   Editor,
   EditorContent,
+  EditorFloatingMenu,
   EditorToolbar,
 } from '@/components/blocove/rich-text-editor/editor'
 import { EditorParagraph } from '@/components/blocove/rich-text-editor/paragraph'
@@ -226,6 +227,60 @@ describe('editor history', () => {
     })
 
     expect(hasExtension(editor, 'undoRedo')).toBe(true)
+  })
+})
+
+describe('editor floating menu', () => {
+  it('renders nothing outside an editor and without controls', () => {
+    const { container } = render(
+      <EditorFloatingMenu>
+        <span>controls</span>
+      </EditorFloatingMenu>,
+    )
+    const standalone = render(<EditorFloatingMenu />)
+
+    expect(container.querySelector('[data-slot="editor-floating-menu"]')).toBeNull()
+    expect(standalone.container.querySelector('[data-slot="editor-floating-menu"]')).toBeNull()
+  })
+
+  it('mounts the controls on an empty block', async () => {
+    let resolveEditor!: (editor: TiptapEditor) => void
+    const editorCreated = new Promise<TiptapEditor>((resolve) => {
+      resolveEditor = resolve
+    })
+
+    render(
+      <Editor value="" onReady={editor => resolveEditor(editor)}>
+        <EditorText />
+        <EditorParagraph />
+        <EditorFloatingMenu>
+          <button type="button">Insert</button>
+        </EditorFloatingMenu>
+        <EditorContent />
+      </Editor>,
+    )
+
+    await editorCreated
+
+    await waitFor(() => {
+      expect(document.querySelector('[data-slot="editor-floating-menu"]')).not.toBeNull()
+    })
+    expect(screen.getByRole('button', { name: 'Insert' })).toBeTruthy()
+  })
+
+  it('hides the controls once the selected block has content', async () => {
+    render(
+      <Editor defaultValue="<p>Hello</p>">
+        <EditorText />
+        <EditorParagraph />
+        <EditorFloatingMenu>
+          <button type="button">Insert</button>
+        </EditorFloatingMenu>
+        <EditorContent />
+      </Editor>,
+    )
+
+    expect(screen.queryByRole('button', { name: 'Insert' })).toBeNull()
   })
 })
 

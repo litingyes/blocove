@@ -10,7 +10,7 @@ import {
   useEditor,
   useEditorState,
 } from '@tiptap/react'
-import { BubbleMenu } from '@tiptap/react/menus'
+import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus'
 import { cn } from 'cn'
 import {
   AlignCenterIcon,
@@ -462,6 +462,47 @@ export function EditorBubbleMenu({
     >
       <TooltipProvider>{children}</TooltipProvider>
     </BubbleMenu>
+  )
+}
+
+export interface EditorFloatingMenuProps {
+  className?: string
+  /** Controls rendered inside the floating menu. */
+  children?: ReactNode
+}
+
+/**
+ * Floating menu anchored to the block the caret sits in. It only shows on an
+ * empty block, which is where an insertion affordance such as a slash menu or a
+ * quick insert control belongs.
+ */
+export function EditorFloatingMenu({
+  className,
+  children,
+}: EditorFloatingMenuProps) {
+  const { editor } = useCurrentEditor()
+
+  if (!editor || !children) {
+    return null
+  }
+
+  return (
+    <FloatingMenu
+      editor={editor}
+      data-slot="editor-floating-menu"
+      options={{ placement: 'bottom-start' }}
+      shouldShow={({ editor: instance, state }) =>
+        instance.isEditable
+        && state.selection.empty
+        && !instance.isActive('codeBlock')
+        && state.selection.$from.parent.content.size === 0}
+      className={cn(
+        'flex items-center gap-0.5 rounded-lg border bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10',
+        className,
+      )}
+    >
+      <TooltipProvider>{children}</TooltipProvider>
+    </FloatingMenu>
   )
 }
 

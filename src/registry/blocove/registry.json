@@ -320,6 +320,33 @@
       ]
     },
     {
+      "name": "rich-text-editor-list",
+      "type": "registry:ui",
+      "title": "List",
+      "description": "Bullet, ordered and task lists with toolbar toggles and typeset-aware styling.",
+      "dependencies": [
+        "@tiptap/extension-list@3.32.2",
+        "@tiptap/react@3.32.2",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "node"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/list.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/list.tsx"
+        }
+      ]
+    },
+    {
       "name": "rich-text-editor-bold",
       "type": "registry:ui",
       "title": "Bold",

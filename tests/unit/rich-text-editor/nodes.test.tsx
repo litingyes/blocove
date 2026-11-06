@@ -6,6 +6,12 @@ import { EditorDetails, EditorDetailsToolbar } from '@/components/blocove/rich-t
 import { EditorHardBreak } from '@/components/blocove/rich-text-editor/hard-break'
 import { EditorHeading, EditorHeadingToolbar } from '@/components/blocove/rich-text-editor/heading'
 import { EditorImage, EditorImageToolbar } from '@/components/blocove/rich-text-editor/image'
+import {
+  EditorBulletList,
+  EditorListToolbar,
+  EditorOrderedList,
+  EditorTaskList,
+} from '@/components/blocove/rich-text-editor/list'
 import { EditorParagraph } from '@/components/blocove/rich-text-editor/paragraph'
 import { EditorTable, EditorTableToolbar } from '@/components/blocove/rich-text-editor/table'
 import { EditorText } from '@/components/blocove/rich-text-editor/text'
@@ -33,6 +39,74 @@ describe('blockquote node', () => {
       expect(editor.isActive('blockquote')).toBe(false)
     })
     expect(editor.getHTML()).not.toContain('<blockquote>')
+  })
+})
+
+describe('list nodes', () => {
+  it('toggles a bullet list from the toolbar', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Item</p>',
+      extensions: <EditorBulletList />,
+      toolbar: <EditorListToolbar />,
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Bullet list' }))
+
+    await waitFor(() => {
+      expect(editor.isActive('bulletList')).toBe(true)
+    })
+    expect(editor.getHTML()).toContain('<ul>')
+  })
+
+  it('toggles an ordered list from the toolbar', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Item</p>',
+      extensions: <EditorOrderedList />,
+      toolbar: <EditorListToolbar />,
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Ordered list' }))
+
+    await waitFor(() => {
+      expect(editor.isActive('orderedList')).toBe(true)
+    })
+    expect(editor.getHTML()).toContain('<ol>')
+  })
+
+  it('registers the shared item node once when two lists are declared', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Item</p>',
+      extensions: (
+        <>
+          <EditorBulletList />
+          <EditorOrderedList />
+        </>
+      ),
+      toolbar: false,
+    })
+
+    expect(
+      editor.extensionManager.extensions.filter(extension => extension.name === 'listItem'),
+    ).toHaveLength(1)
+  })
+
+  it('renders task items with the typeset task list classes', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Item</p>',
+      extensions: <EditorTaskList />,
+      toolbar: <EditorListToolbar />,
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Task list' }))
+
+    await waitFor(() => {
+      expect(editor.isActive('taskList')).toBe(true)
+    })
+
+    const html = editor.getHTML()
+
+    expect(html).toContain('contains-task-list')
+    expect(html).toContain('task-list-item')
   })
 })
 

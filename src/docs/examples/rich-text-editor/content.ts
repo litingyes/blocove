@@ -61,6 +61,13 @@ export const richTextEditorDemoContent = {
     '<p>Place the caret in any paragraph and toggle the quote from the toolbar.</p>',
   ].join(''),
 
+  list: [
+    '<p>Lists group related items. Three kinds ship together because they share the same item node.</p>',
+    '<ul><li><p>Unordered item</p></li><li><p>Another item</p></li></ul>',
+    '<ol><li><p>First step</p></li><li><p>Second step</p></li></ol>',
+    '<ul data-type="taskList"><li data-type="taskItem" data-checked="true"><p>Shipped the component</p></li><li data-type="taskItem" data-checked="false"><p>Write the docs</p></li></ul>',
+  ].join(''),
+
   bold: [
     '<p>This paragraph contains <strong>bold text</strong> next to regular text.</p>',
     '<p>Select a word and use the toolbar or the bubble menu to toggle the mark.</p>',

@@ -25,6 +25,10 @@ const richTextEditorModules = {
   EditorTableToolbar: 'table',
   EditorBlockquote: 'blockquote',
   EditorBlockquoteToolbar: 'blockquote',
+  EditorBulletList: 'list',
+  EditorOrderedList: 'list',
+  EditorTaskList: 'list',
+  EditorListToolbar: 'list',
   // Marks
   EditorBold: 'bold',
   EditorBoldToolbar: 'bold',
@@ -54,6 +58,7 @@ const moduleOrder = [
   'image',
   'table',
   'blockquote',
+  'list',
   'bold',
   'italic',
   'underline',

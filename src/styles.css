@@ -8,6 +8,8 @@
 @import '@fontsource-variable/dm-sans';
 @import '@fontsource-variable/figtree';
 @import '@fontsource-variable/lora';
+/* KaTeX ships the layout the mathematics nodes render into. */
+@import 'katex/dist/katex.min.css';
 
 /* shadcn/typeset preset for rich text surfaces. */
 .typeset-docs {

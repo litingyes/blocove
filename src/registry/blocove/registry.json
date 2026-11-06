@@ -22,6 +22,28 @@
       ]
     },
     {
+      "name": "rich-text-editor-suggestion",
+      "type": "registry:lib",
+      "title": "Rich Text Editor Suggestion",
+      "description": "Internal popup shared by the suggestion-driven items, such as emoji and mention.",
+      "dependencies": [
+        "@tiptap/react@3.32.2",
+        "@tiptap/suggestion@3.32.2",
+        "cn"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "internal"
+      ],
+      "files": [
+        {
+          "path": "lib/rich-text-editor-suggestion.tsx",
+          "type": "registry:lib",
+          "target": "lib/blocove/rich-text-editor-suggestion.tsx"
+        }
+      ]
+    },
+    {
       "name": "rich-text-editor",
       "type": "registry:ui",
       "title": "Rich Text Editor",

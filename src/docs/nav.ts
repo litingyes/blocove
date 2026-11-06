@@ -66,6 +66,18 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
           ],
         },
         {
+          label: 'Extensions',
+          items: [
+            'rich-text-editor-drag-handle',
+            'rich-text-editor-file-handler',
+            'rich-text-editor-find-and-replace',
+            'rich-text-editor-behavior',
+            'rich-text-editor-typography',
+            'rich-text-editor-unique-id',
+            'rich-text-editor-invisible-characters',
+          ],
+        },
+        {
           label: 'Marks',
           items: [
             'rich-text-editor-bold',

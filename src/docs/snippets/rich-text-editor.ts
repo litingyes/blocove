@@ -70,6 +70,10 @@ const richTextEditorModules = {
   EditorUniqueId: 'unique-id',
   EditorInvisibleCharacters: 'invisible-characters',
   EditorInvisibleCharactersToolbar: 'invisible-characters',
+  EditorDragHandle: 'drag-handle',
+  EditorFileHandler: 'file-handler',
+  EditorFindAndReplace: 'find-and-replace',
+  EditorFindAndReplaceToolbar: 'find-and-replace',
 } as const
 
 export type RichTextEditorExport = keyof typeof richTextEditorModules
@@ -105,6 +109,9 @@ const moduleOrder = [
   'typography',
   'unique-id',
   'invisible-characters',
+  'drag-handle',
+  'file-handler',
+  'find-and-replace',
 ] as const
 
 const importRoot = '@/components/blocove/rich-text-editor'

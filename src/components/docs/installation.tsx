@@ -22,6 +22,7 @@ import { installedFilePath } from '@/lib/registry-catalog'
 import { getRegistrySource } from '@/lib/registry-source'
 import { CodePanel } from './code-panel'
 import { CopyButton } from './copy-button'
+import { PackageManagerIcon } from './package-manager-icons'
 
 function PackageManagerCommand({
   build,
@@ -42,12 +43,13 @@ function PackageManagerCommand({
               type="button"
               onClick={() => setPackageManager(manager)}
               className={cn(
-                'rounded-md px-2 py-1 font-mono text-xs transition-colors',
+                'inline-flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-xs transition-colors',
                 packageManager === manager
                   ? 'bg-muted text-foreground'
                   : 'text-muted-foreground hover:text-foreground',
               )}
             >
+              <PackageManagerIcon manager={manager} />
               {manager}
             </button>
           ))}
@@ -95,7 +97,7 @@ function TypesetNote() {
       preset. See the
       {' '}
       <Link
-        to="/items/$name"
+        to="/components/$name"
         params={{ name: 'rich-text-editor' }}
         hash="usage"
         className="font-medium text-foreground underline-offset-4 hover:underline"

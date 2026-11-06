@@ -55,6 +55,12 @@ export const richTextEditorDemoContent = {
     '<p>Use the table menu to insert a 3×3 table and add or remove rows and columns.</p>',
   ].join(''),
 
+  blockquote: [
+    '<p>Blockquotes set a passage apart from the body of the document.</p>',
+    '<blockquote><p>Typst was never meant to replace the tools people already use; it was meant to make them stop fighting their documents.</p></blockquote>',
+    '<p>Place the caret in any paragraph and toggle the quote from the toolbar.</p>',
+  ].join(''),
+
   bold: [
     '<p>This paragraph contains <strong>bold text</strong> next to regular text.</p>',
     '<p>Select a word and use the toolbar or the bubble menu to toggle the mark.</p>',

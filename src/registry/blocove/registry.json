@@ -293,6 +293,33 @@
       ]
     },
     {
+      "name": "rich-text-editor-blockquote",
+      "type": "registry:ui",
+      "title": "Blockquote",
+      "description": "The blockquote node with a toolbar toggle.",
+      "dependencies": [
+        "@tiptap/extension-blockquote@3.32.2",
+        "@tiptap/react@3.32.2",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "node"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/blockquote.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/blockquote.tsx"
+        }
+      ]
+    },
+    {
       "name": "rich-text-editor-bold",
       "type": "registry:ui",
       "title": "Bold",

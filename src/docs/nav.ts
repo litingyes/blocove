@@ -58,6 +58,7 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
             'rich-text-editor-details',
             'rich-text-editor-image',
             'rich-text-editor-table',
+            'rich-text-editor-blockquote',
           ],
         },
         {

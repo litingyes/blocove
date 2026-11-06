@@ -23,6 +23,8 @@ const richTextEditorModules = {
   EditorImageToolbar: 'image',
   EditorTable: 'table',
   EditorTableToolbar: 'table',
+  EditorBlockquote: 'blockquote',
+  EditorBlockquoteToolbar: 'blockquote',
   // Marks
   EditorBold: 'bold',
   EditorBoldToolbar: 'bold',
@@ -51,6 +53,7 @@ const moduleOrder = [
   'details',
   'image',
   'table',
+  'blockquote',
   'bold',
   'italic',
   'underline',

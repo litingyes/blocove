@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { EditorBlockquote, EditorBlockquoteToolbar } from '@/components/blocove/rich-text-editor/blockquote'
 import { EditorCodeBlock, EditorCodeBlockToolbar } from '@/components/blocove/rich-text-editor/code-block'
 import { EditorDetails, EditorDetailsToolbar } from '@/components/blocove/rich-text-editor/details'
 import { EditorHardBreak } from '@/components/blocove/rich-text-editor/hard-break'
@@ -10,6 +11,30 @@ import { EditorTable, EditorTableToolbar } from '@/components/blocove/rich-text-
 import { EditorText } from '@/components/blocove/rich-text-editor/text'
 import { selectBaseUiOption } from '../../helpers/interactions'
 import { renderRichTextEditor } from '../../helpers/render-rich-text-editor'
+
+describe('blockquote node', () => {
+  it('toggles the blockquote from the toolbar', async () => {
+    const { editor } = await renderRichTextEditor({
+      content: '<p>Quoted</p>',
+      extensions: <EditorBlockquote />,
+      toolbar: <EditorBlockquoteToolbar />,
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Blockquote' }))
+
+    await waitFor(() => {
+      expect(editor.isActive('blockquote')).toBe(true)
+    })
+    expect(editor.getHTML()).toContain('<blockquote>')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Blockquote' }))
+
+    await waitFor(() => {
+      expect(editor.isActive('blockquote')).toBe(false)
+    })
+    expect(editor.getHTML()).not.toContain('<blockquote>')
+  })
+})
 
 describe('heading node', () => {
   it('registers the heading schema without a toolbar', async () => {

@@ -24,25 +24,35 @@ function DocsNav({
     select: state => state.location.pathname,
   })
   const items = new Map(catalog.items.map(item => [item.name, item]))
+  const isCurrent = (name: string) => pathname === docsItemPath(kind, name)
 
   // Sections group families (Rich Text Editor, Code Editor, ...); each family
   // keeps its own subgroups so a new family only adds a section. Only the
   // page's kind is listed: a component page never links a block, and the way
-  // back to the other catalog is the header.
+  // back to the other catalog is the header. A family's `entry` (its shell) is
+  // folded into the heading link instead of repeating the name in the list.
   const sections = docsNav[kind]
-    .map(section => ({
-      family: section.family,
-      label: docsFamilies[section.family].label,
-      groups: section.groups
-        .map(group => ({
-          label: group.label,
-          items: group.items
-            .map(name => items.get(name))
-            .filter((item): item is RegistryItem => Boolean(item)),
-        }))
-        .filter(group => group.items.length > 0),
-    }))
-    .filter(section => section.groups.length > 0)
+    .map((section) => {
+      const entry = section.entry
+        ? items.get(section.entry)
+        : undefined
+
+      return {
+        family: section.family,
+        label: docsFamilies[section.family].label,
+        entry,
+        groups: section.groups
+          .map(group => ({
+            label: group.label,
+            items: group.items
+              .map(name => items.get(name))
+              .filter((item): item is RegistryItem => Boolean(item))
+              .filter(item => item.name !== entry?.name),
+          }))
+          .filter(group => group.items.length > 0),
+      }
+    })
+    .filter(section => section.groups.length > 0 || Boolean(section.entry))
 
   return (
     <nav
@@ -53,9 +63,29 @@ function DocsNav({
     >
       {sections.map(section => (
         <div key={section.family} className="flex flex-col gap-1.5">
-          <p className="px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            {section.label}
-          </p>
+          {section.entry
+            ? (
+                <ItemLink
+                  kind={kind}
+                  name={section.entry.name}
+                  aria-current={
+                    isCurrent(section.entry.name)
+                      ? 'page'
+                      : undefined
+                  }
+                  className={cn(
+                    'block rounded-md px-2 py-1 text-xs font-medium tracking-wide text-muted-foreground uppercase transition-colors hover:bg-muted/60 hover:text-foreground',
+                    isCurrent(section.entry.name) && 'text-foreground',
+                  )}
+                >
+                  {section.label}
+                </ItemLink>
+              )
+            : (
+                <p className="px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  {section.label}
+                </p>
+              )}
           {section.groups.map(group => (
             <div
               key={group.label ?? 'items'}
@@ -70,7 +100,7 @@ function DocsNav({
                 : null}
               <ul className="flex flex-col gap-0.5">
                 {group.items.map((item) => {
-                  const active = pathname === docsItemPath(kind, item.name)
+                  const active = isCurrent(item.name)
 
                   return (
                     <li key={item.name}>

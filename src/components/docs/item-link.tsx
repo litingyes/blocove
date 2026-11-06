@@ -14,6 +14,7 @@ export type ItemLinkProps = {
   title?: string
 } & {
   'aria-label'?: string
+  'aria-current'?: 'page'
 }
 
 /**

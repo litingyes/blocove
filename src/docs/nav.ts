@@ -30,19 +30,29 @@ export interface DocsNavGroup {
 
 export interface DocsNavSection {
   family: DocsFamily
+  /**
+   * Registry item that introduces the family. The sidebar renders it as the
+   * family heading link instead of a list entry, so a family's shell does not
+   * read as one block among its nodes. The item stays in `groups` on purpose:
+   * the catalogs, the item counts and the reading order still include it.
+   */
+  entry?: string
   groups: DocsNavGroup[]
 }
 
 /**
  * Documentation navigation and page order, one tree per item kind. Components
  * lead with a family's shell, then list the nodes, marks or extensions it is
- * composed from; blocks list the complete compositions. Registry items that are
- * not listed here (for example the internal helpers) do not get a page.
+ * composed from; blocks list the complete compositions. The shell is also the
+ * section's `entry`, so the sidebar can fold it into the family heading instead
+ * of showing the same name twice. Registry items that are not listed here (for
+ * example the internal helpers) do not get a page.
  */
 export const docsNav: Record<DocsKind, DocsNavSection[]> = {
   components: [
     {
       family: 'rich-text-editor',
+      entry: 'rich-text-editor',
       groups: [
         {
           items: ['rich-text-editor'],
@@ -75,6 +85,7 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
     },
     {
       family: 'code-editor',
+      entry: 'code-editor',
       groups: [
         {
           items: ['code-editor'],

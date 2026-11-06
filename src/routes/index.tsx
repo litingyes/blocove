@@ -1,9 +1,5 @@
-import type { ReactNode } from 'react'
-import type { DocsFamily } from '@/docs/nav'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { cn } from 'cn'
 import {
-  ArrowUpRightIcon,
   BlocksIcon,
   BracesIcon,
   CodeIcon,
@@ -14,7 +10,8 @@ import {
   TypeIcon,
 } from 'lucide-react'
 import { CopyButton } from '@/components/docs/copy-button'
-import { ItemLink } from '@/components/docs/item-link'
+import { ScrollShowcase } from '@/components/docs/scroll-showcase'
+import { ShellCommand } from '@/components/docs/shell-command'
 import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
@@ -23,13 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import VideoPlaylistDemo from '@/docs/examples/media/video-playlist'
-import { docsFamilies, docsFamilyItems } from '@/docs/nav'
 import { addCommand, itemAddress } from '@/lib/docs-commands'
-import { registryItemsByName } from '@/lib/registry-data'
-import { CodeEditorPlayground } from '@/registry/blocove/blocks/code-editor-playground'
-import { RichTextEditorPlayground } from '@/registry/blocove/blocks/rich-text-editor-playground'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -103,41 +94,6 @@ const features = [
   },
 ]
 
-interface Showcase {
-  family: DocsFamily
-  /** Registry item the panel installs and documents. */
-  block: string
-  demo: ReactNode
-  /** Extra classes for the preview frame, used to bound a tall demo. */
-  frameClassName?: string
-}
-
-/**
- * One complete block per family, in the brand order. The demo is created once at
- * module scope; the tab panel mounts it only while it is active, so the media
- * player and the editors never run side by side.
- */
-const showcases: Showcase[] = [
-  {
-    family: 'rich-text-editor',
-    block: 'rich-text-editor-playground',
-    demo: <RichTextEditorPlayground />,
-    // The demo document is long; a bounded surface keeps the three previews at
-    // comparable heights when the visitor switches families.
-    frameClassName: '[&_[data-slot=editor-content]]:max-h-88 [&_[data-slot=editor-content]]:overflow-y-auto',
-  },
-  {
-    family: 'code-editor',
-    block: 'code-editor-playground',
-    demo: <CodeEditorPlayground />,
-  },
-  {
-    family: 'media',
-    block: 'video-playlist',
-    demo: <VideoPlaylistDemo />,
-  },
-]
-
 const installCommand = addCommand(
   'npm',
   itemAddress('rich-text-editor-playground'),
@@ -174,9 +130,10 @@ function Home() {
         </div>
         <div className="flex w-full max-w-xl items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2">
           <TerminalIcon className="size-4 shrink-0 text-muted-foreground" />
-          <code className="min-w-0 flex-1 overflow-x-auto font-mono text-xs whitespace-nowrap">
-            {installCommand}
-          </code>
+          <ShellCommand
+            command={installCommand}
+            className="min-w-0 flex-1 overflow-x-auto text-xs whitespace-nowrap"
+          />
           <CopyButton
             value={installCommand}
             label="Copy install command"
@@ -190,41 +147,9 @@ function Home() {
         <SectionHeading
           eyebrow="Showcase"
           title="One complete block per family"
-          description="Every family ships a block composed from its components. Switch families to try each block live, then install it with one command."
+          description="Scroll through the families to try each block live, then install it with one command."
         />
-        <Tabs defaultValue="rich-text-editor" className="gap-4">
-          <TabsList
-            variant="line"
-            aria-label="Showcase families"
-            className="justify-start overflow-x-auto"
-          >
-            {showcases.map(showcase => (
-              <TabsTrigger key={showcase.family} value={showcase.family}>
-                {docsFamilies[showcase.family].label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {showcases.map(showcase => (
-            <TabsContent
-              key={showcase.family}
-              value={showcase.family}
-              className="flex flex-col gap-4"
-            >
-              <div
-                data-slot="home-showcase"
-                className={cn(
-                  // Every block is a bounded surface; centring it inside the
-                  // frame keeps the three previews on the same axis.
-                  'rounded-xl border bg-muted/20 p-4 *:mx-auto sm:p-6',
-                  showcase.frameClassName,
-                )}
-              >
-                {showcase.demo}
-              </div>
-              <ShowcaseMeta showcase={showcase} />
-            </TabsContent>
-          ))}
-        </Tabs>
+        <ScrollShowcase />
       </section>
 
       <section className="flex flex-col gap-6 border-t pt-10">
@@ -311,53 +236,6 @@ function Home() {
   )
 }
 
-function ShowcaseMeta({ showcase }: { showcase: Showcase }) {
-  const family = docsFamilies[showcase.family]
-  const title
-    = registryItemsByName.get(showcase.block)?.title ?? family.label
-  const componentCount = docsFamilyItems('components', showcase.family).length
-  const blockCount = docsFamilyItems('blocks', showcase.family).length
-
-  return (
-    <div className="flex flex-wrap items-start justify-between gap-4">
-      <div className="flex max-w-2xl flex-col gap-1">
-        <h3 className="font-heading text-base font-semibold">{title}</h3>
-        <p className="text-sm text-muted-foreground">{family.description}</p>
-        <p className="text-xs text-muted-foreground">
-          {componentCount}
-          {' '}
-          {componentCount === 1
-            ? 'component'
-            : 'components'}
-          {' · '}
-          {blockCount}
-          {' '}
-          {blockCount === 1
-            ? 'block'
-            : 'blocks'}
-        </p>
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <ItemLink
-          kind="blocks"
-          name={showcase.block}
-          className={buttonVariants({ variant: 'outline', size: 'sm' })}
-        >
-          Block docs
-          <ArrowUpRightIcon />
-        </ItemLink>
-        <Link
-          to="/components"
-          hash={showcase.family}
-          className={buttonVariants({ variant: 'ghost', size: 'sm' })}
-        >
-          Components
-        </Link>
-      </div>
-    </div>
-  )
-}
-
 function SectionHeading({
   eyebrow,
   title,
@@ -394,9 +272,10 @@ function CommandCard({
         <CardDescription>{note}</CardDescription>
       </CardHeader>
       <CardContent>
-        <code className="block rounded-md bg-muted px-3 py-2 text-xs break-all">
-          {command}
-        </code>
+        <ShellCommand
+          command={command}
+          className="block rounded-md bg-muted px-3 py-2 text-xs break-all"
+        />
       </CardContent>
     </Card>
   )

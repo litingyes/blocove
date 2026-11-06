@@ -6,6 +6,7 @@ import { docsFamilies, docsNav } from '@/docs/nav'
 import { addCommand, itemAddress } from '@/lib/docs-commands'
 import { CopyButton } from './copy-button'
 import { ItemLink } from './item-link'
+import { ShellCommand } from './shell-command'
 
 interface CatalogGroup {
   label?: string
@@ -239,9 +240,10 @@ function BlockCard({ item }: { item: RegistryItem }) {
         {item.description}
       </p>
       <div className="mt-auto flex items-center gap-2 rounded-md bg-muted px-2.5 py-1.5">
-        <code className="min-w-0 flex-1 truncate font-mono text-xs">
-          {command}
-        </code>
+        <ShellCommand
+          command={command}
+          className="min-w-0 flex-1 truncate text-xs"
+        />
         <CopyButton
           value={command}
           label="Copy install command"

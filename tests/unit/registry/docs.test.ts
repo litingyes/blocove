@@ -211,6 +211,24 @@ describe('docs navigation', () => {
       .toEqual([])
   })
 
+  it('folds each family entry into its section heading', () => {
+    for (const section of docsNav.components) {
+      if (!section.entry) {
+        continue
+      }
+
+      const names = section.groups.flatMap(group => group.items)
+
+      // The sidebar renders the entry as the heading link, so it must stay in
+      // the section exactly once: the catalogs and the reading order read it
+      // from the groups.
+      expect(names.filter(name => name === section.entry)).toHaveLength(1)
+      expect(itemsByType('registry:ui')).toContain(section.entry)
+    }
+
+    expect(docsNav.blocks.every(section => section.entry === undefined)).toBe(true)
+  })
+
   it('documents blocks in the blocks tree only', () => {
     // Order belongs to the navigation, membership to the manifest.
     expect([...docsNavOrder.blocks].sort())

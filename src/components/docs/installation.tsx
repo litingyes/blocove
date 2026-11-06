@@ -23,6 +23,7 @@ import { getRegistrySource } from '@/lib/registry-source'
 import { CodePanel } from './code-panel'
 import { CopyButton } from './copy-button'
 import { PackageManagerIcon } from './package-manager-icons'
+import { ShellCommand } from './shell-command'
 
 function PackageManagerCommand({
   build,
@@ -63,7 +64,7 @@ function PackageManagerCommand({
         />
       </div>
       <pre className="overflow-x-auto p-4 font-mono text-sm">
-        <code>{command}</code>
+        <ShellCommand command={command} />
       </pre>
     </div>
   )
@@ -138,9 +139,10 @@ function CommandInstall({
         <p>
           Or install from the namespace after adding the registry:
           {' '}
-          <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs break-all">
-            {addCommand('npm', namespaceAddress(item.name))}
-          </code>
+          <ShellCommand
+            command={addCommand('npm', namespaceAddress(item.name))}
+            className="rounded bg-muted px-1 py-0.5 text-xs break-all"
+          />
         </p>
       </div>
 

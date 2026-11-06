@@ -115,27 +115,34 @@ export function collectEditorChildren(children: ReactNode): EditorChildren {
 }
 
 /**
- * Expands the declarations into Tiptap extensions. An item may declare the
+ * Keeps the first extension registered under each name. An item may declare the
  * extensions it depends on (the text style mark, for example), so the same
- * extension can be produced by two declarations; Tiptap registers the first
- * one and the rest are dropped.
+ * extension can be produced twice; Tiptap can only register it once.
  */
-export function resolveExtensions(configs: ExtensionConfig[]): Extensions {
+export function dedupeExtensions(extensions: Extensions): Extensions {
   const registered = new Set<string>()
 
-  return configs
-    .flatMap(({ component, props }) => component.extension(props))
-    .filter((extension) => {
-      if (registered.has(extension.name)) {
-        console.warn(
-          `[blocove/rich-text-editor] Duplicate extension "${extension.name}" ignored. Only the first declaration is registered.`,
-        )
-        return false
-      }
+  return extensions.filter((extension) => {
+    if (registered.has(extension.name)) {
+      console.warn(
+        `[blocove/rich-text-editor] Duplicate extension "${extension.name}" ignored. Only the first declaration is registered.`,
+      )
+      return false
+    }
 
-      registered.add(extension.name)
-      return true
-    })
+    registered.add(extension.name)
+    return true
+  })
+}
+
+/**
+ * Expands the declarations into Tiptap extensions, dropping extensions two
+ * declarations both provide.
+ */
+export function resolveExtensions(configs: ExtensionConfig[]): Extensions {
+  return dedupeExtensions(
+    configs.flatMap(({ component, props }) => component.extension(props)),
+  )
 }
 
 /**

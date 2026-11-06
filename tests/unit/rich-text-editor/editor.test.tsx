@@ -1,5 +1,7 @@
+import type { Extensions } from '@tiptap/core'
 import type { Editor as TiptapEditor } from '@tiptap/react'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { Extension } from '@tiptap/core'
 import { describe, expect, it, vi } from 'vitest'
 import {
   Editor,
@@ -15,6 +17,8 @@ function EditorShell({
   defaultValue,
   editable,
   placeholder,
+  history,
+  extensions,
   onChange,
   onReady,
 }: {
@@ -22,6 +26,8 @@ function EditorShell({
   defaultValue?: string
   editable?: boolean
   placeholder?: string
+  history?: boolean
+  extensions?: Extensions
   onChange?: (html: string) => void
   onReady?: (editor: TiptapEditor) => void
 }) {
@@ -31,6 +37,8 @@ function EditorShell({
       defaultValue={defaultValue}
       editable={editable}
       placeholder={placeholder}
+      history={history}
+      extensions={extensions}
       onChange={onChange}
       onReady={onReady}
     >
@@ -39,6 +47,21 @@ function EditorShell({
       <EditorContent />
     </Editor>
   )
+}
+
+function hasExtension(editor: TiptapEditor, name: string) {
+  return editor.extensionManager.extensions.some(extension => extension.name === name)
+}
+
+async function renderShellEditor(props: Parameters<typeof EditorShell>[0] = {}) {
+  let resolveEditor!: (editor: TiptapEditor) => void
+  const editorCreated = new Promise<TiptapEditor>((resolve) => {
+    resolveEditor = resolve
+  })
+
+  render(<EditorShell {...props} onReady={editor => resolveEditor(editor)} />)
+
+  return editorCreated
 }
 
 describe('editor content', () => {
@@ -168,6 +191,41 @@ describe('editor content', () => {
     await waitFor(() => {
       expect(container.querySelector('.ProseMirror')?.getAttribute('contenteditable')).toBe('true')
     })
+  })
+})
+
+describe('editor history', () => {
+  it('registers undo and redo by default', async () => {
+    const editor = await renderShellEditor({ value: '<p>History</p>' })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(true)
+  })
+
+  it('omits undo and redo when history is false', async () => {
+    const editor = await renderShellEditor({ value: '<p>No history</p>', history: false })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(false)
+  })
+
+  it('omits undo and redo when a collaboration extension is declared', async () => {
+    const collaboration = Extension.create({ name: 'collaboration' })
+    const editor = await renderShellEditor({
+      value: '<p>Collaborative</p>',
+      extensions: [collaboration],
+    })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(false)
+  })
+
+  it('keeps undo and redo when history is explicitly enabled next to collaboration', async () => {
+    const collaboration = Extension.create({ name: 'collaboration' })
+    const editor = await renderShellEditor({
+      value: '<p>Explicit</p>',
+      history: true,
+      extensions: [collaboration],
+    })
+
+    expect(hasExtension(editor, 'undoRedo')).toBe(true)
   })
 })
 

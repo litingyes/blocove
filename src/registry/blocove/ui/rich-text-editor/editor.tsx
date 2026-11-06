@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/tooltip'
 import {
   collectEditorChildren,
+  dedupeExtensions,
   extensionSignature,
   resolveExtensions,
 } from '@/lib/blocove/rich-text-editor-extension'
@@ -54,6 +55,13 @@ export interface EditorProps {
   characterLimit?: number
   /** Additional Tiptap extensions, appended after the declared ones. */
   extensions?: Extensions
+  /**
+   * Whether the editor registers its own undo/redo history.
+   *
+   * Defaults to `false` when a collaboration extension is present, because
+   * collaboration carries its own undo manager, and to `true` otherwise.
+   */
+  history?: boolean
   /** Called once the editor instance is created. */
   onReady?: (editor: TiptapEditor) => void
   className?: string
@@ -76,6 +84,7 @@ export function Editor({
   autoFocus = false,
   characterLimit,
   extensions,
+  history,
   onReady,
   className,
   editorProps,
@@ -89,6 +98,14 @@ export function Editor({
   const onChangeRef = useRef(onChange)
   const onReadyRef = useRef(onReady)
   const lastEmittedRef = useRef<string | null>(null)
+  const declaredExtensions = [
+    ...resolveExtensions(extensionConfigs),
+    ...(extensions ?? []),
+  ]
+  // Collaboration ships its own undo manager, so registering the editor's
+  // history next to it would fight over the same transaction metadata.
+  const historyEnabled = history
+    ?? !declaredExtensions.some(extension => extension.name === 'collaboration')
 
   onChangeRef.current = onChange
   onReadyRef.current = onReady
@@ -99,17 +116,18 @@ export function Editor({
       autofocus: autoFocus ? 'end' : false,
       editable,
       content: value ?? defaultValue ?? '',
-      extensions: [
+      extensions: dedupeExtensions([
         Document,
-        UndoRedo,
+        ...declaredExtensions,
         Placeholder.configure({ placeholder }),
         CharacterCount.configure({ limit: characterLimit }),
         TextAlign.configure({
           types: ['heading', 'paragraph'],
         }),
-        ...resolveExtensions(extensionConfigs),
-        ...(extensions ?? []),
-      ],
+        ...(historyEnabled
+          ? [UndoRedo]
+          : []),
+      ]),
       editorProps: {
         attributes: {
           'aria-label': 'Rich text editor',
@@ -132,7 +150,7 @@ export function Editor({
         onChangeRef.current?.(html)
       },
     },
-    [configSignature, rawExtensionSignature],
+    [configSignature, rawExtensionSignature, historyEnabled],
   )
 
   useEffect(() => {

@@ -88,6 +88,36 @@ function NotFound() {
   )
 }
 
+/**
+ * One header destination. The two catalogs are separate route trees, so the
+ * typed link needs its own literal per section; only the styling and the active
+ * marker are shared.
+ */
+function HeaderNavLink({
+  to,
+  children,
+}: {
+  to: 'components' | 'blocks'
+  children: ReactNode
+}) {
+  const className
+    = 'rounded-md px-2 py-1 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground data-[status=active]:bg-muted/60 data-[status=active]:text-foreground'
+
+  if (to === 'components') {
+    return (
+      <Link to="/components" className={className} activeProps={{ 'aria-current': 'page' }}>
+        {children}
+      </Link>
+    )
+  }
+
+  return (
+    <Link to="/blocks" className={className} activeProps={{ 'aria-current': 'page' }}>
+      {children}
+    </Link>
+  )
+}
+
 function RootDocument({ children }: { children: ReactNode }) {
   return (
     // The boot script sets the theme class and the inline tokens before
@@ -100,7 +130,7 @@ function RootDocument({ children }: { children: ReactNode }) {
         <ThemeProvider>
           <div className="flex min-h-svh w-full flex-col">
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/80">
-              <div className="mx-auto flex h-16 w-full max-w-[96rem] items-center justify-between px-4 sm:px-6">
+              <div className="mx-auto flex h-16 w-full max-w-[96rem] items-center gap-3 px-4 sm:gap-4 sm:px-6">
                 <Link
                   to="/"
                   aria-label="Blocove home"
@@ -108,15 +138,16 @@ function RootDocument({ children }: { children: ReactNode }) {
                 >
                   <BrandLogo className="h-9 w-auto" />
                 </Link>
-                <nav className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <a
-                    href="https://ui.shadcn.com/docs/registry"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hidden px-1.5 transition-colors hover:text-foreground sm:inline"
-                  >
-                    Docs
-                  </a>
+                {/* The two catalogs are siblings, so they get sibling navs
+                    instead of one mixed list. */}
+                <nav
+                  aria-label="Catalog"
+                  className="flex items-center gap-0.5 sm:gap-1"
+                >
+                  <HeaderNavLink to="components">Components</HeaderNavLink>
+                  <HeaderNavLink to="blocks">Blocks</HeaderNavLink>
+                </nav>
+                <div className="ms-auto flex items-center gap-1 text-sm text-muted-foreground">
                   <a
                     href="https://github.com/litingyes/blocove"
                     target="_blank"
@@ -131,7 +162,7 @@ function RootDocument({ children }: { children: ReactNode }) {
                   />
                   <ThemeToggle />
                   <ThemeCustomizer />
-                </nav>
+                </div>
               </div>
             </header>
             <main className="flex-1">{children}</main>
@@ -144,7 +175,17 @@ function RootDocument({ children }: { children: ReactNode }) {
                     npx shadcn@latest add litingyes/blocove/&lt;item&gt;
                   </code>
                 </span>
-                <span>MIT License</span>
+                <div className="flex items-center gap-4">
+                  <a
+                    href="https://ui.shadcn.com/docs/registry"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="transition-colors hover:text-foreground"
+                  >
+                    shadcn registry docs
+                  </a>
+                  <span>MIT License</span>
+                </div>
               </div>
             </footer>
           </div>

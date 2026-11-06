@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { docsNav } from '@/docs/nav'
+import { docsNav, docsNavOrder } from '@/docs/nav'
 import { codeEditorUsage } from '@/docs/snippets/code-editor'
 import { audioPlayerUsage, videoPlayerUsage } from '@/docs/snippets/media'
 import { richTextEditorUsage } from '@/docs/snippets/rich-text-editor'
@@ -171,8 +171,10 @@ describe('docs snippets', () => {
 })
 
 describe('docs navigation', () => {
-  const navItems = docsNav.flatMap(section =>
-    section.groups.flatMap(group => group.items),
+  const navItems = Object.values(docsNav).flatMap(sections =>
+    sections.flatMap(section =>
+      section.groups.flatMap(group => group.items),
+    ),
   )
   const manifestNames = new Set(manifest.items.map(item => item.name))
   const internalNames = new Set(
@@ -180,6 +182,10 @@ describe('docs navigation', () => {
       .filter(item => (item.categories ?? []).includes('internal'))
       .map(item => item.name),
   )
+  const itemsByType = (type: string) =>
+    manifest.items
+      .filter(item => item.type === type)
+      .map(item => item.name)
 
   it('links only items the registry ships', () => {
     expect(navItems.filter(name => !manifestNames.has(name))).toEqual([])
@@ -198,6 +204,27 @@ describe('docs navigation', () => {
 
   it('does not link internal helpers', () => {
     expect([...internalNames].filter(name => navItems.includes(name))).toEqual([])
+  })
+
+  it('documents components in the components tree only', () => {
+    expect(docsNavOrder.components.filter(name => !itemsByType('registry:ui').includes(name)))
+      .toEqual([])
+  })
+
+  it('documents blocks in the blocks tree only', () => {
+    // Order belongs to the navigation, membership to the manifest.
+    expect([...docsNavOrder.blocks].sort())
+      .toEqual([
+        ...itemsByType('registry:block'),
+      ].sort())
+  })
+
+  it('keeps the two trees disjoint', () => {
+    const duplicated = docsNavOrder.components.filter(name =>
+      docsNavOrder.blocks.includes(name),
+    )
+
+    expect(duplicated).toEqual([])
   })
 
   it('has a docs page for every linked item', () => {

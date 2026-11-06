@@ -39,6 +39,36 @@ export const itemTypeLabels: Record<string, string> = {
   'registry:hook': 'Hooks',
 }
 
+/**
+ * The two documented item kinds. The docs navigation, the header and the routes
+ * are split the same way: components are the `registry:ui` pieces, blocks are
+ * the `registry:block` compositions built from them.
+ */
+export const docsKinds = ['components', 'blocks'] as const
+
+export type DocsKind = (typeof docsKinds)[number]
+
+/**
+ * The docs section an item belongs to. Only blocks are their own section;
+ * everything else that ships a page (the UI items and the helper libs) is a
+ * component.
+ */
+export function docsKindOfItem(item: Pick<RegistryItem, 'type'>): DocsKind {
+  return item.type === 'registry:block'
+    ? 'blocks'
+    : 'components'
+}
+
+/** Route of an item's docs page. */
+export function docsItemPath(kind: DocsKind, name: string): string {
+  return `/${kind}/${name}`
+}
+
+/** Route of the plain-markdown form of an item's docs page. */
+export function docsMarkdownPath(kind: DocsKind, name: string): string {
+  return `/${kind}/${name}.md`
+}
+
 // Alias root the CLI falls back to for files without an explicit target. See
 // `resolveNestedFilePath` in @shadcn/registry: the installed path keeps
 // everything after the alias folder, so nested registry folders survive

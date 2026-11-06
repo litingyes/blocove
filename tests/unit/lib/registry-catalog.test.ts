@@ -1,6 +1,14 @@
 import type { RegistryItem } from '@/lib/registry-catalog'
 import { describe, expect, it } from 'vitest'
-import { groupItemsByType, installedFilePath, itemTypeOrder } from '@/lib/registry-catalog'
+import {
+  docsItemPath,
+  docsKindOfItem,
+  docsKinds,
+  docsMarkdownPath,
+  groupItemsByType,
+  installedFilePath,
+  itemTypeOrder,
+} from '@/lib/registry-catalog'
 
 function makeItem(name: string, type: string): RegistryItem {
   return {
@@ -86,6 +94,22 @@ describe('installedFilePath', () => {
         { path: 'styles/theme.css', target: null },
       ),
     ).toBe('styles/theme.css')
+  })
+})
+
+describe('docs kinds', () => {
+  it('documents blocks under their own section and everything else as a component', () => {
+    expect(docsKinds).toEqual(['components', 'blocks'])
+    expect(docsKindOfItem({ type: 'registry:block' })).toBe('blocks')
+    expect(docsKindOfItem({ type: 'registry:ui' })).toBe('components')
+    expect(docsKindOfItem({ type: 'registry:lib' })).toBe('components')
+  })
+
+  it('builds the page and markdown routes from the kind', () => {
+    expect(docsItemPath('components', 'code-editor')).toBe('/components/code-editor')
+    expect(docsItemPath('blocks', 'video-hero')).toBe('/blocks/video-hero')
+    expect(docsMarkdownPath('components', 'code-editor')).toBe('/components/code-editor.md')
+    expect(docsMarkdownPath('blocks', 'video-hero')).toBe('/blocks/video-hero.md')
   })
 })
 

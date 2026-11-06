@@ -10,6 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlocksRouteImport } from './routes/blocks'
+import { Route as ComponentsRouteImport } from './routes/components'
+import { Route as BlocksIndexRouteImport } from './routes/blocks/index'
+import { Route as BlocksNameRouteImport } from './routes/blocks/$name'
+import { Route as BlocksChar123nameChar125DotmdRouteImport } from './routes/blocks/{$name}[.]md'
+import { Route as ComponentsIndexRouteImport } from './routes/components/index'
+import { Route as ComponentsNameRouteImport } from './routes/components/$name'
+import { Route as ComponentsChar123nameChar125DotmdRouteImport } from './routes/components/{$name}[.]md'
 import { Route as ItemsNameRouteImport } from './routes/items/$name'
 import { Route as ItemsChar123nameChar125DotmdRouteImport } from './routes/items/{$name}[.]md'
 
@@ -18,6 +26,48 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlocksRoute = BlocksRouteImport.update({
+  id: '/blocks',
+  path: '/blocks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComponentsRoute = ComponentsRouteImport.update({
+  id: '/components',
+  path: '/components',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlocksIndexRoute = BlocksIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlocksRoute,
+} as any)
+const BlocksNameRoute = BlocksNameRouteImport.update({
+  id: '/$name',
+  path: '/$name',
+  getParentRoute: () => BlocksRoute,
+} as any)
+const BlocksChar123nameChar125DotmdRoute =
+  BlocksChar123nameChar125DotmdRouteImport.update({
+    id: '/{$name}.md',
+    path: '/{$name}.md',
+    getParentRoute: () => BlocksRoute,
+  } as any)
+const ComponentsIndexRoute = ComponentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ComponentsRoute,
+} as any)
+const ComponentsNameRoute = ComponentsNameRouteImport.update({
+  id: '/$name',
+  path: '/$name',
+  getParentRoute: () => ComponentsRoute,
+} as any)
+const ComponentsChar123nameChar125DotmdRoute =
+  ComponentsChar123nameChar125DotmdRouteImport.update({
+    id: '/{$name}.md',
+    path: '/{$name}.md',
+    getParentRoute: () => ComponentsRoute,
+  } as any)
 const ItemsNameRoute = ItemsNameRouteImport.update({
   id: '/items/$name',
   path: '/items/$name',
@@ -32,30 +82,86 @@ const ItemsChar123nameChar125DotmdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/blocks': typeof BlocksRouteWithChildren
+  '/components': typeof ComponentsRouteWithChildren
+  '/blocks/$name': typeof BlocksNameRoute
+  '/blocks/{$name}.md': typeof BlocksChar123nameChar125DotmdRoute
+  '/components/$name': typeof ComponentsNameRoute
+  '/components/{$name}.md': typeof ComponentsChar123nameChar125DotmdRoute
   '/items/$name': typeof ItemsNameRoute
   '/items/{$name}.md': typeof ItemsChar123nameChar125DotmdRoute
+  '/blocks/': typeof BlocksIndexRoute
+  '/components/': typeof ComponentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/blocks/$name': typeof BlocksNameRoute
+  '/blocks/{$name}.md': typeof BlocksChar123nameChar125DotmdRoute
+  '/components/$name': typeof ComponentsNameRoute
+  '/components/{$name}.md': typeof ComponentsChar123nameChar125DotmdRoute
   '/items/$name': typeof ItemsNameRoute
   '/items/{$name}.md': typeof ItemsChar123nameChar125DotmdRoute
+  '/blocks': typeof BlocksIndexRoute
+  '/components': typeof ComponentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/blocks': typeof BlocksRouteWithChildren
+  '/components': typeof ComponentsRouteWithChildren
+  '/blocks/$name': typeof BlocksNameRoute
+  '/blocks/{$name}.md': typeof BlocksChar123nameChar125DotmdRoute
+  '/components/$name': typeof ComponentsNameRoute
+  '/components/{$name}.md': typeof ComponentsChar123nameChar125DotmdRoute
   '/items/$name': typeof ItemsNameRoute
   '/items/{$name}.md': typeof ItemsChar123nameChar125DotmdRoute
+  '/blocks/': typeof BlocksIndexRoute
+  '/components/': typeof ComponentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/items/$name' | '/items/{$name}.md'
+  fullPaths:
+    | '/'
+    | '/blocks'
+    | '/components'
+    | '/blocks/$name'
+    | '/blocks/{$name}.md'
+    | '/components/$name'
+    | '/components/{$name}.md'
+    | '/items/$name'
+    | '/items/{$name}.md'
+    | '/blocks/'
+    | '/components/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/items/$name' | '/items/{$name}.md'
-  id: '__root__' | '/' | '/items/$name' | '/items/{$name}.md'
+  to:
+    | '/'
+    | '/blocks/$name'
+    | '/blocks/{$name}.md'
+    | '/components/$name'
+    | '/components/{$name}.md'
+    | '/items/$name'
+    | '/items/{$name}.md'
+    | '/blocks'
+    | '/components'
+  id:
+    | '__root__'
+    | '/'
+    | '/blocks'
+    | '/components'
+    | '/blocks/$name'
+    | '/blocks/{$name}.md'
+    | '/components/$name'
+    | '/components/{$name}.md'
+    | '/items/$name'
+    | '/items/{$name}.md'
+    | '/blocks/'
+    | '/components/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BlocksRoute: typeof BlocksRouteWithChildren
+  ComponentsRoute: typeof ComponentsRouteWithChildren
   ItemsNameRoute: typeof ItemsNameRoute
   ItemsChar123nameChar125DotmdRoute: typeof ItemsChar123nameChar125DotmdRoute
 }
@@ -68,6 +174,62 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/blocks': {
+      id: '/blocks'
+      path: '/blocks'
+      fullPath: '/blocks'
+      preLoaderRoute: typeof BlocksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/components': {
+      id: '/components'
+      path: '/components'
+      fullPath: '/components'
+      preLoaderRoute: typeof ComponentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blocks/': {
+      id: '/blocks/'
+      path: '/'
+      fullPath: '/blocks/'
+      preLoaderRoute: typeof BlocksIndexRouteImport
+      parentRoute: typeof BlocksRoute
+    }
+    '/blocks/$name': {
+      id: '/blocks/$name'
+      path: '/$name'
+      fullPath: '/blocks/$name'
+      preLoaderRoute: typeof BlocksNameRouteImport
+      parentRoute: typeof BlocksRoute
+    }
+    '/blocks/{$name}.md': {
+      id: '/blocks/{$name}.md'
+      path: '/{$name}.md'
+      fullPath: '/blocks/{$name}.md'
+      preLoaderRoute: typeof BlocksChar123nameChar125DotmdRouteImport
+      parentRoute: typeof BlocksRoute
+    }
+    '/components/': {
+      id: '/components/'
+      path: '/'
+      fullPath: '/components/'
+      preLoaderRoute: typeof ComponentsIndexRouteImport
+      parentRoute: typeof ComponentsRoute
+    }
+    '/components/$name': {
+      id: '/components/$name'
+      path: '/$name'
+      fullPath: '/components/$name'
+      preLoaderRoute: typeof ComponentsNameRouteImport
+      parentRoute: typeof ComponentsRoute
+    }
+    '/components/{$name}.md': {
+      id: '/components/{$name}.md'
+      path: '/{$name}.md'
+      fullPath: '/components/{$name}.md'
+      preLoaderRoute: typeof ComponentsChar123nameChar125DotmdRouteImport
+      parentRoute: typeof ComponentsRoute
     }
     '/items/$name': {
       id: '/items/$name'
@@ -86,8 +248,42 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface BlocksRouteChildren {
+  BlocksNameRoute: typeof BlocksNameRoute
+  BlocksChar123nameChar125DotmdRoute: typeof BlocksChar123nameChar125DotmdRoute
+  BlocksIndexRoute: typeof BlocksIndexRoute
+}
+
+const BlocksRouteChildren: BlocksRouteChildren = {
+  BlocksNameRoute: BlocksNameRoute,
+  BlocksChar123nameChar125DotmdRoute: BlocksChar123nameChar125DotmdRoute,
+  BlocksIndexRoute: BlocksIndexRoute,
+}
+
+const BlocksRouteWithChildren =
+  BlocksRoute._addFileChildren(BlocksRouteChildren)
+
+interface ComponentsRouteChildren {
+  ComponentsNameRoute: typeof ComponentsNameRoute
+  ComponentsChar123nameChar125DotmdRoute: typeof ComponentsChar123nameChar125DotmdRoute
+  ComponentsIndexRoute: typeof ComponentsIndexRoute
+}
+
+const ComponentsRouteChildren: ComponentsRouteChildren = {
+  ComponentsNameRoute: ComponentsNameRoute,
+  ComponentsChar123nameChar125DotmdRoute:
+    ComponentsChar123nameChar125DotmdRoute,
+  ComponentsIndexRoute: ComponentsIndexRoute,
+}
+
+const ComponentsRouteWithChildren = ComponentsRoute._addFileChildren(
+  ComponentsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BlocksRoute: BlocksRouteWithChildren,
+  ComponentsRoute: ComponentsRouteWithChildren,
   ItemsNameRoute: ItemsNameRoute,
   ItemsChar123nameChar125DotmdRoute: ItemsChar123nameChar125DotmdRoute,
 }

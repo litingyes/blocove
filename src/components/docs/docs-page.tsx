@@ -1,12 +1,11 @@
 import type { TocItem } from './docs-toc'
 import type { DocsPageData } from '@/docs/types'
-import type { RegistryCatalog, RegistryItem } from '@/lib/registry-catalog'
-import { Link } from '@tanstack/react-router'
+import type { DocsKind, RegistryCatalog, RegistryItem } from '@/lib/registry-catalog'
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { apiId } from '@/lib/docs-anchor'
 import { buildPageMarkdown } from '@/lib/docs-markdown'
-import { itemTypeLabels } from '@/lib/registry-catalog'
+import { docsMarkdownPath, itemTypeLabels } from '@/lib/registry-catalog'
 import { ApiReference } from './api-reference'
 import { CodePanel } from './code-panel'
 import { ComponentPreview } from './component-preview'
@@ -14,6 +13,7 @@ import { CopyPageMenu } from './copy-page-button'
 import { MobileDocsNav } from './docs-sidebar'
 import { DocsToc } from './docs-toc'
 import { Installation } from './installation'
+import { ItemLink } from './item-link'
 
 function Section({
   id,
@@ -38,11 +38,13 @@ function Section({
 }
 
 function PageActions({
+  kind,
   markdown,
   markdownHref,
   previous,
   next,
 }: {
+  kind: DocsKind
   markdown: string
   markdownHref: string
   previous?: RegistryItem
@@ -54,9 +56,9 @@ function PageActions({
       <div className="flex items-center gap-1">
         {previous
           ? (
-              <Link
-                to="/items/$name"
-                params={{ name: previous.name }}
+              <ItemLink
+                kind={kind}
+                name={previous.name}
                 aria-label={`Previous: ${previous.title}`}
                 className={buttonVariants({
                   variant: 'outline',
@@ -64,7 +66,7 @@ function PageActions({
                 })}
               >
                 <ArrowLeftIcon />
-              </Link>
+              </ItemLink>
             )
           : (
               <Button
@@ -78,9 +80,9 @@ function PageActions({
             )}
         {next
           ? (
-              <Link
-                to="/items/$name"
-                params={{ name: next.name }}
+              <ItemLink
+                kind={kind}
+                name={next.name}
                 aria-label={`Next: ${next.title}`}
                 className={buttonVariants({
                   variant: 'outline',
@@ -88,7 +90,7 @@ function PageActions({
                 })}
               >
                 <ArrowRightIcon />
-              </Link>
+              </ItemLink>
             )
           : (
               <Button
@@ -106,6 +108,8 @@ function PageActions({
 }
 
 export interface DocsPageProps {
+  /** Section the page is rendered under: components or blocks. */
+  kind: DocsKind
   catalog: RegistryCatalog
   item: RegistryItem
   data?: DocsPageData
@@ -117,6 +121,7 @@ export interface DocsPageProps {
  * A registry item page: header, preview + code, installation, usage and API.
  */
 export function DocsPage({
+  kind,
   catalog,
   item,
   data,
@@ -127,7 +132,7 @@ export function DocsPage({
   const usage = data?.usage ?? []
   const api = data?.api ?? []
   const markdown = buildPageMarkdown(item, data)
-  const markdownHref = `/items/${item.name}.md`
+  const markdownHref = docsMarkdownPath(kind, item.name)
   const hasPreview = examples.length > 0
   const hasUsage = usage.length > 0
   const hasApi = api.length > 0
@@ -159,8 +164,9 @@ export function DocsPage({
       <article className="flex min-w-0 flex-col gap-10">
         <header className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-3 lg:hidden">
-            <MobileDocsNav catalog={catalog} />
+            <MobileDocsNav catalog={catalog} kind={kind} />
             <PageActions
+              kind={kind}
               markdown={markdown}
               markdownHref={markdownHref}
               previous={previous}
@@ -194,6 +200,7 @@ export function DocsPage({
 
             <div className="hidden shrink-0 lg:block">
               <PageActions
+                kind={kind}
                 markdown={markdown}
                 markdownHref={markdownHref}
                 previous={previous}

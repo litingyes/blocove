@@ -598,6 +598,32 @@
       ]
     },
     {
+      "name": "code-editor-playground",
+      "type": "registry:block",
+      "title": "Code Editor Playground",
+      "description": "A complete code editor block: shiki highlighting, language support, line numbers, the toolbar and the status bar, with a controlled document.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/code-editor",
+        "litingyes/blocove/code-editor-shiki",
+        "litingyes/blocove/code-editor-languages",
+        "litingyes/blocove/code-editor-line-numbers"
+      ],
+      "categories": [
+        "code-editor",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/code-editor-playground.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/code-editor-playground.tsx"
+        }
+      ]
+    },
+    {
       "name": "rich-text-editor-playground",
       "type": "registry:block",
       "title": "Rich Text Editor Playground",

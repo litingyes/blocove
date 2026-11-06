@@ -1,8 +1,9 @@
 import type { ComponentProps } from 'react'
 import type { ThemeMode } from '@/lib/theme'
+import type { ThemeTransitionOrigin } from '@/lib/theme-transition'
 import { cn } from 'cn'
 import { CheckIcon, CopyIcon, MonitorIcon, MoonIcon, PaletteIcon, SunIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Select,
@@ -36,6 +37,7 @@ import {
   themeColors,
   themeModes,
 } from '@/lib/theme'
+import { originFromEvent } from '@/lib/theme-transition'
 import { useTheme } from './theme-provider'
 
 const fontOptions = fonts.map(font => ({ label: fontLabels[font], value: font }))
@@ -199,6 +201,10 @@ function ThemePreview() {
 export function ThemeCustomizer() {
   const { state, update, reset, isDefault, cssText } = useTheme()
   const [copied, setCopied] = useState(false)
+  // The point of the click that picked a mode. Captured in the capture phase so
+  // it is already known when Base UI reports the value change, and used to grow
+  // the light/dark reveal out of the toggle that was pressed.
+  const modeOriginRef = useRef<ThemeTransitionOrigin | undefined>(undefined)
 
   useEffect(() => {
     if (!copied) {
@@ -214,7 +220,7 @@ export function ThemeCustomizer() {
     const mode = themeModes.find(candidate => candidate === groupValue[0])
 
     if (mode) {
-      update({ mode })
+      update({ mode }, modeOriginRef.current)
     }
   }
 
@@ -253,10 +259,10 @@ export function ThemeCustomizer() {
     <Sheet>
       <SheetTrigger
         aria-label="Customize theme"
-        render={<Button variant="ghost" size="sm" />}
+        title="Customize theme"
+        render={<Button variant="ghost" size="icon-sm" />}
       >
         <PaletteIcon />
-        <span className="hidden sm:inline">Customize</span>
       </SheetTrigger>
       <SheetContent
         side="right"
@@ -277,6 +283,9 @@ export function ThemeCustomizer() {
               size="sm"
               variant="outline"
               value={[state.mode]}
+              onClickCapture={(event) => {
+                modeOriginRef.current = originFromEvent(event)
+              }}
               onValueChange={handleModeChange}
             >
               {themeModes.map(mode => (
@@ -396,7 +405,7 @@ export function ThemeCustomizer() {
             variant="ghost"
             size="sm"
             disabled={isDefault}
-            onClick={reset}
+            onClick={event => reset(originFromEvent(event))}
           >
             Reset
           </Button>

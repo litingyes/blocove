@@ -54,6 +54,7 @@ export default defineConfig({
         'src/lib/docs-commands.ts',
         'src/lib/theme.ts',
         'src/lib/theme-boot.ts',
+        'src/lib/theme-transition.ts',
       ],
       thresholds: {
         'lines': 80,

@@ -1,7 +1,7 @@
 import type { ThemeState } from '@/lib/theme'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { act } from 'react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ThemeProvider, useTheme } from '@/components/docs/theme-provider'
 import {
   buildThemeVariables,
@@ -24,7 +24,7 @@ function ThemeProbe() {
       <button type="button" onClick={() => update({ themeColor: 'blue' })}>
         Use blue
       </button>
-      <button type="button" onClick={reset}>
+      <button type="button" onClick={() => reset()}>
         Reset
       </button>
     </div>
@@ -260,5 +260,61 @@ describe('theme provider', () => {
     )
 
     consoleError.mockRestore()
+  })
+})
+
+/**
+ * happy-dom has no `document.startViewTransition`, so this stand-in is what
+ * proves a mode flip is routed through the View Transitions API. Every other
+ * case in this file keeps exercising the unsupported-browser fallback.
+ */
+function stubViewTransitions() {
+  const observed: boolean[] = []
+  const startViewTransition = vi.fn((callback: () => void) => {
+    observed.push(document.documentElement.classList.contains('dark'))
+    callback()
+    observed.push(document.documentElement.classList.contains('dark'))
+
+    return {
+      ready: Promise.resolve(),
+      finished: Promise.resolve(),
+    } as unknown as ViewTransition
+  })
+
+  Object.defineProperty(document, 'startViewTransition', {
+    configurable: true,
+    writable: true,
+    value: startViewTransition,
+  })
+
+  return { observed, startViewTransition }
+}
+
+describe('theme provider view transitions', () => {
+  afterEach(() => {
+    Reflect.deleteProperty(document, 'startViewTransition')
+  })
+
+  it('routes a mode change through the view transition callback', () => {
+    const { observed, startViewTransition } = stubViewTransitions()
+
+    renderProvider()
+    fireEvent.click(screen.getByRole('button', { name: 'Make dark' }))
+
+    expect(startViewTransition).toHaveBeenCalledTimes(1)
+    // <html> is repainted synchronously inside the callback, before the
+    // transition snapshots it; nothing waits for the animation.
+    expect(observed).toEqual([false, true])
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+  })
+
+  it('does not start a transition for a token-only update', () => {
+    const { startViewTransition } = stubViewTransitions()
+
+    renderProvider()
+    fireEvent.click(screen.getByRole('button', { name: 'Use blue' }))
+
+    expect(startViewTransition).not.toHaveBeenCalled()
+    expect(screen.getByTestId('is-default').textContent).toBe('false')
   })
 })

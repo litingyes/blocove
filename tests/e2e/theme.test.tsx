@@ -3,6 +3,7 @@ import { render } from 'vitest-browser-react'
 import { page } from 'vitest/browser'
 import { ThemeCustomizer } from '@/components/docs/theme-customizer'
 import { ThemeProvider } from '@/components/docs/theme-provider'
+import { ThemeToggle } from '@/components/docs/theme-toggle'
 import {
   buildThemeVariables,
   defaultThemeState,
@@ -247,4 +248,32 @@ it('copies the paste-ready CSS', async () => {
 
   await expect.element(page.getByRole('button', { name: 'Copied' })).toBeVisible()
   expect(writeText).toHaveBeenCalledWith(themeCssText(defaultThemeState))
+})
+
+it('reveals a light/dark switch through the View Transitions API', async () => {
+  const startViewTransition = vi
+    .spyOn(document, 'startViewTransition')
+    .mockImplementation((callbackOptions) => {
+      // The real browser invokes the update callback itself and resolves both
+      // promises once the snapshots exist. The stub calls it synchronously and
+      // resolves immediately so the assertion does not wait on an animation.
+      (callbackOptions as ViewTransitionUpdateCallback | undefined)?.()
+
+      return {
+        ready: Promise.resolve(),
+        finished: Promise.resolve(),
+      } as unknown as ViewTransition
+    })
+
+  await render(
+    <ThemeProvider>
+      <ThemeToggle />
+    </ThemeProvider>,
+  )
+
+  await page.getByRole('button', { name: 'Toggle theme' }).click()
+
+  expect(startViewTransition).toHaveBeenCalledTimes(1)
+  await expect.poll(() => document.documentElement.classList.contains('dark'))
+    .toBe(true)
 })

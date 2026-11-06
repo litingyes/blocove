@@ -161,3 +161,12 @@
     @apply font-sans;
   }
 }
+
+/* Light/dark switches are revealed by a circular clip-path animated from
+   src/lib/theme-transition.ts. The snapshots must not cross-fade on top of it,
+   so the default view-transition animation is turned off entirely. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

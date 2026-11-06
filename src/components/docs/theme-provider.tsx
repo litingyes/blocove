@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { EffectiveMode, ThemeState } from '@/lib/theme'
+import type { ThemeTransitionOrigin } from '@/lib/theme-transition'
 import {
   createContext,
   use,
@@ -19,6 +20,7 @@ import {
   themeCssText,
   writeStoredTheme,
 } from '@/lib/theme'
+import { runThemeTransition } from '@/lib/theme-transition'
 
 interface ThemeContextValue {
   /** The full theme configuration, the single source of truth for the panel. */
@@ -26,9 +28,9 @@ interface ThemeContextValue {
   /** The resolved mode: `mode: 'system'` is reduced to light or dark. */
   effectiveMode: EffectiveMode
   /** Merges a partial theme configuration into the current one. */
-  update: (patch: Partial<ThemeState>) => void
+  update: (patch: Partial<ThemeState>, origin?: ThemeTransitionOrigin) => void
   /** Returns every token to its default value. */
-  reset: () => void
+  reset: (origin?: ThemeTransitionOrigin) => void
   /** Whether the current configuration matches the defaults. */
   isDefault: boolean
   /** Paste-ready CSS for the current configuration. */
@@ -104,7 +106,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Paint the tokens onto <html> and persist them. The boot script already
   // applied the cached variables before hydration, so this keeps React state,
-  // the DOM and storage aligned on every change.
+  // the DOM and storage aligned on every change. A transition has already
+  // painted the next state before it commits; re-applying it is idempotent.
   useEffect(() => {
     applyTheme(document.documentElement, state, effectiveMode)
     writeStoredTheme(state, effectiveMode)
@@ -140,16 +143,38 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     meta.content = themeColorByMode[effectiveMode]
   }, [effectiveMode])
 
-  const update = useCallback((patch: Partial<ThemeState>) => {
-    setState(previous => ({
-      ...previous,
-      ...patch,
-    }))
-  }, [])
+  const commit = useCallback((next: ThemeState, origin?: ThemeTransitionOrigin) => {
+    const nextMode = resolveEffectiveMode(next.mode, systemMode)
 
-  const reset = useCallback(() => {
-    setState(defaultThemeState)
-  }, [])
+    // Only a real light/dark flip earns the circular reveal. Token-only edits,
+    // and mode edits that resolve to the mode already painted (e.g. light to
+    // system while the OS is light), keep the plain synchronous update.
+    if (nextMode !== effectiveMode) {
+      runThemeTransition({
+        update: () => {
+          applyTheme(document.documentElement, next, nextMode)
+          setState(next)
+        },
+        origin,
+        dark: nextMode === 'dark',
+      })
+
+      return
+    }
+
+    setState(next)
+  }, [effectiveMode, systemMode])
+
+  const update = useCallback((patch: Partial<ThemeState>, origin?: ThemeTransitionOrigin) => {
+    commit({
+      ...state,
+      ...patch,
+    }, origin)
+  }, [commit, state])
+
+  const reset = useCallback((origin?: ThemeTransitionOrigin) => {
+    commit(defaultThemeState, origin)
+  }, [commit])
 
   const value = useMemo<ThemeContextValue>(
     () => ({
@@ -179,4 +204,4 @@ export function useTheme(): ThemeContextValue {
   return context
 }
 
-export type { ThemeContextValue }
+export type { ThemeContextValue, ThemeTransitionOrigin }

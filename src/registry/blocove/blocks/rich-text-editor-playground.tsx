@@ -212,7 +212,9 @@ export function RichTextEditorPlayground({
       <EditorTrailingNode />
       <EditorGapcursor />
       <EditorTypography />
-      <EditorInvisibleCharacters />
+      {/* The extension is visible by default; the playground starts hidden
+          so the demo document does not open covered in widget marks. */}
+      <EditorInvisibleCharacters visible={false} />
       <EditorFindAndReplace />
       <EditorFileHandler />
 

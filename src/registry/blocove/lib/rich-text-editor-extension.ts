@@ -115,18 +115,20 @@ export function collectEditorChildren(children: ReactNode): EditorChildren {
 }
 
 /**
- * Keeps the first extension registered under each name. An item may declare the
- * extensions it depends on (the text style mark, for example), so the same
- * extension can be produced twice; Tiptap can only register it once.
+ * Keeps the first extension registered under each name.
+ *
+ * Items declare the extensions they depend on, so the same extension is
+ * routinely produced twice: every text style attribute item carries the text
+ * style mark, and every list item carries the list item node and the list
+ * keymap. That is the intended composition, which is why the duplicate is
+ * dropped silently. A declaration that repeats an extension on purpose is
+ * reported by `collectEditorChildren` instead.
  */
 export function dedupeExtensions(extensions: Extensions): Extensions {
   const registered = new Set<string>()
 
   return extensions.filter((extension) => {
     if (registered.has(extension.name)) {
-      console.warn(
-        `[blocove/rich-text-editor] Duplicate extension "${extension.name}" ignored. Only the first declaration is registered.`,
-      )
       return false
     }
 

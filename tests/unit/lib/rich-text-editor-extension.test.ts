@@ -127,6 +127,8 @@ describe('resolveExtensions', () => {
   })
 
   it('keeps only the first extension when two declarations register the same name', () => {
+    // Prerequisite declarations are expected, so the duplicate is dropped
+    // without reporting it.
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const shared = { name: 'textStyle' } as unknown as Extensions[number]
     const color = { name: 'color' } as unknown as Extensions[number]
@@ -140,8 +142,7 @@ describe('resolveExtensions', () => {
 
     expect(resolved.map(extension => extension.name)).toEqual(['textStyle', 'color'])
     expect(resolved[0]).toBe(shared)
-    expect(warn).toHaveBeenCalledTimes(1)
-    expect(warn.mock.calls[0][0]).toContain('Duplicate extension "textStyle"')
+    expect(warn).not.toHaveBeenCalled()
   })
 })
 

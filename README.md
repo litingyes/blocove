@@ -435,25 +435,30 @@ packaged skins consider public.
 ### Sample media
 
 `public/media/` holds the sample clips the docs demos and the browser suite play.
-They are committed so the docs and the tests run without a network request.
-`scripts/generate-media-samples.mjs` regenerates them with ffmpeg
-(`node scripts/generate-media-samples.mjs`):
+They are committed so the docs and the tests run without a network request. The
+material is NASA's: `public/media/CREDITS.md` records the two sources, the exact
+excerpts and the licensing, and `scripts/generate-media-samples.mjs` rebuilds the
+files from them (`node scripts/generate-media-samples.mjs`). The script downloads
+the sources into `.cache/media-samples` once and only needs ffmpeg after that.
 
 - `sample-video.mp4`, `sample-video-alt.mp4` and `sample-audio.m4a` are the
-  documentation previews: H.264/AAC, which every desktop browser decodes.
+  documentation previews: H.264/AAC, which every desktop browser decodes. The two
+  videos are 8 s excerpts of NASA's Artemis II launch trailer; the audio is the
+  twenty-second opening of a "Houston, We Have a Podcast" episode.
 - `sample-video.webm`, `sample-video-alt.webm` and `sample-audio.webm` are for the
   browser suite: the Chromium build Vitest drives ships no H.264 or AAC decoder,
   so the tests play VP9/Opus.
 - `sample-poster.jpg`, `sample-poster-alt.jpg` and `sample-cover.jpg` are frames
-  of those clips, so previews stay visually consistent, and
-  `sample-captions.vtt` backs the captions demos.
+  of the trailer excerpt, so previews stay visually consistent, and
+  `sample-captions.vtt` is NASA's own subtitle file cut down to the main clip,
+  so the caption demos show the words that are actually being spoken.
 
 `scripts/generate-media-samples.sh` wraps those clips as the committed HLS
 fixtures in `public/media/hls/`; rerun it instead of editing the manifests by
 hand:
 
-- `sample-video.m3u8` is a two-rendition ABR master with fMP4/CMAF segments, and
-  `sample-audio.m3u8` is the audio master.
+- `sample-video.m3u8` is a two-rendition ABR master (640x360 and 960x540) with
+  fMP4/CMAF segments, and `sample-audio.m3u8` is the audio master.
 - `sample-live.m3u8` and `sample-live-audio.m3u8` are the live masters. Each one
   lists an EVENT playlist without an end marker, so the live demos read as live
   without a network stream.
@@ -618,10 +623,10 @@ scripts/build-catalog.mjs         # public/r/registry.json -> src/generated/regi
 scripts/clean-registry.mjs        # clears generated registry artifacts before a build
 scripts/check-preset.mjs          # asserts the project still resolves to the b0 preset
 scripts/check-registry-paths.mjs   # asserts every item targets the Blocove namespace
-scripts/generate-media-samples.mjs # regenerates the committed sample clips with ffmpeg
+scripts/generate-media-samples.mjs # downloads the NASA sources, cuts and encodes the sample clips
 scripts/generate-media-samples.sh  # wraps the clips as the committed HLS fixtures
 public/r/                         # generated registry JSON (gitignored)
-public/media/                     # committed sample clips, posters, captions and HLS fixtures
+public/media/                     # committed sample clips, posters, captions, credits and HLS fixtures
 ```
 
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.

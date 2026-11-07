@@ -19,7 +19,7 @@ export const docsPage: DocsPage = {
           tracks: mediaDemoTracks,
         },
         audio: {
-          title: 'Composable media, one manifest at a time',
+          title: 'Houston, We Have a Podcast',
           poster: mediaSamples.cover,
           src: mediaSamples.hlsAudio,
         },

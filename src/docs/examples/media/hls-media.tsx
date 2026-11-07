@@ -15,7 +15,7 @@ export default function HlsMediaDemo() {
         <HlsVideoMedia src={mediaSamples.hls} tracks={mediaDemoTracks} />
       </VideoPlayer>
       <AudioPlayer
-        title="Composable media, one manifest at a time"
+        title="Houston, We Have a Podcast"
         poster={mediaSamples.cover}
       >
         <HlsAudioMedia src={mediaSamples.hlsAudio} />

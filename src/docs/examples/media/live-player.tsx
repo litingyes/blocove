@@ -20,7 +20,7 @@ export default function LivePlayerDemo() {
         />
       </LiveVideoPlayer>
       <LiveAudioPlayer
-        title="Backstage radio"
+        title="Houston, We Have a Podcast"
         poster={mediaSamples.cover}
       >
         <HlsAudioMedia src={mediaSamples.liveAudio} />

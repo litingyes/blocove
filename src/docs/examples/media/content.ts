@@ -2,7 +2,10 @@ import type { MediaTrack } from '@/components/blocove/media/tracks'
 
 /**
  * Sample media shipped in `public/media`, shared by every demo so the docs play
- * without a network request.
+ * without a network request. The clips are excerpts of NASA material — the
+ * Artemis II launch trailer and the opening of a "Houston, We Have a Podcast"
+ * episode — trimmed and re-encoded by `scripts/generate-media-samples.mjs`;
+ * `public/media/CREDITS.md` carries the sources and the licensing.
  */
 export const mediaSamples = {
   video: '/media/sample-video.mp4',
@@ -62,15 +65,19 @@ export const videoPlaylistDemoItems = [
   },
 ]
 
-/** The episode the audio block demo renders. */
+/**
+ * The episode the audio block demo renders. The facts are the show's own, and
+ * the sample is the first twenty seconds of the opening, so a listener can check
+ * the demo against the source; the cover art is a frame of the video sample.
+ */
 export const audioEpisodeDemo = {
-  title: 'Composable media, one item at a time',
-  show: 'The Blocove Podcast',
+  title: 'Crew-11',
+  show: 'Houston, We Have a Podcast',
   cover: mediaSamples.cover,
   src: mediaSamples.audio,
-  episode: 12,
+  episode: 393,
   duration: '00:20',
-  publishedAt: 'November 2026',
+  publishedAt: 'July 2025',
   description:
-    'A short sample episode. The cover art doubles as the player poster, and the header keeps the facts the interface does not show.',
+    'Four astronauts train for Crew-11, the next crew rotation flight to the International Space Station. The sample is the opening of the episode; the cover art doubles as the player poster.',
 }

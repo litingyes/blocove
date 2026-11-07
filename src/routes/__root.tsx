@@ -184,6 +184,14 @@ function RootDocument({ children }: { children: ReactNode }) {
                   >
                     shadcn registry docs
                   </a>
+                  <a
+                    href="/media/CREDITS.md"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="transition-colors hover:text-foreground"
+                  >
+                    Sample media: NASA
+                  </a>
                   <span>MIT License</span>
                 </div>
               </div>

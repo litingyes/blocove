@@ -19,7 +19,7 @@ export const docsPage: DocsPage = {
           streamType: 'live',
         },
         audio: {
-          title: 'Backstage radio',
+          title: 'Houston, We Have a Podcast',
           poster: mediaSamples.cover,
           src: mediaSamples.liveAudio,
         },

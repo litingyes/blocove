@@ -10,7 +10,7 @@ export const docsPage: DocsPage = {
       title: 'Default',
       component: AudioPlayerDemo,
       code: audioPlayerUsage({
-        title: 'Composable media, one item at a time',
+        title: 'Houston, We Have a Podcast',
         poster: mediaSamples.cover,
         src: mediaSamples.audio,
       }),

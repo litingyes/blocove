@@ -6,7 +6,7 @@ export default function AudioPlayerDemo() {
   return (
     <MediaDemoFrame>
       <AudioPlayer
-        title="Composable media, one item at a time"
+        title="Houston, We Have a Podcast"
         poster={mediaSamples.cover}
       >
         <AudioMedia src={mediaSamples.audio} />

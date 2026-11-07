@@ -21,10 +21,10 @@
 # run, and re-running it produces the same playlists and fragments.
 #
 # Output (all in public/media/hls, all relative to each other):
-#   sample-video.m3u8        ABR master: 640x360 (@~140 kb/s) and 1280x720
-#                            (@~340 kb/s), H.264/AAC, 8 s, fMP4/CMAF segments
+#   sample-video.m3u8        ABR master: 640x360 (@~140 kb/s) and 960x540
+#                            (@~300 kb/s), H.264/AAC, 8 s, fMP4/CMAF segments
 #   sample-video-360p.m3u8   the two variant playlists the master lists
-#   sample-video-720p.m3u8
+#   sample-video-540p.m3u8
 #   sample-video-*-init.mp4  the fMP4 initialization segments (#EXT-X-MAP)
 #   sample-video-*-NNN.m4s   the media fragments
 #   sample-audio.m3u8        audio-only AAC master, ~20 s
@@ -88,21 +88,23 @@ mkdir -p "$out"
 # --- Adaptive video master, fMP4/CMAF fragments ------------------------------
 #
 # One encode, two renditions:
-#   * `split` + two scales give the 640x360 and 1280x720 rungs. The source clip
-#     is 960x540, so the 720p rung is an upscale: it exists so the demo has two
-#     real renditions for the quality menu, not to add detail.
+#   * `split` + two scales give the 640x360 and 960x540 rungs. The source clip is
+#     the 960x540 progressive sample cut from NASA's 1080x608 trailer, so the
+#     540p rung is the source resolution and the 360p rung is a real downscale:
+#     both exist so the quality menu has a ladder to switch between.
 #   * `-hls_time 2` cuts 8 s into four fragments; `force_key_frames` puts a
 #     keyframe on every fragment boundary, so each fragment decodes on its own
 #     (`independent_segments` then tells players so).
 #   * `-hls_segment_type fmp4` emits CMAF fragments plus one init segment per
 #     rendition, and `-master_pl_name` writes the ABR master playlist itself.
 #   * `%v` in the file names expands to the variant name from `var_stream_map`.
-#   * `-crf 25` is the mid-20s quality the fixtures standardise on; 64 kb/s mono
+#   * `-crf 30` keeps the committed fragments small without softening the Moon
+#     and launch footage the trailer is cut from; 64 kb/s mono
 #     AAC matches the source (48 kHz mono) and keeps the master small.
 "$FFMPEG" -hide_banner -loglevel error -y -i "$video" \
-  -filter_complex "[0:v]split=2[v360in][v720in];[v360in]scale=-2:360,setsar=1[v360];[v720in]scale=-2:720,setsar=1[v720]" \
-  -map "[v360]" -map "[v720]" -map 0:a -map 0:a \
-  -c:v libx264 -preset medium -crf 25 -profile:v main -pix_fmt yuv420p \
+  -filter_complex "[0:v]split=2[v360in][v540in];[v360in]scale=-2:360,setsar=1[v360];[v540in]scale=-2:540,setsar=1[v540]" \
+  -map "[v360]" -map "[v540]" -map 0:a -map 0:a \
+  -c:v libx264 -preset medium -crf 30 -profile:v main -pix_fmt yuv420p \
   -force_key_frames "expr:gte(t,n_forced*2)" \
   -c:a aac -b:a 64k -ac 1 -ar 48000 \
   -f hls \
@@ -113,17 +115,16 @@ mkdir -p "$out"
   -hls_fmp4_init_filename "sample-video-%v-init.mp4" \
   -hls_segment_filename "$out/sample-video-%v-%03d.m4s" \
   -master_pl_name sample-video.m3u8 \
-  -var_stream_map "v:0,a:0,name:360p v:1,a:1,name:720p" \
+  -var_stream_map "v:0,a:0,name:360p v:1,a:1,name:540p" \
   "$out/sample-video-%v.m3u8"
 
 # --- Audio-only on-demand playlist ------------------------------------------
 #
-# `atrim=duration=19.968` trims the 20 s sample to a whole number of AAC frames
-# (936 x 1024 / 48000 s). Without it the encoder's flush frame lands past the
-# last 4 s boundary and ffmpeg appends a ~21 ms sliver fragment; with it the
-# five fragments are 4.01/3.99/4.01/3.99/3.99 s and the playlist ends cleanly.
+# `atrim=duration=19.9` matches the length of the committed excerpt. It keeps
+# the cut off the encoder's flush frame, so the five fragments come out as
+# 4.01/3.99/4.01/3.99/3.90 s instead of ending with a ~20 ms sliver.
 "$FFMPEG" -hide_banner -loglevel error -y -i "$audio" \
-  -af "atrim=duration=19.968,asetpts=N/SR/TB" \
+  -af "atrim=duration=19.9,asetpts=N/SR/TB" \
   -c:a aac -b:a 64k -ac 1 -ar 48000 \
   -f hls \
   -hls_time 4 \

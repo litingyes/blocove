@@ -10,7 +10,7 @@ export const Route = createFileRoute('/blocks/')({
       {
         name: 'description',
         content:
-          'Complete Blocove blocks: a rich text editor playground, a code editor playground, and the media heroes, showcases, episodes and playlists composed from the players.',
+          'Complete Blocove blocks: rich text and code editors, and the media heroes, showcases, episodes and playlists composed from the players.',
       },
     ],
   }),

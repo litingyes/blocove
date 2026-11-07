@@ -8,8 +8,8 @@ import VideoPlaylistDemo from '@/docs/examples/media/video-playlist'
 import { docsFamilies, docsFamilyItems } from '@/docs/nav'
 import { useScrollShowcase } from '@/hooks/use-scroll-showcase'
 import { registryItemsByName } from '@/lib/registry-data'
-import { CodeEditorPlayground } from '@/registry/blocove/blocks/code-editor-playground'
-import { RichTextEditorPlayground } from '@/registry/blocove/blocks/rich-text-editor-playground'
+import { CodeEditorBlock } from '@/registry/blocove/blocks/code-editor-block'
+import { RichTextEditorBlock } from '@/registry/blocove/blocks/rich-text-editor-block'
 import { ItemLink } from './item-link'
 
 interface Showcase {
@@ -29,16 +29,16 @@ interface Showcase {
 const showcases: Showcase[] = [
   {
     family: 'rich-text-editor',
-    block: 'rich-text-editor-playground',
-    demo: <RichTextEditorPlayground />,
+    block: 'rich-text-editor-block',
+    demo: <RichTextEditorBlock />,
     // The demo document is long; a bounded surface keeps the previews at
     // comparable heights while the sticky panel follows the scroll.
     frameClassName: '[&_[data-slot=editor-content]]:max-h-88 [&_[data-slot=editor-content]]:overflow-y-auto',
   },
   {
     family: 'code-editor',
-    block: 'code-editor-playground',
-    demo: <CodeEditorPlayground />,
+    block: 'code-editor-block',
+    demo: <CodeEditorBlock />,
   },
   {
     family: 'media',

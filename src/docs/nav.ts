@@ -149,7 +149,7 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
       family: 'rich-text-editor',
       groups: [
         {
-          items: ['rich-text-editor-playground'],
+          items: ['rich-text-editor-block'],
         },
       ],
     },
@@ -157,7 +157,7 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
       family: 'code-editor',
       groups: [
         {
-          items: ['code-editor-playground'],
+          items: ['code-editor-block'],
         },
       ],
     },

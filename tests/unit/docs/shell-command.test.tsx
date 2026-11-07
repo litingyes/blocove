@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { ShellCommand } from '@/components/docs/shell-command'
 import { addCommand, itemAddress } from '@/lib/docs-commands'
 
-const command = addCommand('pnpm', itemAddress('rich-text-editor-playground'))
+const command = addCommand('pnpm', itemAddress('rich-text-editor-block'))
 
 function commandElement(container: HTMLElement) {
   const element = container.querySelector<HTMLElement>(

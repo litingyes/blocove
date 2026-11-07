@@ -204,7 +204,7 @@ pass `typeset={false}` to opt out. The typeset selectors skip elements with a
   `rich-text-editor-image`, `rich-text-editor-table`.
 - Marks: `rich-text-editor-bold`, `rich-text-editor-italic`, `rich-text-editor-underline`,
   `rich-text-editor-strike`, `rich-text-editor-code`, `rich-text-editor-link`.
-- Blocks: `rich-text-editor-playground` composes the shell, every node and every
+- Blocks: `rich-text-editor-block` composes the shell, every node and every
   mark into one installable editor, so a project can start from a complete
   editor instead of assembling the items itself.
 
@@ -302,7 +302,7 @@ reject actions are hidden in split, where reverting happens between the panes.
   review toolbar.
 - `code-editor-shiki` also installs `lib/blocove/code-editor-shiki.ts`, the shiki
   highlighter shared by the docs code panels and the editor.
-- `code-editor-playground` depends on `code-editor`, `code-editor-shiki`,
+- `code-editor-block` depends on `code-editor`, `code-editor-shiki`,
   `code-editor-languages` and `code-editor-line-numbers`, and composes them into
   one installable editor: highlighted, language aware, with line numbers, the
   toolbar and the status bar.
@@ -471,7 +471,7 @@ hand:
 | Item                          | Type             | Description                                                            |
 | ----------------------------- | ---------------- | ---------------------------------------------------------------------- |
 | `rich-text-editor`            | `registry:ui`    | Rich text editor shell: root, content, toolbar, bubble menu and count  |
-| `rich-text-editor-playground` | `registry:block` | Complete editor block: every node, mark, control and the count         |
+| `rich-text-editor-block`      | `registry:block` | Complete editor block: every node, mark, control and the count         |
 | `rich-text-editor-extension`  | `registry:lib`   | Internal helper for declaring Tiptap extensions as components          |
 | `rich-text-editor-text`       | `registry:ui`    | Tiptap Text node                                                       |
 | `rich-text-editor-paragraph`  | `registry:ui`    | Tiptap Paragraph node                                                  |
@@ -493,7 +493,7 @@ hand:
 | `code-editor-languages`       | `registry:ui`    | CodeMirror language support for indentation, brackets and folding      |
 | `code-editor-line-numbers`    | `registry:ui`    | Line numbers, fold gutter and active line highlight                    |
 | `code-editor-diff`            | `registry:ui`    | Inline or side-by-side diff with accept, revert and chunk navigation   |
-| `code-editor-playground`      | `registry:block` | Complete code editor block: highlighting, languages, chrome and status |
+| `code-editor-block`           | `registry:block` | Complete code editor block: highlighting, languages, chrome and status |
 | `video-player`                | `registry:ui`    | Video player shell: themed skin, native media and track declarations   |
 | `audio-player`                | `registry:ui`    | Audio player shell with a skin that follows the page color scheme      |
 | `ambient-video`               | `registry:ui`    | Chrome-less background video with a slot for the content over it       |
@@ -513,12 +513,23 @@ Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*`,
 blocks in `components/blocove/`, and the helpers in `lib/blocove/`. Projects that
 use a `src` directory get the same paths under `src/`.
 
-The blocks ship one file each: `blocks/rich-text-editor-playground.tsx` targets
-`components/blocove/rich-text-editor-playground.tsx` and depends on the shell and
+The blocks ship one file each: `blocks/rich-text-editor-block.tsx` targets
+`components/blocove/rich-text-editor-block.tsx` and depends on the shell and
 every node and mark item, so a single install produces a complete editor;
-`blocks/code-editor-playground.tsx` targets
-`components/blocove/code-editor-playground.tsx` and depends on the shell, the
+`blocks/code-editor-block.tsx` targets
+`components/blocove/code-editor-block.tsx` and depends on the shell, the
 highlighting, the language support and the line-number item.
+
+### Renamed: the editor blocks
+
+The complete editor blocks are `rich-text-editor-block` and
+`code-editor-block`; they were named `rich-text-editor-playground` and
+`code-editor-playground` while they were only demos. A block is the normal,
+functional editor of its family, so the Playground suffix is gone from the
+registry item, the installed file and the documentation. The shell items keep
+their names (`rich-text-editor` and `code-editor`), so composing the pieces
+yourself is unchanged. No release was tagged with the old names, so no aliases
+are kept and the old `/r/*-playground.json` payloads no longer exist.
 
 Blocove ships no base config: every item installs files into your project and
 official shadcn/ui components arrive as that item's `registryDependencies`. Your
@@ -560,14 +571,14 @@ and `/r/editor*.json` URLs no longer exist.
 
 Blocove items no longer install into shadcn/ui's `components/ui` namespace:
 
-| Before                                       | After                                                |
-| -------------------------------------------- | ---------------------------------------------------- |
-| `components/ui/rich-text-editor/<name>.tsx`  | `components/blocove/rich-text-editor/<name>.tsx`     |
-| `components/ui/code-editor/<name>.tsx`       | `components/blocove/code-editor/<name>.tsx`          |
-| `components/rich-text-editor-playground.tsx` | `components/blocove/rich-text-editor-playground.tsx` |
-| `lib/rich-text-editor-extension.ts`          | `lib/blocove/rich-text-editor-extension.ts`          |
-| `lib/code-editor-extension.ts`               | `lib/blocove/code-editor-extension.ts`               |
-| `lib/code-editor-shiki.ts`                   | `lib/blocove/code-editor-shiki.ts`                   |
+| Before                                      | After                                            |
+| ------------------------------------------- | ------------------------------------------------ |
+| `components/ui/rich-text-editor/<name>.tsx` | `components/blocove/rich-text-editor/<name>.tsx` |
+| `components/ui/code-editor/<name>.tsx`      | `components/blocove/code-editor/<name>.tsx`      |
+| `components/rich-text-editor-block.tsx`     | `components/blocove/rich-text-editor-block.tsx`  |
+| `lib/rich-text-editor-extension.ts`         | `lib/blocove/rich-text-editor-extension.ts`      |
+| `lib/code-editor-extension.ts`              | `lib/blocove/code-editor-extension.ts`           |
+| `lib/code-editor-shiki.ts`                  | `lib/blocove/code-editor-shiki.ts`               |
 
 Re-run `shadcn add` for the items you use, delete the files left at the old
 paths, and update the imports. shadcn/ui primitives keep their `components/ui`
@@ -593,8 +604,8 @@ src/registry/blocove/
   ui/code-editor/                       # registry:ui items (shell, highlighting, languages, chrome)
   ui/media/                             # registry:ui items (video, audio, tracks, ambient video)
   ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
-  blocks/rich-text-editor-playground.tsx # registry:block item (complete editor)
-  blocks/code-editor-playground.tsx      # registry:block item (complete code editor)
+  blocks/rich-text-editor-block.tsx     # registry:block item (complete editor)
+  blocks/code-editor-block.tsx          # registry:block item (complete code editor)
   blocks/video-hero.tsx                 # registry:block items (hero, showcase, episode, playlist)
   blocks/video-showcase.tsx
   blocks/audio-episode-player.tsx
@@ -651,7 +662,7 @@ exact paths consumers get (`@/components/blocove/rich-text-editor/*`,
 `@/lib/blocove/*`), so the site resolves
 those specifiers to the registry sources in `tsconfig.json` and
 `vite.config.ts`. The family mappings cover every node and mark, which is what
-lets the playground block run its shipped imports in the docs preview. Add a
+lets the blocks run their shipped imports in the docs preview. Add a
 mapping there when a registry item imports another item that has no local file
 under `src/components/ui` or `src/lib`.
 
@@ -978,19 +989,19 @@ npx shadcn@latest view http://localhost:3000/r/rich-text-editor.json  # targets:
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-heading.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-table.json
-npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-playground.json
-npx shadcn@latest add --dry-run http://localhost:3000/r/code-editor-playground.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-block.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/code-editor-block.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/video-player.json    # targets: components/blocove/media/...
 npx shadcn@latest add --dry-run http://localhost:3000/r/hls-media.json       # two adaptive media elements
 npx shadcn@latest add --dry-run http://localhost:3000/r/live-player.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/video-hero.json
 
-curl -sSL http://localhost:3000/components/rich-text-editor-playground.md | head
-curl -sSI http://localhost:3000/items/rich-text-editor-playground | grep -i location  # 308 -> /components/...
+curl -sSL http://localhost:3000/blocks/rich-text-editor-block.md | head
+curl -sSI http://localhost:3000/items/rich-text-editor-block | grep -i location  # 308 -> /blocks/...
 ```
 
 For a full end-to-end check, create a throwaway project, run
-`npx shadcn@latest init --preset b0`, install `rich-text-editor-playground` (or
+`npx shadcn@latest init --preset b0`, install `rich-text-editor-block` (or
 `rich-text-editor` plus the nodes and marks you need), add typeset, then run its
 `typecheck` and `build`.
 

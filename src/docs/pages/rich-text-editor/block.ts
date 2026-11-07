@@ -1,28 +1,28 @@
 import type { DocsPage } from '@/docs/types'
 import { getRegistrySource } from '@/lib/registry-source'
-import { RichTextEditorPlayground } from '@/registry/blocove/blocks/rich-text-editor-playground'
+import { RichTextEditorBlock } from '@/registry/blocove/blocks/rich-text-editor-block'
 
 export const docsPage: DocsPage = {
-  item: 'rich-text-editor-playground',
+  item: 'rich-text-editor-block',
   requiresTypeset: true,
   examples: [
     {
-      title: 'Rich Text Editor Playground',
-      component: RichTextEditorPlayground,
+      title: 'Rich Text Editor',
+      component: RichTextEditorBlock,
       // The block is a single file, so the code panel shows exactly what the
       // CLI installs instead of a generated snippet.
-      code: getRegistrySource('blocks/rich-text-editor-playground.tsx') ?? '',
+      code: getRegistrySource('blocks/rich-text-editor-block.tsx') ?? '',
       previewClassName: 'bg-muted/20',
     },
   ],
   usage: [
     {
       title: 'Use the block',
-      code: `import { RichTextEditorPlayground } from "@/components/blocove/rich-text-editor-playground"
+      code: `import { RichTextEditorBlock } from "@/components/blocove/rich-text-editor-block"
 
 export function DocumentEditor() {
   return (
-    <RichTextEditorPlayground
+    <RichTextEditorBlock
       defaultValue="<p>Start writing…</p>"
       onChange={html => console.log(html)}
     />
@@ -61,7 +61,7 @@ export function DocumentEditor() {
   ],
   api: [
     {
-      name: 'RichTextEditorPlayground',
+      name: 'RichTextEditorBlock',
       description:
         'The editor with every Blocove node, mark and control already composed, grouped by kind in the toolbar.',
       rows: [

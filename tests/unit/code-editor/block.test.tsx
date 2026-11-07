@@ -2,14 +2,14 @@ import type { ComponentProps } from 'react'
 import { EditorView } from '@codemirror/view'
 import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { CodeEditorPlayground } from '@/registry/blocove/blocks/code-editor-playground'
+import { CodeEditorBlock } from '@/registry/blocove/blocks/code-editor-block'
 
-async function renderPlayground(
-  props: Partial<ComponentProps<typeof CodeEditorPlayground>> = {},
+async function renderBlock(
+  props: Partial<ComponentProps<typeof CodeEditorBlock>> = {},
 ) {
   const onChange = vi.fn()
   const { container, unmount } = render(
-    <CodeEditorPlayground onChange={onChange} {...props} />,
+    <CodeEditorBlock onChange={onChange} {...props} />,
   )
 
   await waitFor(() => {
@@ -21,9 +21,9 @@ async function renderPlayground(
   return { container, onChange, unmount, view }
 }
 
-describe('codeEditorPlayground', () => {
+describe('codeEditorBlock', () => {
   it('mounts the CodeMirror surface with the composed chrome', async () => {
-    const { container, view } = await renderPlayground()
+    const { container, view } = await renderBlock()
 
     expect(container.querySelector('.cm-editor')).not.toBeNull()
     expect(container.querySelector('.cm-lineNumbers')).not.toBeNull()
@@ -33,7 +33,7 @@ describe('codeEditorPlayground', () => {
   })
 
   it('emits the new document when a transaction changes it', async () => {
-    const { onChange, view } = await renderPlayground({
+    const { onChange, view } = await renderBlock({
       defaultValue: 'const answer = 42',
     })
 
@@ -54,7 +54,7 @@ describe('codeEditorPlayground', () => {
   })
 
   it('accepts a custom document and language', async () => {
-    const { container, view } = await renderPlayground({
+    const { container, view } = await renderBlock({
       defaultValue: 'const custom = true',
       language: 'typescript',
     })
@@ -66,7 +66,7 @@ describe('codeEditorPlayground', () => {
   })
 
   it('forwards the className to the editor root', async () => {
-    const { container } = await renderPlayground({ className: 'max-w-xl' })
+    const { container } = await renderBlock({ className: 'max-w-xl' })
 
     const root = container.querySelector('[data-slot="code-editor"]')
 
@@ -75,7 +75,7 @@ describe('codeEditorPlayground', () => {
   })
 
   it('keeps the read-only document unchanged', async () => {
-    const { container, onChange, view } = await renderPlayground({
+    const { container, onChange, view } = await renderBlock({
       defaultValue: 'const answer = 42',
       readOnly: true,
     })

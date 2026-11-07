@@ -7,7 +7,7 @@ import {
 } from '@/components/blocove/rich-text-editor/editor'
 import { EditorParagraph } from '@/components/blocove/rich-text-editor/paragraph'
 import { EditorText } from '@/components/blocove/rich-text-editor/text'
-import { RichTextEditorPlayground } from '@/registry/blocove/blocks/rich-text-editor-playground'
+import { RichTextEditorBlock } from '@/registry/blocove/blocks/rich-text-editor-block'
 
 function toolbar() {
   return page.getByRole('toolbar', { name: 'Formatting' })
@@ -29,7 +29,7 @@ function selectAllKeys() {
 }
 
 it('typing updates the document and the character count', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard('{End} world')
@@ -39,7 +39,7 @@ it('typing updates the document and the character count', async () => {
 })
 
 it('toggles marks from the toolbar for the current selection', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard(selectAllKeys())
@@ -57,7 +57,7 @@ it('toggles marks from the toolbar for the current selection', async () => {
 })
 
 it('toggles a blockquote from the toolbar', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
 
@@ -74,7 +74,7 @@ it('toggles a blockquote from the toolbar', async () => {
 })
 
 it('toggles a highlight for the selected word', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard('{Home}')
@@ -90,7 +90,7 @@ it('toggles a highlight for the selected word', async () => {
 })
 
 it('turns the paragraph into a task list', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await toolbar().getByRole('button', { name: 'Task list' }).click()
@@ -103,7 +103,7 @@ it('turns the paragraph into a task list', async () => {
 })
 
 it('changes the block type through the select', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard(selectAllKeys())
@@ -115,7 +115,7 @@ it('changes the block type through the select', async () => {
 })
 
 it('applies a normalized link from the popover', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard(selectAllKeys())
@@ -131,7 +131,7 @@ it('applies a normalized link from the popover', async () => {
 })
 
 it('undoes and redoes document edits', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard('{End} world')
@@ -145,7 +145,7 @@ it('undoes and redoes document edits', async () => {
 })
 
 it('shows the bubble menu for a selection and hides it when collapsed', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello world</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello world</p>" />)
 
   await editableSurface().click()
   await userEvent.keyboard(selectAllKeys())
@@ -163,7 +163,7 @@ it('shows the bubble menu for a selection and hides it when collapsed', async ()
 })
 
 it('inserts a table from the toolbar popover', async () => {
-  await render(<RichTextEditorPlayground defaultValue="<p>Hello</p>" />)
+  await render(<RichTextEditorBlock defaultValue="<p>Hello</p>" />)
 
   await editableSurface().click()
   await toolbar().getByLabelText('Table').click()

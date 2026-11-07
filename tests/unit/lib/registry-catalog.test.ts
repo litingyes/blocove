@@ -55,9 +55,9 @@ describe('installedFilePath', () => {
     expect(
       installedFilePath(
         { type: 'registry:block' },
-        { path: 'blocks/rich-text-editor-playground.tsx', target: null },
+        { path: 'blocks/rich-text-editor-block.tsx', target: null },
       ),
-    ).toBe('components/rich-text-editor-playground.tsx')
+    ).toBe('components/rich-text-editor-block.tsx')
   })
 
   it('installs hooks under hooks', () => {
@@ -118,7 +118,7 @@ describe('groupItemsByType', () => {
     const items = [
       makeItem('bold', 'registry:ui'),
       makeItem('base', 'registry:base'),
-      makeItem('playground', 'registry:block'),
+      makeItem('block', 'registry:block'),
       makeItem('extension', 'registry:lib'),
     ]
 

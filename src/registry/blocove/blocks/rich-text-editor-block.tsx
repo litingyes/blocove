@@ -113,7 +113,7 @@ const defaultContent = [
   '<p>Images are block nodes in the document.</p>',
   '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjE4MCIgcng9IjEyIiBmaWxsPSIjZTVlNWU1Ii8+PHRleHQgeD0iMjAwIiB5PSI5OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM3MzczNzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkltYWdlIG5vZGU8L3RleHQ+PC9zdmc+" alt="Image node example">',
   '<h3>Table</h3>',
-  '<table><tbody><tr><th>Item</th><th>Type</th></tr><tr><td>rich-text-editor</td><td>registry:ui</td></tr><tr><td>rich-text-editor-playground</td><td>registry:block</td></tr></tbody></table>',
+  '<table><tbody><tr><th>Item</th><th>Type</th></tr><tr><td>rich-text-editor</td><td>registry:ui</td></tr><tr><td>rich-text-editor-block</td><td>registry:block</td></tr></tbody></table>',
   '<h3>Emoji, math and mentions</h3>',
   '<p>Inline nodes flow with the text: <span data-type="emoji" data-name="sparkles"></span>, <span data-type="inline-math" data-latex="E = mc^2"></span> and <span data-type="mention" data-id="ada" data-label="Ada Lovelace"></span>.</p>',
   '<div data-type="block-math" data-latex="\\sum_{i=1}^{n} x_i = X"></div>',
@@ -126,7 +126,7 @@ const defaultUsers = [
   { id: 'grace', label: 'Grace Hopper' },
 ]
 
-export interface RichTextEditorPlaygroundProps {
+export interface RichTextEditorBlockProps {
   /** Initial HTML document. Replace it with the content your app edits. */
   defaultValue?: string
   /** Placeholder shown while the document is empty. */
@@ -155,13 +155,13 @@ function ToolbarGroup({
 /**
  * A ready-to-use rich text editor with the full Blocove extension set.
  */
-export function RichTextEditorPlayground({
+export function RichTextEditorBlock({
   defaultValue = defaultContent,
   placeholder = 'Start writing…',
   characterLimit,
   onChange,
   className,
-}: RichTextEditorPlaygroundProps) {
+}: RichTextEditorBlockProps) {
   const [value, setValue] = useState(defaultValue)
 
   return (
@@ -212,7 +212,7 @@ export function RichTextEditorPlayground({
       <EditorTrailingNode />
       <EditorGapcursor />
       <EditorTypography />
-      {/* The extension is visible by default; the playground starts hidden
+      {/* The extension is visible by default; the block starts hidden
           so the demo document does not open covered in widget marks. */}
       <EditorInvisibleCharacters visible={false} />
       <EditorFindAndReplace />

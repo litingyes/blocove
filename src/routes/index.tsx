@@ -96,7 +96,7 @@ const features = [
 
 const installCommand = addCommand(
   'npm',
-  itemAddress('rich-text-editor-playground'),
+  itemAddress('rich-text-editor-block'),
 )
 
 function Home() {
@@ -209,7 +209,7 @@ function Home() {
           />
           <CommandCard
             title="2. Install a block"
-            command={addCommand('npm', itemAddress('code-editor-playground'))}
+            command={addCommand('npm', itemAddress('code-editor-block'))}
             note="One item, and the CLI brings the components it composes."
           />
           <CommandCard

@@ -1073,9 +1073,9 @@
       ]
     },
     {
-      "name": "code-editor-playground",
+      "name": "code-editor-block",
       "type": "registry:block",
-      "title": "Code Editor Playground",
+      "title": "Code Editor",
       "description": "A complete code editor block: shiki highlighting, language support, line numbers, the toolbar and the status bar, with a controlled document.",
       "dependencies": [
         "cn"
@@ -1092,16 +1092,16 @@
       ],
       "files": [
         {
-          "path": "blocks/code-editor-playground.tsx",
+          "path": "blocks/code-editor-block.tsx",
           "type": "registry:block",
-          "target": "components/blocove/code-editor-playground.tsx"
+          "target": "components/blocove/code-editor-block.tsx"
         }
       ]
     },
     {
-      "name": "rich-text-editor-playground",
+      "name": "rich-text-editor-block",
       "type": "registry:block",
-      "title": "Rich Text Editor Playground",
+      "title": "Rich Text Editor",
       "description": "A complete rich text editor block: every node, every mark, the toolbar, the bubble menu and the character count.",
       "dependencies": [
         "cn"
@@ -1145,9 +1145,9 @@
       ],
       "files": [
         {
-          "path": "blocks/rich-text-editor-playground.tsx",
+          "path": "blocks/rich-text-editor-block.tsx",
           "type": "registry:block",
-          "target": "components/blocove/rich-text-editor-playground.tsx"
+          "target": "components/blocove/rich-text-editor-block.tsx"
         }
       ]
     },

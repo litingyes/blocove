@@ -33,7 +33,7 @@ const defaultDocument = [
   'console.log(pickSample(\'tsx\')?.source)',
 ].join('\n')
 
-export interface CodeEditorPlaygroundProps {
+export interface CodeEditorBlockProps {
   /** Initial document. Replace it with the code your app edits. */
   defaultValue?: string
   /** Language shared by the highlighting, the language item and the status bar. */
@@ -48,13 +48,13 @@ export interface CodeEditorPlaygroundProps {
 /**
  * A ready-to-use code editor with the full Blocove extension set.
  */
-export function CodeEditorPlayground({
+export function CodeEditorBlock({
   defaultValue = defaultDocument,
   language = 'tsx',
   readOnly = false,
   onChange,
   className,
-}: CodeEditorPlaygroundProps) {
+}: CodeEditorBlockProps) {
   const [value, setValue] = useState(defaultValue)
 
   return (

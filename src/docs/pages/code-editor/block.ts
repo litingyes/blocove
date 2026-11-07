@@ -1,26 +1,26 @@
 import type { DocsPage } from '@/docs/types'
 import { getRegistrySource } from '@/lib/registry-source'
-import { CodeEditorPlayground } from '@/registry/blocove/blocks/code-editor-playground'
+import { CodeEditorBlock } from '@/registry/blocove/blocks/code-editor-block'
 
 export const docsPage: DocsPage = {
-  item: 'code-editor-playground',
+  item: 'code-editor-block',
   examples: [
     {
-      title: 'Code Editor Playground',
-      component: CodeEditorPlayground,
+      title: 'Code Editor',
+      component: CodeEditorBlock,
       // The block is a single file, so the code panel shows exactly what the
       // CLI installs instead of a generated snippet.
-      code: getRegistrySource('blocks/code-editor-playground.tsx') ?? '',
+      code: getRegistrySource('blocks/code-editor-block.tsx') ?? '',
     },
   ],
   usage: [
     {
       title: 'Use the block',
-      code: `import { CodeEditorPlayground } from "@/components/blocove/code-editor-playground"
+      code: `import { CodeEditorBlock } from "@/components/blocove/code-editor-block"
 
 export function ReviewPanel() {
   return (
-    <CodeEditorPlayground
+    <CodeEditorBlock
       defaultValue="const answer = 42"
       language="typescript"
       onChange={value => console.log(value)}
@@ -31,7 +31,7 @@ export function ReviewPanel() {
   ],
   api: [
     {
-      name: 'CodeEditorPlayground',
+      name: 'CodeEditorBlock',
       description:
         'The editor with the shiki highlighting, the language item, the line numbers, the toolbar and the status bar already composed.',
       rows: [

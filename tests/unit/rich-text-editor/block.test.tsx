@@ -1,13 +1,13 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { RichTextEditorPlayground } from '@/registry/blocove/blocks/rich-text-editor-playground'
+import { RichTextEditorBlock } from '@/registry/blocove/blocks/rich-text-editor-block'
 
-async function renderPlayground(
-  props: Partial<React.ComponentProps<typeof RichTextEditorPlayground>> = {},
+async function renderBlock(
+  props: Partial<React.ComponentProps<typeof RichTextEditorBlock>> = {},
 ) {
   const onChange = vi.fn()
   const { container, unmount } = render(
-    <RichTextEditorPlayground onChange={onChange} {...props} />,
+    <RichTextEditorBlock onChange={onChange} {...props} />,
   )
 
   await waitFor(() => {
@@ -17,9 +17,9 @@ async function renderPlayground(
   return { container, onChange, unmount }
 }
 
-describe('richTextEditorPlayground', () => {
+describe('richTextEditorBlock', () => {
   it('renders the built-in document with every node family', async () => {
-    const { container } = await renderPlayground()
+    const { container } = await renderBlock()
     const surface = container.querySelector('.ProseMirror')!
 
     expect(surface.textContent).toContain('Composable rich text editor')
@@ -41,7 +41,7 @@ describe('richTextEditorPlayground', () => {
   })
 
   it('shows the character and word count', async () => {
-    const { container } = await renderPlayground()
+    const { container } = await renderBlock()
 
     const counter = container.querySelector('[data-slot="editor-character-count"]')?.textContent
 
@@ -50,7 +50,7 @@ describe('richTextEditorPlayground', () => {
   })
 
   it('emits the updated HTML when a toolbar command edits the document', async () => {
-    const { onChange } = await renderPlayground()
+    const { onChange } = await renderBlock()
 
     fireEvent.click(screen.getByRole('button', { name: 'Table' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Insert 3×3 table' }))
@@ -63,7 +63,7 @@ describe('richTextEditorPlayground', () => {
   })
 
   it('accepts a custom document and placeholder', async () => {
-    const { container } = await renderPlayground({
+    const { container } = await renderBlock({
       defaultValue: '<p>Custom document</p>',
       placeholder: 'Write here…',
     })
@@ -72,7 +72,7 @@ describe('richTextEditorPlayground', () => {
   })
 
   it('renders the placeholder for an empty custom document', async () => {
-    const { container } = await renderPlayground({ defaultValue: '' })
+    const { container } = await renderBlock({ defaultValue: '' })
 
     await waitFor(() => {
       const paragraph = container.querySelector('.ProseMirror p')
@@ -81,7 +81,7 @@ describe('richTextEditorPlayground', () => {
   })
 
   it('forwards the className to the editor root', async () => {
-    const { container } = await renderPlayground({ className: 'max-w-xl' })
+    const { container } = await renderBlock({ className: 'max-w-xl' })
 
     expect(container.querySelector('[data-slot="editor"]')?.className).toContain('max-w-xl')
   })

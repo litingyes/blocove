@@ -27,6 +27,9 @@ src/generated
 .agents/
 skills-lock.json
 
+# local agent-generated docs/plans (root only; src/docs is tracked)
+/docs/
+
 # test artifacts
 coverage
 .vitest

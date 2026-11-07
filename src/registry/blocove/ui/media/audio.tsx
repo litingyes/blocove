@@ -1,5 +1,6 @@
 import type { AudioHTMLAttributes, CSSProperties, ReactNode } from 'react'
 import type { MediaTrack } from '@/components/blocove/media/tracks'
+import { I18nProvider } from '@videojs/react'
 import {
   Audio as AudioJsMedia,
   AudioPlayer as AudioJsPlayer,
@@ -42,6 +43,8 @@ export interface AudioPlayerProps {
   poster?: string | null
   /** Brand color for slider fills, highlighted controls and primary actions. */
   accentColor?: string
+  /** BCP 47 language tag for the player labels, for example `en` or `zh-CN`. */
+  locale?: string
   className?: string
   style?: CSSProperties
   /** The media: `<AudioMedia>` or another audio element for the same player. */
@@ -57,21 +60,28 @@ export function AudioPlayer({
   title,
   poster,
   accentColor,
+  locale,
   className,
   style,
   children,
 }: AudioPlayerProps) {
+  const skin = (
+    <AudioJsSkin
+      className={cn('w-full', className)}
+      style={{
+        ...mediaThemeStyle({ accentColor }),
+        ...style,
+      }}
+    >
+      {children}
+    </AudioJsSkin>
+  )
+
   return (
     <AudioJsPlayer title={title} poster={poster}>
-      <AudioJsSkin
-        className={cn('w-full', className)}
-        style={{
-          ...mediaThemeStyle({ accentColor }),
-          ...style,
-        }}
-      >
-        {children}
-      </AudioJsSkin>
+      {locale
+        ? <I18nProvider locale={locale}>{skin}</I18nProvider>
+        : skin}
     </AudioJsPlayer>
   )
 }

@@ -6,14 +6,25 @@ import {
   VideoPlayer,
 } from '@/components/blocove/media/video'
 
+vi.mock('@videojs/react', () => ({
+  I18nProvider: ({ children, locale }: { children?: ReactNode, locale?: string }) => (
+    <div data-locale={locale} data-testid="i18n-provider">
+      {children}
+    </div>
+  ),
+}))
+
 vi.mock('@videojs/react/video', () => ({
   VideoPlayer: ({ children, title, poster }: { children: ReactNode, title?: string | null, poster?: string | null }) => (
     <div data-poster={poster ?? ''} data-testid="videojs-player" data-title={title ?? ''}>
       {children}
     </div>
   ),
-  VideoSkin: ({ children, className, style }: { children: ReactNode, className?: string, style?: Record<string, unknown> }) => (
+  VideoSkin: ({ children, className, renderThumbnail, style }: { children: ReactNode, className?: string, renderThumbnail?: ReactNode, style?: Record<string, unknown> }) => (
     <div className={className} data-testid="videojs-skin" style={style}>
+      {renderThumbnail
+        ? <div data-testid="videojs-thumbnail">{renderThumbnail}</div>
+        : null}
       {children}
     </div>
   ),
@@ -84,6 +95,42 @@ describe('videoPlayer', () => {
     expect(skin.style.getPropertyValue('--media-scale-unit')).toBe('0.75rem')
     expect(skin.style.aspectRatio).toBe('4 / 3')
     expect(skin.className).toContain('rounded-xl')
+  })
+
+  it('passes the storyboard renderer through to the skin', () => {
+    const { getByTestId } = render(
+      <VideoPlayer renderThumbnail={<img alt="Storyboard" data-testid="storyboard" />}>
+        <VideoMedia src="/clip.mp4" />
+      </VideoPlayer>,
+    )
+
+    expect(getByTestId('videojs-skin').contains(getByTestId('storyboard'))).toBe(true)
+  })
+
+  it('leaves the storyboard slot out when no renderer is given', () => {
+    const { queryByTestId } = setup()
+
+    expect(queryByTestId('videojs-thumbnail')).toBeNull()
+  })
+
+  it('wraps the skin in the i18n provider when a locale is given', () => {
+    const { getByTestId } = render(
+      <VideoPlayer locale="fr">
+        <VideoMedia src="/clip.mp4" />
+      </VideoPlayer>,
+    )
+    const provider = getByTestId('i18n-provider')
+
+    expect(provider.dataset.locale).toBe('fr')
+    expect(provider.querySelector('[data-testid="videojs-skin"]')).not.toBeNull()
+    expect(getByTestId('videojs-player').contains(provider)).toBe(true)
+  })
+
+  it('does not wrap the skin when no locale is given', () => {
+    const { getByTestId, queryByTestId } = setup()
+
+    expect(queryByTestId('i18n-provider')).toBeNull()
+    expect(getByTestId('videojs-skin')).not.toBeNull()
   })
 })
 

@@ -1257,6 +1257,56 @@
       ]
     },
     {
+      "name": "hls-media",
+      "type": "registry:ui",
+      "title": "HLS Media",
+      "description": "Adaptive HLS video and audio elements that play a manifest through the same shells as a progressive file, filling the quality menu from the renditions the stream declares.",
+      "dependencies": [
+        "@videojs/react@10.3.0"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/media-tracks"
+      ],
+      "categories": [
+        "media"
+      ],
+      "files": [
+        {
+          "path": "ui/media/hls-video.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/hls-video.tsx"
+        },
+        {
+          "path": "ui/media/hls-audio.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/hls-audio.tsx"
+        }
+      ]
+    },
+    {
+      "name": "live-player",
+      "type": "registry:ui",
+      "title": "Live Player",
+      "description": "Live video and audio players built on the Video.js live presets: the live button, the DVR window and the same skin settings as the on-demand items.",
+      "dependencies": [
+        "@videojs/react@10.3.0",
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/media-theme"
+      ],
+      "categories": [
+        "media"
+      ],
+      "files": [
+        {
+          "path": "ui/media/live.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/media/live.tsx"
+        }
+      ]
+    },
+    {
       "name": "video-hero",
       "type": "registry:block",
       "title": "Video Hero",

@@ -3,10 +3,13 @@ import { render } from 'vitest-browser-react'
 import { page, userEvent } from 'vitest/browser'
 import { AmbientVideo } from '@/components/blocove/media/ambient-video'
 import { AudioMedia, AudioPlayer } from '@/components/blocove/media/audio'
+import { HlsAudioMedia } from '@/components/blocove/media/hls-audio'
+import { HlsVideoMedia } from '@/components/blocove/media/hls-video'
+import { LiveAudioPlayer, LiveVideoPlayer } from '@/components/blocove/media/live'
 import { VideoMedia, VideoPlayer } from '@/components/blocove/media/video'
 import { VideoHero } from '@/registry/blocove/blocks/video-hero'
 import { VideoPlaylist } from '@/registry/blocove/blocks/video-playlist'
-import { mediaFixtures, mediaFixtureTracks } from '../helpers/media'
+import { hlsFixtures, mediaFixtures, mediaFixtureTracks } from '../helpers/media'
 
 function elementLocator(selector: string) {
   const element = document.querySelector(selector)
@@ -20,6 +23,29 @@ function elementLocator(selector: string) {
 
 function mediaElement() {
   return elementLocator('video')
+}
+
+/**
+ * The HLS adapters drive the media element through MediaSource, so the manifest
+ * URL never reaches the DOM: the engine appends a `<source>` child pointing at
+ * the blob it created. Asserting that blob is the wiring these tests cover, no
+ * playback — the headless Chromium build decodes no H.264.
+ */
+async function expectMediaSourceAttached(selector: 'audio' | 'video') {
+  await expect.poll(
+    () => {
+      const media = document.querySelector(selector)
+
+      if (!media) {
+        return ''
+      }
+
+      return Array.from(media.querySelectorAll('source'))
+        .map(source => source.getAttribute('src') ?? '')
+        .join(',')
+    },
+    { timeout: 8000 },
+  ).toContain('blob:')
 }
 
 async function waitForPlayback(selector = 'video') {
@@ -155,4 +181,62 @@ it('draws the hero content over the ambient video', async () => {
   ).toBeVisible()
   await expect.element(page.getByText('Small composable items.')).toBeVisible()
   expect(document.querySelectorAll('video')).toHaveLength(1)
+})
+
+it('mounts the HLS video through the video player', async () => {
+  await render(
+    <VideoPlayer poster={mediaFixtures.poster} title="HLS clip">
+      <HlsVideoMedia src={hlsFixtures.video} />
+    </VideoPlayer>,
+  )
+
+  await expect.element(mediaElement()).toBeVisible()
+  expect(document.querySelector('video')?.hasAttribute('playsinline')).toBe(true)
+  await expectMediaSourceAttached('video')
+  await expect.element(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
+})
+
+it('mounts the HLS audio through the audio player', async () => {
+  await render(
+    <AudioPlayer poster={mediaFixtures.poster} title="HLS episode">
+      <HlsAudioMedia src={hlsFixtures.audio} />
+    </AudioPlayer>,
+  )
+
+  // The skin hides the element itself, so mount it without asking for layout.
+  expect(document.querySelector('audio')).not.toBeNull()
+  await expectMediaSourceAttached('audio')
+  await expect.element(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
+})
+
+it('mounts the live HLS video through the live player', async () => {
+  await render(
+    <LiveVideoPlayer poster={mediaFixtures.poster} title="Live clip">
+      {/* Pin the stream type: this Chromium decodes no H.264, so waiting for the
+          engine to probe the manifest would race the live layout. */}
+      <HlsVideoMedia src={hlsFixtures.liveVideo} streamType="live" />
+    </LiveVideoPlayer>,
+  )
+
+  await expect.element(mediaElement()).toBeVisible()
+  await expectMediaSourceAttached('video')
+  await expect.element(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
+  // The live skin replaces the time controls with a live button, so its
+  // presence proves the live preset rendered the media. Its label follows the
+  // playhead ("Playing live" at the edge, "Seek to live edge" behind it).
+  await expect.element(page.getByRole('button', { name: /live/i })).toBeVisible()
+})
+
+it('mounts the live HLS audio through the live player', async () => {
+  await render(
+    <LiveAudioPlayer poster={mediaFixtures.poster} title="Live radio">
+      <HlsAudioMedia src={hlsFixtures.liveAudio} />
+    </LiveAudioPlayer>,
+  )
+
+  // The skin hides the element itself, so mount it without asking for layout.
+  expect(document.querySelector('audio')).not.toBeNull()
+  await expectMediaSourceAttached('audio')
+  await expect.element(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible()
+  await expect.element(page.getByRole('button', { name: /live/i })).toBeVisible()
 })

@@ -133,6 +133,14 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
           label: 'Ambient',
           items: ['ambient-video'],
         },
+        {
+          label: 'Live',
+          items: ['live-player'],
+        },
+        {
+          label: 'Sources',
+          items: ['hls-media'],
+        },
       ],
     },
   ],

@@ -318,8 +318,13 @@ pass `accentColor`.
 
 The family installs into `components/blocove/media/`, so imports are namespaced:
 `@/components/blocove/media/video`, `@/components/blocove/media/audio`,
-`@/components/blocove/media/ambient-video`, and the two internal helpers in
-`@/lib/blocove/media-theme` and `@/components/blocove/media/tracks`.
+`@/components/blocove/media/ambient-video`, `@/components/blocove/media/live`,
+`@/components/blocove/media/hls-video`, `@/components/blocove/media/hls-audio`,
+and the two internal helpers in `@/lib/blocove/media-theme` and
+`@/components/blocove/media/tracks`. Four items cover the family: `video-player`
+and `audio-player` for progressive files, `live-player` for live and DVR streams,
+and `hls-media` for adaptive HLS manifests. The shells and the media elements mix
+freely, so a stream and a download play through the same interface.
 
 ```tsx
 import { VideoMedia, VideoPlayer } from '@/components/blocove/media/video'
@@ -359,6 +364,54 @@ inherited `color-scheme`, so a dark page gets a dark player. `ambient-video`
 renders the chrome-less background preset — muted, looped and autoplaying — with
 a slot for the content drawn over it.
 
+`hls-media` swaps the progressive element for an adaptive one. `HlsVideoMedia` and
+`HlsAudioMedia` register with the player the same way, so the shell, the skin and
+the captions menu stay exactly as they were:
+
+```tsx
+import { HlsVideoMedia } from '@/components/blocove/media/hls-video'
+import { VideoPlayer } from '@/components/blocove/media/video'
+
+export function Stream() {
+  return (
+    <VideoPlayer title="Adaptive stream" poster="/poster.jpg">
+      <HlsVideoMedia src="/stream.m3u8" />
+    </VideoPlayer>
+  )
+}
+```
+
+HLS plays through the stream engine packaged with Video.js 10: it runs over Media
+Source Extensions, fills the quality menu from the renditions the manifest
+declares and needs no extra dependency. The engine resolves the segment URIs
+against the manifest and fetches them itself, so use a source the page can reach.
+`streamType` accepts `'on-demand'`, `'live'` or `'unknown'`: set it to pin the
+reported delivery before the playlist is parsed, omit it to let the engine detect
+it, and pass `crossOrigin`/`source` when the manifest needs CORS credentials or a
+DRM configuration.
+
+`live-player` pairs the Video.js live presets with any media element. The live
+button seeks back to the edge, and the DVR window follows the playlist:
+
+```tsx
+import { HlsVideoMedia } from '@/components/blocove/media/hls-video'
+import { LiveVideoPlayer } from '@/components/blocove/media/live'
+
+export function Live() {
+  return (
+    <LiveVideoPlayer title="Live from the edge" poster="/poster.jpg">
+      <HlsVideoMedia src="/live.m3u8" streamType="live" />
+    </LiveVideoPlayer>
+  )
+}
+```
+
+`LiveAudioPlayer` is the audio equivalent for radio and live episodes. Every
+shell accepts `locale`, a BCP 47 tag that translates the player labels through
+the Video.js i18n provider; omit it and the labels keep the provider already in
+your app. `VideoPlayer` also accepts `renderThumbnail`, which replaces the
+storyboard frame the skin draws while you scrub the timeline.
+
 The items pass the aspect ratio, the accent and the object fit as props, and
 forward `className`/`style` to the skin, which is the only styling surface the
 packaged skins consider public.
@@ -369,6 +422,10 @@ packaged skins consider public.
   `@videojs/react` and `cn`.
 - `audio-player` depends on the same helpers, plus `@videojs/react`.
 - `ambient-video` depends on `media-theme` and `@videojs/react`.
+- `hls-media` depends on `media-tracks` (internal helper) and `@videojs/react`; it
+  ships both adaptive media elements.
+- `live-player` depends on `media-theme` (internal helper), `@videojs/react` and
+  `cn`; it ships the live video and audio shells.
 - `video-hero` depends on `ambient-video` and the `badge` primitive.
 - `video-showcase` depends on `video-player`, `media-tracks`, `badge` and
   `separator`.
@@ -390,6 +447,19 @@ They are committed so the docs and the tests run without a network request.
 - `sample-poster.jpg`, `sample-poster-alt.jpg` and `sample-cover.jpg` are frames
   of those clips, so previews stay visually consistent, and
   `sample-captions.vtt` backs the captions demos.
+
+`scripts/generate-media-samples.sh` wraps those clips as the committed HLS
+fixtures in `public/media/hls/`; rerun it instead of editing the manifests by
+hand:
+
+- `sample-video.m3u8` is a two-rendition ABR master with fMP4/CMAF segments, and
+  `sample-audio.m3u8` is the audio master.
+- `sample-live.m3u8` and `sample-live-audio.m3u8` are the live masters. Each one
+  lists an EVENT playlist without an end marker, so the live demos read as live
+  without a network stream.
+- Every public manifest is a master, because the Video.js 10 stream engine
+  resolves a source as a multivariant playlist: a bare media playlist attaches
+  MediaSource and then never requests a segment.
 
 ## Items
 
@@ -422,6 +492,8 @@ They are committed so the docs and the tests run without a network request.
 | `video-player`                | `registry:ui`    | Video player shell: themed skin, native media and track declarations   |
 | `audio-player`                | `registry:ui`    | Audio player shell with a skin that follows the page color scheme      |
 | `ambient-video`               | `registry:ui`    | Chrome-less background video with a slot for the content over it       |
+| `live-player`                 | `registry:ui`    | Live video and audio shells on the Video.js live presets               |
+| `hls-media`                   | `registry:ui`    | Adaptive HLS video and audio media elements for the same shells        |
 | `media-theme`                 | `registry:lib`   | Internal helper mapping shadcn/ui tokens to the skin settings          |
 | `media-tracks`                | `registry:ui`    | Internal helper rendering track declarations as native `<track>`s      |
 | `video-hero`                  | `registry:block` | Hero section with ambient video, a headline and calls to action        |
@@ -547,8 +619,9 @@ scripts/clean-registry.mjs        # clears generated registry artifacts before a
 scripts/check-preset.mjs          # asserts the project still resolves to the b0 preset
 scripts/check-registry-paths.mjs   # asserts every item targets the Blocove namespace
 scripts/generate-media-samples.mjs # regenerates the committed sample clips with ffmpeg
+scripts/generate-media-samples.sh  # wraps the clips as the committed HLS fixtures
 public/r/                         # generated registry JSON (gitignored)
-public/media/                     # committed sample clips, posters and captions
+public/media/                     # committed sample clips, posters, captions and HLS fixtures
 ```
 
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.
@@ -877,15 +950,17 @@ these before planning on top of them:
   Video.js. Adding, removing or rearranging controls means adding the skin source
   from the [Video.js shadcn registry](https://videojs.org/docs/guides/installation/shadcn)
   to your project first; a Blocove-style skin of our own is a separate project.
-- **Streaming is not shipped yet.** The HLS and live presets are deliberately out
-  of scope for this family. Their bundled engine resolves absolute manifest URLs
-  and performs its own network fetch, so an offline sample cannot exercise them and
-  we would rather not ship an item the suite cannot verify. Use the native
-  `VideoMedia` today, or compose `HlsVideo` from `@videojs/react/media/hls-video`
-  yourself.
+- **Streaming is network-shaped.** The HLS and live items play through the stream
+  engine packaged inside `@videojs/react`: the engine resolves the manifest,
+  fetches the segments and fills the quality menu itself, so the source has to be
+  reachable from the page (CORS-enabled when it lives on another origin). The
+  committed fixtures in `public/media/hls/` let the docs and the browser suite
+  play a manifest without the internet; a real stream still fetches over the
+  network.
 - **Sample media is committed.** The clips in `public/media/` are binary assets
-  generated by `scripts/generate-media-samples.mjs`; rerun that script instead of
-  editing them by hand.
+  generated by `scripts/generate-media-samples.mjs`, and the HLS fixtures in
+  `public/media/hls/` by `scripts/generate-media-samples.sh`; rerun those scripts
+  instead of editing them by hand.
 
 ## Verify an install
 
@@ -901,6 +976,8 @@ npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-table.j
 npx shadcn@latest add --dry-run http://localhost:3000/r/rich-text-editor-playground.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/code-editor-playground.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/video-player.json    # targets: components/blocove/media/...
+npx shadcn@latest add --dry-run http://localhost:3000/r/hls-media.json       # two adaptive media elements
+npx shadcn@latest add --dry-run http://localhost:3000/r/live-player.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/video-hero.json
 
 curl -sSL http://localhost:3000/components/rich-text-editor-playground.md | head

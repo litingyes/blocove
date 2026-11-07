@@ -2,6 +2,7 @@ import type { VideoSkinProps } from '@videojs/react/video'
 import type { CSSProperties, ReactNode, VideoHTMLAttributes } from 'react'
 import type { MediaTrack } from '@/components/blocove/media/tracks'
 import type { MediaAspectRatio, MediaThemeOptions } from '@/lib/blocove/media-theme'
+import { I18nProvider } from '@videojs/react'
 import {
   Video as VideoJsMedia,
   VideoPlayer as VideoJsPlayer,
@@ -54,6 +55,10 @@ export interface VideoPlayerProps {
   objectPosition?: string
   /** Replaces the poster image the skin draws. */
   renderPoster?: VideoSkinProps['renderPoster']
+  /** Replaces the storyboard frame the skin draws while scrubbing the timeline. */
+  renderThumbnail?: VideoSkinProps['renderThumbnail']
+  /** BCP 47 language tag for the player labels, for example `en` or `zh-CN`. */
+  locale?: string
   className?: string
   style?: CSSProperties
   /** The media: `<VideoMedia>` or another media element for the same player. */
@@ -72,23 +77,32 @@ export function VideoPlayer({
   objectFit,
   objectPosition,
   renderPoster,
+  renderThumbnail,
+  locale,
   className,
   style,
   children,
 }: VideoPlayerProps) {
+  const skin = (
+    <VideoJsSkin
+      className={cn('w-full', className)}
+      style={{
+        ...mediaThemeStyle({ accentColor, objectFit, objectPosition }),
+        ...mediaAspectRatioStyle(aspectRatio),
+        ...style,
+      }}
+      renderPoster={renderPoster}
+      renderThumbnail={renderThumbnail}
+    >
+      {children}
+    </VideoJsSkin>
+  )
+
   return (
     <VideoJsPlayer title={title} poster={poster}>
-      <VideoJsSkin
-        className={cn('w-full', className)}
-        style={{
-          ...mediaThemeStyle({ accentColor, objectFit, objectPosition }),
-          ...mediaAspectRatioStyle(aspectRatio),
-          ...style,
-        }}
-        renderPoster={renderPoster}
-      >
-        {children}
-      </VideoJsSkin>
+      {locale
+        ? <I18nProvider locale={locale}>{skin}</I18nProvider>
+        : skin}
     </VideoJsPlayer>
   )
 }

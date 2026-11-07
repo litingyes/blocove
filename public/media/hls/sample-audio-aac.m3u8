@@ -1,0 +1,17 @@
+#EXTM3U
+#EXT-X-VERSION:7
+#EXT-X-TARGETDURATION:4
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-PLAYLIST-TYPE:VOD
+#EXT-X-MAP:URI="sample-audio-init.mp4"
+#EXTINF:4.010667,
+sample-audio-000.m4s
+#EXTINF:3.989333,
+sample-audio-001.m4s
+#EXTINF:4.010667,
+sample-audio-002.m4s
+#EXTINF:3.989333,
+sample-audio-003.m4s
+#EXTINF:3.989333,
+sample-audio-004.m4s
+#EXT-X-ENDLIST

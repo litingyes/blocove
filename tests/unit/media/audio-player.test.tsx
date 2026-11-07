@@ -3,6 +3,14 @@ import { render } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AudioMedia, AudioPlayer } from '@/components/blocove/media/audio'
 
+vi.mock('@videojs/react', () => ({
+  I18nProvider: ({ children, locale }: { children?: ReactNode, locale?: string }) => (
+    <div data-locale={locale} data-testid="i18n-provider">
+      {children}
+    </div>
+  ),
+}))
+
 vi.mock('@videojs/react/audio', () => ({
   AudioPlayer: ({ children, title, poster }: { children: ReactNode, title?: string | null, poster?: string | null }) => (
     <div data-poster={poster ?? ''} data-testid="audiojs-player" data-title={title ?? ''}>
@@ -43,6 +51,30 @@ describe('audioPlayer', () => {
     expect(skin.style.getPropertyValue('--media-accent-color')).toBe('#22c55e')
     expect(skin.style.getPropertyValue('--media-border-radius')).toBe('var(--radius, 0.625rem)')
     expect(skin.style.aspectRatio).toBe('')
+  })
+
+  it('wraps the skin in the i18n provider when a locale is given', () => {
+    const { getByTestId } = render(
+      <AudioPlayer locale="de">
+        <AudioMedia src="/episode.m4a" />
+      </AudioPlayer>,
+    )
+    const provider = getByTestId('i18n-provider')
+
+    expect(provider.dataset.locale).toBe('de')
+    expect(provider.querySelector('[data-testid="audiojs-skin"]')).not.toBeNull()
+    expect(getByTestId('audiojs-player').contains(provider)).toBe(true)
+  })
+
+  it('does not wrap the skin when no locale is given', () => {
+    const { getByTestId, queryByTestId } = render(
+      <AudioPlayer>
+        <AudioMedia src="/episode.m4a" />
+      </AudioPlayer>,
+    )
+
+    expect(queryByTestId('i18n-provider')).toBeNull()
+    expect(getByTestId('audiojs-skin')).not.toBeNull()
   })
 })
 

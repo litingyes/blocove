@@ -6,6 +6,15 @@ import type { MarkdownCodeProps } from '@/lib/blocove/markdown-parse'
 import type { MarkdownFenceHighlighter } from '@/lib/blocove/markdown-shiki'
 import { cn } from 'cn'
 import { useEffect, useMemo, useState } from 'react'
+import {
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockContent,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockLine,
+  CodeBlockTitle,
+} from '@/components/ui/code-block'
 import { loadMarkdownFenceHighlighter } from '@/lib/blocove/markdown-shiki'
 
 interface HighlightState {
@@ -101,7 +110,8 @@ export interface MarkdownCodeBlockProps extends MarkdownCodeProps {
 }
 
 /**
- * Fence renderer for the markdown shell, highlighted with shiki.
+ * Fence renderer for the markdown shell, highlighted with shiki and framed by the
+ * shadcn/ui code block.
  *
  * Register it through the shell's capability map:
  *
@@ -109,9 +119,10 @@ export interface MarkdownCodeBlockProps extends MarkdownCodeProps {
  * <Markdown source={source} components={{ code: MarkdownCodeBlock }} />
  * ```
  *
- * The element keeps no `data-slot` on purpose: shadcn/typeset already styles
- * `pre > code`, so the fence is left in the typeset flow and the tokens only add
- * color.
+ * The card carries `data-language` on its root; the header shows the language and
+ * copies the current source, including while the fence streams. The card is a
+ * typeset component, so typeset supplies the block spacing and the code block
+ * itself styles the fence.
  */
 export function MarkdownCodeBlock({
   language,
@@ -122,20 +133,31 @@ export function MarkdownCodeBlock({
   const lines = useFenceLines(code, language)
 
   return (
-    <pre
+    <CodeBlock
       data-language={language || undefined}
       data-streaming={streaming || undefined}
       className={cn(className)}
     >
-      <code>
+      <CodeBlockHeader>
+        <CodeBlockTitle className="text-muted-foreground">{language || 'text'}</CodeBlockTitle>
+        <CodeBlockActions>
+          <CodeBlockCopyButton
+            value={code}
+            aria-label={language
+              ? `Copy ${language} code`
+              : 'Copy code'}
+          />
+        </CodeBlockActions>
+      </CodeBlockHeader>
+      <CodeBlockContent>
         {lines.map((line, index) => (
-          <span key={index} className="block">
+          <CodeBlockLine key={index}>
             {line.length > 0
               ? line
               : '\n'}
-          </span>
+          </CodeBlockLine>
         ))}
-      </code>
-    </pre>
+      </CodeBlockContent>
+    </CodeBlock>
   )
 }

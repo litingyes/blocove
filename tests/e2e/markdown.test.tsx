@@ -55,7 +55,7 @@ it('keeps the finished fence mounted while the source grows', async () => {
   await render(<GrowingDocument initial={fenceSource} appended=" and more" />)
 
   const surface = document.querySelector<HTMLElement>('.typeset')
-  const pre = document.querySelector('pre')
+  const pre = document.querySelector('[data-slot="code-block-content"]')
 
   expect(surface, 'the rendered nodes live in a typeset element').not.toBeNull()
   expect(pre, 'the fence renders through the capability item').not.toBeNull()
@@ -64,7 +64,7 @@ it('keeps the finished fence mounted while the source grows', async () => {
   await page.getByRole('button', { name: 'Append' }).click()
 
   await expect.element(elementLocator('.typeset p')).toMatchTextContent(/Tail and more/)
-  expect(document.querySelector('pre')).toBe(pre)
+  expect(document.querySelector('[data-slot="code-block-content"]')).toBe(pre)
 
   await page.getByRole('button', { name: 'Finish' }).click()
 
@@ -75,28 +75,28 @@ it('highlights a streamed fence and keeps its nodes across an append', async () 
   await render(<GrowingDocument initial={fenceSource} appended=" and more" />)
 
   await expect.poll(
-    () => document.querySelector('pre')?.getAttribute('data-language'),
+    () => document.querySelector('[data-slot="code-block"]')?.getAttribute('data-language'),
     { timeout: 8000 },
   ).toBe('ts')
 
   // shiki loads the grammar in the background; the highlighted lines replace the
   // plain text without remounting the fence.
   await expect.poll(
-    () => document.querySelectorAll('pre code span.block').length,
+    () => document.querySelectorAll('[data-slot="code-block-line"]').length,
     { timeout: 8000 },
   ).toBeGreaterThan(1)
 
   await expect.poll(
-    () => document.querySelectorAll('pre code span.block span').length,
+    () => document.querySelectorAll('[data-slot="code-block-line-content"] span').length,
     { timeout: 8000 },
   ).toBeGreaterThan(0)
 
-  const pre = document.querySelector('pre')
+  const pre = document.querySelector('[data-slot="code-block-content"]')
   const text = document.querySelector('.typeset')?.textContent ?? ''
 
   await page.getByRole('button', { name: 'Append' }).click()
 
   await expect.element(elementLocator('.typeset p')).toMatchTextContent(/Tail and more/)
-  expect(document.querySelector('pre')).toBe(pre)
+  expect(document.querySelector('[data-slot="code-block-content"]')).toBe(pre)
   expect(document.querySelector('.typeset')!.textContent!.length).toBeGreaterThan(text.length)
 })

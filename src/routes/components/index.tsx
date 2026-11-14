@@ -10,7 +10,7 @@ export const Route = createFileRoute('/components/')({
       {
         name: 'description',
         content:
-          'The installable pieces of Blocove: rich text editor nodes and marks, code editor extensions and the media players, each one a registry item you own.',
+          'The installable pieces of Blocove: rich text editor nodes and marks, code editor extensions, the media players and the markdown renderer, each one a registry item you own.',
       },
     ],
   }),

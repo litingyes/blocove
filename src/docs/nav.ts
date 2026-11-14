@@ -1,9 +1,9 @@
 import type { DocsKind } from '@/lib/registry-catalog'
 
 /**
- * The three registry families, in the order every surface lists them. The
- * paperwork lives here so the docs nav, the catalog pages and the homepage
- * showcase all name and describe a family the same way.
+ * The registry families, in the order every surface lists them. The paperwork
+ * lives here so the docs nav, the catalog pages and the homepage showcase all
+ * name and describe a family the same way.
  */
 export const docsFamilies = {
   'rich-text-editor': {
@@ -17,6 +17,10 @@ export const docsFamilies = {
   'media': {
     label: 'Media',
     description: 'Video.js audio and video players whose skins follow your shadcn/ui tokens, plus the blocks built on them.',
+  },
+  'markdown': {
+    label: 'Markdown',
+    description: 'A streaming-safe markdown renderer whose node styles come from shadcn/typeset, with optional shiki fences and KaTeX math.',
   },
 } as const
 
@@ -140,6 +144,19 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
         {
           label: 'Sources',
           items: ['hls-media'],
+        },
+      ],
+    },
+    {
+      family: 'markdown',
+      entry: 'markdown',
+      groups: [
+        {
+          items: ['markdown'],
+        },
+        {
+          label: 'Rendering',
+          items: ['markdown-code-block', 'markdown-math'],
         },
       ],
     },

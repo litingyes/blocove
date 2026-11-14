@@ -1,23 +1,7 @@
 import type { DocsPage } from '@/docs/types'
 import RichTextEditorDemo from '@/docs/examples/rich-text-editor/editor'
 import { richTextEditorUsage } from '@/docs/snippets/rich-text-editor'
-
-const typesetSnippet = `/* src/styles.css */
-@import "tailwindcss";
-@import "./typeset.css";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/jetbrains-mono";
-
-.typeset-docs {
-  --typeset-font-body: var(--font-inter);
-  --typeset-font-heading: var(--font-inter);
-  --typeset-font-mono: var(--font-jetbrains-mono);
-  --typeset-size: 16px;
-  --typeset-leading: 1.75;
-  --typeset-flow: 1.25em;
-}`
-
-const typesetCommand = `curl -o src/typeset.css https://ui.shadcn.com/typeset.css`
+import { typesetCommand, typesetSetup } from '@/docs/snippets/typeset'
 
 export const docsPage: DocsPage = {
   item: 'rich-text-editor',
@@ -69,7 +53,7 @@ export const docsPage: DocsPage = {
     },
     {
       title: 'Typeset setup',
-      code: typesetSnippet,
+      code: typesetSetup,
       language: 'css',
     },
   ],

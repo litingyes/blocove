@@ -7,29 +7,32 @@
 
 **Composable building blocks for shadcn/ui.** A [shadcn/ui registry](https://ui.shadcn.com/docs/registry)
 that **extends** [shadcn/ui](https://ui.shadcn.com) instead of replacing it: a
-Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video
-players, plus the blocks built on them. shadcn/ui is installed first and Blocove
-only adds the blocks and components it needs.
+Tiptap rich text editor, a CodeMirror code editor, Video.js audio and video
+players and a streaming-safe markdown renderer, plus the blocks built on them.
+shadcn/ui is installed first and Blocove only adds the blocks and components it
+needs.
 
 Blocove is developed against the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font), but it ships no
 theme of its own: no base config, no theme tokens and no fonts. Items inherit
 the shadcn/ui setup of the project they are added to, so your own preset and
-theme stay in place. The flagship additions are three families: a composable
+theme stay in place. The flagship additions are four families: a composable
 [Tiptap](https://tiptap.dev) rich text editor, whose shell, nodes and marks are
 separate registry items with their own documentation page and whose content is
 typeset with [shadcn/typeset](https://ui.shadcn.com/docs/typeset); a
 [CodeMirror](https://codemirror.net) code editor with
 [shiki](https://shiki.style) highlighting, split into a shell and composable
-extensions; and a media family of [Video.js](https://videojs.org) audio and video
+extensions; a media family of [Video.js](https://videojs.org) audio and video
 players whose skins are themed by the shadcn/ui tokens of the project they are
-added to.
+added to; and a markdown renderer that turns a growing string into the same
+typeset nodes, with shiki fences and KaTeX math as optional capability items.
 
 Items are grouped per family. The rich text editor lives under the
 `rich-text-editor-*` prefix and installs into `components/blocove/rich-text-editor/`,
-the code editor under `code-editor-*` into `components/blocove/code-editor/`, and
-the media items into `components/blocove/media/`, so a new family can be added
-next to them without renaming existing items. Blocove owns its own namespace, so
+the code editor under `code-editor-*` into `components/blocove/code-editor/`, the
+media items into `components/blocove/media/` and the markdown items into
+`components/blocove/markdown/`, so a new family can be added next to them without
+renaming existing items. Blocove owns its own namespace, so
 its files never mix with shadcn/ui's `components/ui`.
 
 The site is built with [TanStack Start](https://tanstack.com/start) and the
@@ -64,6 +67,10 @@ npx shadcn@latest add litingyes/blocove/rich-text-editor-heading litingyes/bloco
 # A video player with the themed Video.js skin, or the hero block around it.
 npx shadcn@latest add litingyes/blocove/video-player
 npx shadcn@latest add litingyes/blocove/video-hero
+
+# The markdown renderer, plus the shiki fences when the answers contain code.
+npx shadcn@latest add litingyes/blocove/markdown
+npx shadcn@latest add litingyes/blocove/markdown-code-block
 ```
 
 Pin a release for reproducible installs:
@@ -466,6 +473,69 @@ hand:
   resolves a source as a multivariant playlist: a bare media playlist attaches
   MediaSource and then never requests a segment.
 
+## Markdown
+
+The markdown family is a renderer, not an editor: `<Markdown source>` parses the
+string into semantic elements inside the `typeset typeset-docs` container, so
+every node style comes from shadcn/typeset and a document reads like the rich
+text editor. The shell has no runtime dependencies; the shiki fence renderer and
+the KaTeX math renderer are optional capability items registered through the
+`components` map.
+
+The family installs into `components/blocove/markdown/`, so imports are
+namespaced: `@/components/blocove/markdown/markdown`,
+`@/components/blocove/markdown/code-block` and
+`@/components/blocove/markdown/math`. The parser installs as
+`@/lib/blocove/markdown-parse`, and the fence item also ships the tokenizer as
+`@/lib/blocove/markdown-shiki`.
+
+```tsx
+import { MarkdownCodeBlock } from '@/components/blocove/markdown/code-block'
+import { Markdown } from '@/components/blocove/markdown/markdown'
+import { MarkdownMath } from '@/components/blocove/markdown/math'
+
+export function Answer({ source, streaming }: { source: string, streaming: boolean }) {
+  return (
+    <Markdown
+      source={source}
+      streaming={streaming}
+      components={{ code: MarkdownCodeBlock, math: MarkdownMath }}
+    />
+  )
+}
+```
+
+`source` is the whole document, not a delta: pass the string you have so far and
+keep appending to it. Streaming is the default behaviour, not a second mode:
+while the source grows, the parser keeps every block that already ended, by
+identity, and re-parses only the open one, so finished elements keep their DOM, a
+completed fence is not tokenized again and a half-written marker stays literal
+until its closing token arrives. `streaming` only marks the surface (`aria-busy`,
+`data-streaming`) and the block still being written while tokens are arriving.
+
+The parser covers headings (ATX and setext), paragraphs, fenced code, blockquotes,
+bullet, ordered and task lists with nesting, GFM tables, thematic breaks, math
+fences and footnote definitions; inline it covers strong, emphasis,
+strikethrough, code spans, links, images, math, footnote references and hard
+breaks. Raw HTML is escaped, and only `http`, `https`, `mailto`, `tel`, fragment
+and relative targets become anchors. Raw HTML passthrough, reference-style links,
+multi-paragraph footnote bodies, heading ids and fence chrome (copy, download)
+are out of scope.
+
+### Markdown item graph
+
+- `markdown-parse` is internal: the block scanner, the inline parser and the
+  append-only cache, with no dependencies.
+- `markdown` depends on `markdown-parse` and `cn`, and ships the shell, the node
+  renderers and the streaming cache hook.
+- `markdown-code-block` depends on `markdown-parse`, adds `shiki`, and ships the
+  fence renderer plus the tokenizer that highlights a streamed fence line by
+  line. Register it through the shell's `components` map.
+- `markdown-math` depends on `markdown-parse`, adds `katex`, and ships the math
+  renderer; import `katex/dist/katex.min.css` once in the application.
+- Both capability items are optional: without a registered renderer the shell
+  falls back to a plain `<pre><code>` fence and literal `$…$` text.
+
 ## Items
 
 | Item                          | Type             | Description                                                            |
@@ -505,12 +575,17 @@ hand:
 | `video-showcase`              | `registry:block` | Captioned video: player, title, description, facts and actions         |
 | `audio-episode-player`        | `registry:block` | Podcast episode: cover art, facts, player and actions                  |
 | `video-playlist`              | `registry:block` | Video next to a selectable playlist that swaps the media               |
+| `markdown`                    | `registry:ui`    | Streaming-safe markdown renderer inside a shadcn/typeset container     |
+| `markdown-parse`              | `registry:lib`   | Internal parser: block scanner, inline parser and streaming cache      |
+| `markdown-code-block`         | `registry:ui`    | Shiki-highlighted fence renderer for the markdown shell                |
+| `markdown-math`               | `registry:ui`    | KaTeX math renderer for the markdown shell                             |
 
 Every Blocove file declares an explicit `target`, so items install into the
 Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*`,
-`code-editor-*` and media UI items land in `components/blocove/rich-text-editor/`,
-`components/blocove/code-editor/` and `components/blocove/media/`, the media
-blocks in `components/blocove/`, and the helpers in `lib/blocove/`. Projects that
+`code-editor-*`, media and markdown UI items land in
+`components/blocove/rich-text-editor/`, `components/blocove/code-editor/`,
+`components/blocove/media/` and `components/blocove/markdown/`, the media blocks
+in `components/blocove/`, and the helpers in `lib/blocove/`. Projects that
 use a `src` directory get the same paths under `src/`.
 
 The blocks ship one file each: `blocks/rich-text-editor-block.tsx` targets
@@ -536,10 +611,10 @@ official shadcn/ui components arrive as that item's `registryDependencies`. Your
 shadcn/ui preset, fonts and theme tokens stay authoritative; Blocove does not
 overwrite them.
 
-`rich-text-editor-extension`, `code-editor-extension` and the media helpers
-(`media-theme`, `media-tracks`) are internal: they are installed as dependencies
-of their family's items and are hidden from the site catalog and documentation
-navigation.
+`rich-text-editor-extension`, `code-editor-extension`, `markdown-parse` and the
+media helpers (`media-theme`, `media-tracks`) are internal: they are installed as
+dependencies of their family's items and are hidden from the site catalog and
+documentation navigation.
 
 ### Removed: the base item
 
@@ -600,9 +675,12 @@ src/registry/blocove/
   lib/code-editor-extension.ts          # registry:lib helper for the code editor family
   lib/code-editor-shiki.ts              # registry:lib shiki highlighter for the code editor
   lib/rich-text-editor-extension.ts     # registry:lib helper for the rich text editor family
+  lib/markdown-parse.ts                 # registry:lib parser and streaming cache for markdown
+  lib/markdown-shiki.tsx                # registry:lib shiki tokenizer for streamed fences
   lib/media-theme.ts                    # registry:lib helper mapping shadcn/ui tokens to the skins
   ui/code-editor/                       # registry:ui items (shell, highlighting, languages, chrome)
   ui/media/                             # registry:ui items (video, audio, tracks, ambient video)
+  ui/markdown/                          # registry:ui items (renderer, highlighted fence, math)
   ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
   blocks/rich-text-editor-block.tsx     # registry:block item (complete editor)
   blocks/code-editor-block.tsx          # registry:block item (complete code editor)
@@ -643,8 +721,8 @@ public/media/                     # committed sample clips, posters, captions, c
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.
   Items are grouped by family: the rich text editor lives in
   `ui/rich-text-editor/`, the complete editor block in `blocks/`, the code editor
-  in `ui/code-editor/`, the Video.js items in `ui/media/`, and a new family gets
-  its own folder and item prefix. Every shipped file declares a `target` under
+  in `ui/code-editor/`, the Video.js items in `ui/media/`, the markdown renderer
+  in `ui/markdown/`, and a new family gets its own folder and item prefix. Every shipped file declares a `target` under
   `components/blocove/...` or `lib/blocove/...`.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
@@ -849,9 +927,28 @@ reference it instead.
    props and markup; the browser suite covers real playback with the WebM samples.
    Blocks also get a suite in `tests/unit/media/blocks.test.tsx`.
 
+### Adding a markdown item
+
+1. Add capability renderers under `src/registry/blocove/ui/markdown/`; a renderer
+   is a `ComponentType` that receives the node props the shell passes
+   (`MarkdownCodeProps` or `MarkdownMathProps` from
+   `@/lib/blocove/markdown-parse`). Pure parser changes live in
+   `src/registry/blocove/lib/markdown-parse.ts`.
+2. Register the item in `src/registry/blocove/registry.json` with
+   `registryDependencies: ["litingyes/blocove/markdown-parse"]` plus the shell
+   when the page composes it, then add the dependency packages (`shiki`,
+   `katex`, ...) to `dependencies`.
+3. Document it with a demo in `src/docs/examples/markdown/` (compose
+   `MarkdownDemoFrame` from `src/docs/examples/markdown/frame.tsx`), a page in
+   `src/docs/pages/markdown/`, and the item name in `src/docs/nav.ts` under
+   `Markdown`; extend `src/docs/snippets/markdown.ts` when the page needs
+   generated code.
+4. Add a suite in `tests/unit/markdown/`. The parser keeps the strict
+   `src/registry/blocove/lib/**` coverage gate, so a new branch needs a case.
+
 To add a whole editor family, give it its own folder (`ui/<family>/`), item
 prefix, docs section in `src/docs/nav.ts`, demo frame and snippet builder. The
-rich text editor, code editor and media items are unaffected.
+rich text editor, code editor, media and markdown items are unaffected.
 
 Conventions:
 
@@ -879,7 +976,7 @@ Vitest runs two projects, defined in `vitest.config.ts`:
   distribution contract. It is the fast default.
 - `browser` runs in real Chromium through Vitest browser mode and covers what needs
   layout and real events: typing, selections, clipboard, highlighting, diff
-  review and media playback. The media suite plays the committed WebM samples
+  review, markdown streaming and media playback. The media suite plays the committed WebM samples
   through the shipped items: play and pause, captions, audio playback, ambient
   autoplay and the playlist swap. It uses WebM on purpose, because the Chromium
   build Vitest drives has no H.264 or AAC decoder.
@@ -932,9 +1029,9 @@ gate. Thresholds live in `vitest.config.ts`; raise them, never lower them.
   requests never render the item page; `/items/<name>.md` redirects to the
   section's markdown as well.
 - The left navigation is one tree per kind and groups pages per family: `Rich
-Text Editor`, `Code Editor` and `Media`. Components lead with the family's
-  shell, then list the nodes, marks or extensions it is composed from; blocks
-  list the complete compositions. A new family adds a section to both trees, not
+Text Editor`, `Code Editor`, `Media` and `Markdown`. Components lead with the
+  family's shell, then list the nodes, marks or extensions it is composed from;
+  blocks list the complete compositions. A new family adds a section to both trees, not
   a third nav tree. The right column tracks the current section.
 - The light/dark switch runs through the View Transitions API with a circular
   reveal from the control that was clicked, and falls back to an instant switch
@@ -995,6 +1092,8 @@ npx shadcn@latest add --dry-run http://localhost:3000/r/video-player.json    # t
 npx shadcn@latest add --dry-run http://localhost:3000/r/hls-media.json       # two adaptive media elements
 npx shadcn@latest add --dry-run http://localhost:3000/r/live-player.json
 npx shadcn@latest add --dry-run http://localhost:3000/r/video-hero.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/markdown.json
+npx shadcn@latest add --dry-run http://localhost:3000/r/markdown-code-block.json  # fence item plus the shiki helper
 
 curl -sSL http://localhost:3000/blocks/rich-text-editor-block.md | head
 curl -sSI http://localhost:3000/items/rich-text-editor-block | grep -i location  # 308 -> /blocks/...

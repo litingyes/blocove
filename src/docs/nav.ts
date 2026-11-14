@@ -103,6 +103,14 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
             'rich-text-editor-text-style',
           ],
         },
+        {
+          label: 'Collaboration',
+          items: [
+            'rich-text-editor-collaboration',
+            'rich-text-editor-collaboration-caret',
+            'rich-text-editor-presence',
+          ],
+        },
       ],
     },
     {
@@ -149,7 +157,7 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
       family: 'rich-text-editor',
       groups: [
         {
-          items: ['rich-text-editor-block'],
+          items: ['rich-text-editor-block', 'rich-text-editor-collaboration-block'],
         },
       ],
     },

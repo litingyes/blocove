@@ -156,6 +156,49 @@ export function RichTextEditorExample() {
 }
 ```
 
+### Collaborative editing
+
+Four items bring Yjs collaboration to the editor.
+`rich-text-editor-collaboration` binds the document to a `Y.Doc`,
+`rich-text-editor-collaboration-caret` draws the remote cursors,
+`rich-text-editor-presence` adds the avatar stack and the connection status, and
+`rich-text-editor-collaboration-block` composes all of them in one file.
+
+The items never import a provider package. They read a structural
+`CollaborationProvider` (`awareness` plus an optional `status`), so Hocuspocus, a
+Tiptap Cloud provider or a local transport all fit, and the block owns no
+transport at all.
+
+```tsx
+import { HocuspocusProvider } from '@hocuspocus/provider'
+import * as Y from 'yjs'
+import { RichTextEditorCollaborationBlock } from '@/components/blocove/rich-text-editor-collaboration-block'
+
+const sharedDocument = new Y.Doc()
+
+const provider = new HocuspocusProvider({
+  url: 'wss://collab.example.com',
+  name: 'product-launch',
+  document: sharedDocument,
+})
+
+export function DocumentEditor() {
+  return (
+    <RichTextEditorCollaborationBlock
+      document={sharedDocument}
+      provider={provider}
+      user={{ name: 'Ada Lovelace', color: '#2563eb' }}
+      onChange={html => console.log(html)}
+    />
+  )
+}
+```
+
+The Yjs document is the source of truth: once collaboration is declared the
+editor ignores `value` and `defaultValue`, and its local undo history steps aside
+for the one collaboration owns. Seed the document instead of the React tree, and
+dispose the provider with the document when the component unmounts.
+
 ### Typeset setup
 
 Editor content is wrapped in a shadcn/typeset container. Download the stylesheet
@@ -675,17 +718,18 @@ pnpm dev             # http://localhost:3000, regenerates public/r first
 
 Useful scripts:
 
-| Script                   | Description                                            |
-| ------------------------ | ------------------------------------------------------ |
-| `pnpm registry:build`    | Clear `public/r` and run `shadcn build`                |
-| `pnpm registry:check`    | Fail unless every item targets the Blocove namespace   |
-| `pnpm registry:prepare`  | Build registry JSON, check paths, generate the catalog |
-| `pnpm registry:validate` | Validate `litingyes/blocove` from GitHub               |
-| `pnpm preset:check`      | Fail unless the project resolves to the `b0` preset    |
-| `pnpm typecheck`         | TypeScript                                             |
-| `pnpm lint`              | ESLint: lint and formatting                            |
-| `pnpm lint:fix`          | ESLint with autofix                                    |
-| `pnpm check`             | preset check, typecheck, lint and production build     |
+| Script                   | Description                                              |
+| ------------------------ | -------------------------------------------------------- |
+| `pnpm registry:build`    | Clear `public/r` and run `shadcn build`                  |
+| `pnpm registry:check`    | Fail unless every item targets the Blocove namespace     |
+| `pnpm registry:prepare`  | Build registry JSON, check paths, generate the catalog   |
+| `pnpm registry:validate` | Validate `litingyes/blocove` from GitHub                 |
+| `pnpm collab:dev`        | Hocuspocus server for the collaboration demo (port 1234) |
+| `pnpm preset:check`      | Fail unless the project resolves to the `b0` preset      |
+| `pnpm typecheck`         | TypeScript                                               |
+| `pnpm lint`              | ESLint: lint and formatting                              |
+| `pnpm lint:fix`          | ESLint with autofix                                      |
+| `pnpm check`             | preset check, typecheck, lint and production build       |
 
 The generated files (`public/r`, `src/generated`) are gitignored. `predev`,
 `prebuild` and `pretypecheck` regenerate them automatically.
@@ -1016,6 +1060,26 @@ The public site is [blocove.vercel.app](https://blocove.vercel.app). The
 `https://blocove.vercel.app/r/{name}.json`. If the domain changes, update the
 root registry `homepage` and the namespace URLs together, then re-run
 `pnpm run registry:prepare`.
+
+### Collaboration server
+
+The docs demo syncs across tabs through a `BroadcastChannel` by default, so the
+published site needs no backend. To run the same demo against a real websocket,
+start the server and point the site at it:
+
+```bash
+pnpm collab:dev                                    # ws://localhost:1234
+VITE_COLLAB_URL=ws://localhost:1234 pnpm dev
+```
+
+For production, deploy `scripts/collab-server.mjs` (or the official Hocuspocus
+image) to a host that keeps a Node process alive: Railway, Fly.io, Render or a
+VPS. Hocuspocus keeps each room in process memory, so every peer of a room has
+to reach the same instance; a serverless platform that cannot pin a websocket to
+one instance needs the Redis extension. Build the site with
+`VITE_COLLAB_URL=wss://collab.example.com` to point it at the deployed server.
+Without the variable the site keeps the in-browser transport, and the status item
+shows the connection honestly either way.
 
 ## License
 

@@ -32,6 +32,8 @@ export default defineConfig({
         test: {
           name: 'browser',
           include: ['tests/e2e/**/*.test.{ts,tsx}'],
+          // The collaboration tests sync through a real Hocuspocus server.
+          globalSetup: ['./tests/e2e/setup/collab-server.ts'],
           browser: {
             enabled: true,
             headless: true,

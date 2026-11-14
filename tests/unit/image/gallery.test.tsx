@@ -26,7 +26,7 @@ function currentButton(container: HTMLElement) {
 
 function thumbnailButtons(container: HTMLElement) {
   return [
-    ...container.querySelectorAll('[role="group"] button'),
+    ...container.querySelectorAll<HTMLButtonElement>('[role="group"] button'),
   ]
 }
 
@@ -112,5 +112,38 @@ describe('imageGallery', () => {
 
     expect(group.getAttribute('aria-label')).toBe('Mission photographs')
     expect(group.className).toContain('grid-cols-2')
+  })
+
+  it('keeps one tab stop and moves from the focused thumbnail', () => {
+    const { container } = render(<ImageGallery images={images} />)
+    const buttons = thumbnailButtons(container)
+
+    expect(buttons.map(button => button.tabIndex)).toEqual([0, -1, -1])
+
+    buttons[2].focus()
+    fireEvent.keyDown(buttons[2], { key: 'ArrowRight' })
+
+    expect(currentButton(container)).toBe(buttons[0])
+    expect(document.activeElement).toBe(buttons[0])
+  })
+
+  it('moves between rows with ArrowDown and ArrowUp', () => {
+    const many = [
+      ...images,
+      { alt: 'Fourth', src: '/four.jpg' },
+      { alt: 'Fifth', src: '/five.jpg' },
+      { alt: 'Sixth', src: '/six.jpg' },
+    ]
+    const { container } = render(<ImageGallery columns={3} images={many} />)
+    const buttons = thumbnailButtons(container)
+
+    buttons[0].focus()
+    fireEvent.keyDown(buttons[0], { key: 'ArrowDown' })
+
+    expect(currentButton(container)).toBe(buttons[3])
+
+    fireEvent.keyDown(buttons[3], { key: 'ArrowUp' })
+
+    expect(currentButton(container)).toBe(buttons[0])
   })
 })

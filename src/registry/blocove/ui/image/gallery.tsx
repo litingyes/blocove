@@ -85,14 +85,31 @@ export function ImageGallery({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    // Move from the thumbnail the user is on, not from the selection: they can
+    // tab to another thumbnail before pressing an arrow.
+    const focusedButton = event.target instanceof HTMLElement
+      ? event.target.closest('button')
+      : null
+    const focusedIndex = focusedButton
+      ? buttonRef.current.indexOf(focusedButton)
+      : -1
+    const base = focusedIndex >= 0
+      ? focusedIndex
+      : active
     let next: number
 
     switch (event.key) {
       case 'ArrowRight':
-        next = (active + 1) % images.length
+        next = (base + 1) % images.length
         break
       case 'ArrowLeft':
-        next = (active - 1 + images.length) % images.length
+        next = (base - 1 + images.length) % images.length
+        break
+      case 'ArrowDown':
+        next = Math.min(base + columns, images.length - 1)
+        break
+      case 'ArrowUp':
+        next = Math.max(base - columns, 0)
         break
       case 'Home':
         next = 0
@@ -151,6 +168,9 @@ export function ImageGallery({
               ? 'true'
               : undefined}
             aria-label={image.alt}
+            tabIndex={index === active
+              ? 0
+              : -1}
             className={cn(
               'h-auto w-full overflow-hidden rounded-lg border p-0',
               index === active

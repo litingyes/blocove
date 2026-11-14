@@ -16,7 +16,7 @@ export const docsPage: DocsPage = {
       }),
     },
   ],
-  note: 'The box reserves the aspect ratio before the file arrives, so the surrounding layout never shifts. `widths` and `transform` build the srcset, `sizes` lets the browser choose a candidate, and the placeholder stays visible until the image loads. The component is a native `<img>` (or `<picture>` when `sources` is set), so it works in every framework and can be replaced by a framework image component without changing the rest of the page.',
+  note: 'The box reserves the aspect ratio before the file arrives, so the surrounding layout never shifts. `widths` and `transform` build the srcset, `sizes` lets the browser choose a candidate, and the placeholder stays visible until the image loads. `placeholder` is either a CSS color or an image URL drawn cover/center; decode a blurhash to a low-quality image URL first. The component is a native `<img>` (or `<picture>` when `sources` is set), so it works in every framework and can be replaced by a framework image component without changing the rest of the page.',
   api: [
     {
       name: 'Image',
@@ -30,7 +30,7 @@ export const docsPage: DocsPage = {
         { prop: 'aspectRatio', type: 'number | string', default: 'width / height' },
         { prop: 'srcSet', type: 'string', default: '-' },
         { prop: 'sizes', type: 'string', default: '-' },
-        { prop: 'widths', type: 'readonly number[]', default: '[320, 480, 640, 960]' },
+        { prop: 'widths', type: 'readonly number[]', default: '-' },
         { prop: 'transform', type: '(src, width) => string', default: 'Identity' },
         { prop: 'sources', type: 'readonly ImageSource[]', default: '-' },
         { prop: 'priority', type: 'boolean', default: 'false' },

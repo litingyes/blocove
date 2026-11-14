@@ -35,6 +35,8 @@ export interface ImageShowcaseProps {
   actions?: ReactNode
   /** Optional link to the original source, rendered as "View original". */
   href?: string
+  /** Aspect ratio reserved for the lead image and the gallery preview. */
+  aspectRatio?: number | string
   /** Widths the lead image requests. */
   widths?: readonly number[]
   /** Turns a source and a width into the URL that serves it. */
@@ -60,6 +62,7 @@ export function ImageShowcase({
   meta,
   actions,
   href,
+  aspectRatio = '16 / 9',
   widths,
   transform,
   sizes,
@@ -99,6 +102,7 @@ export function ImageShowcase({
 
       <ImageZoom
         alt={lead.alt}
+        aspectRatio={aspectRatio}
         caption={lead.caption}
         sizes={sizes}
         src={lead.src}
@@ -106,11 +110,18 @@ export function ImageShowcase({
         widths={widths}
       />
 
-      {credit
+      {lead.caption || credit
         ? (
-            <p className="text-xs text-muted-foreground">
-              {credit}
-            </p>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs text-muted-foreground">
+              <span>{lead.caption}</span>
+              {credit
+                ? (
+                    <span className="text-muted-foreground/80">
+                      {credit}
+                    </span>
+                  )
+                : null}
+            </div>
           )
         : null}
 
@@ -150,6 +161,7 @@ export function ImageShowcase({
       {rest.length > 0
         ? (
             <ImageGallery
+              aspectRatio={aspectRatio}
               images={rest}
               label={`More from ${title}`}
               sizes={sizes}

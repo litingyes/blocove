@@ -49,6 +49,7 @@ export function MissionStory() {
         { prop: 'meta', type: 'string[]', default: '-' },
         { prop: 'actions', type: 'ReactNode', default: '-' },
         { prop: 'href', type: 'string', default: '-' },
+        { prop: 'aspectRatio', type: 'number | string', default: '\'16 / 9\'' },
         { prop: 'widths', type: 'readonly number[]', default: '-' },
         { prop: 'transform', type: '(src, width) => string', default: 'Identity' },
         { prop: 'sizes', type: 'string', default: '-' },

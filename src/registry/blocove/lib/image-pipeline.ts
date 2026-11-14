@@ -73,6 +73,9 @@ export function focalPointPosition(focalPoint?: ImageFocalPoint): string | undef
 export function placeholderBackground(placeholder?: string): {
   backgroundColor?: string
   backgroundImage?: string
+  backgroundPosition?: string
+  backgroundRepeat?: string
+  backgroundSize?: string
 } {
   if (!placeholder) {
     return {}
@@ -83,6 +86,11 @@ export function placeholderBackground(placeholder?: string): {
     || placeholder.startsWith('data:')
 
   return isImage
-    ? { backgroundImage: `url("${placeholder}")` }
+    ? {
+        backgroundImage: `url("${placeholder}")`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+      }
     : { backgroundColor: placeholder }
 }

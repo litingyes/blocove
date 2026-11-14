@@ -74,4 +74,22 @@ describe('imageZoom', () => {
 
     expect(getByRole('button').querySelector('img')?.getAttribute('src')).toBe('/large.jpg')
   })
+
+  it('makes the trigger responsive and priority', () => {
+    const { getByRole } = render(
+      <ImageZoom
+        alt="Artemis II rollout"
+        priority
+        sizes="(min-width: 1024px) 640px, 100vw"
+        src="/large.jpg"
+        transform={(src, width) => `${src}?w=${width}`}
+        widths={[320, 640]}
+      />,
+    )
+    const image = getByRole('button').querySelector('img') as HTMLImageElement
+
+    expect(image.getAttribute('srcset')).toBe('/large.jpg?w=320 320w, /large.jpg?w=640 640w')
+    expect(image.getAttribute('sizes')).toBe('(min-width: 1024px) 640px, 100vw')
+    expect(image.getAttribute('loading')).toBe('eager')
+  })
 })

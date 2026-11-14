@@ -25,7 +25,7 @@ export interface ImageZoomProps {
   width?: number
   /** Intrinsic height of the trigger image. */
   height?: number
-  /** Whether the trigger image is a priority image. */
+  /** Whether both the trigger and the dialog image are priority images. */
   priority?: boolean
   /** Layout sizes for the large image. */
   sizes?: string
@@ -57,7 +57,7 @@ export function ImageZoom({
   width,
   height,
   priority = false,
-  sizes = '100vw',
+  sizes,
   widths,
   transform,
   placeholder,
@@ -80,7 +80,11 @@ export function ImageZoom({
           aspectRatio={aspectRatio}
           height={height}
           placeholder={placeholder}
+          priority={priority}
+          sizes={sizes}
           src={thumbnailSrc ?? src}
+          transform={transform}
+          widths={widths}
           width={width}
           className="transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
@@ -98,7 +102,7 @@ export function ImageZoom({
         <Image
           alt={alt}
           priority={priority}
-          sizes={sizes}
+          sizes={sizes ?? '100vw'}
           src={src}
           transform={transform}
           widths={widths}

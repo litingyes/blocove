@@ -85,18 +85,27 @@ describe('placeholderBackground', () => {
   it('uses an absolute path as a low-quality image', () => {
     expect(placeholderBackground('/lqip.jpg')).toEqual({
       backgroundImage: 'url("/lqip.jpg")',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
     })
   })
 
   it('uses an HTTP URL as a low-quality image', () => {
     expect(placeholderBackground('https://cdn.example.com/lqip.jpg')).toEqual({
       backgroundImage: 'url("https://cdn.example.com/lqip.jpg")',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
     })
   })
 
   it('uses a data URI as a low-quality image', () => {
     expect(placeholderBackground('data:image/jpeg;base64,AAAA')).toEqual({
       backgroundImage: 'url("data:image/jpeg;base64,AAAA")',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
     })
   })
 

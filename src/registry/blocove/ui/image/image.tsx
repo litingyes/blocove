@@ -105,6 +105,16 @@ export function Image({
   const [status, setStatus] = useState<ImageStatus>('loading')
   const imageRef = useRef<HTMLImageElement>(null)
 
+  // Changing the source must leave the previous error behind; otherwise the
+  // hidden element never mounts the new file and the fallback stays forever.
+  const sourceKey = `${src}|${srcSet ?? ''}|${sources?.map(source => `${source.media ?? ''}:${source.type ?? ''}:${source.srcSet}`).join('|') ?? ''}`
+  const [activeSource, setActiveSource] = useState(sourceKey)
+
+  if (activeSource !== sourceKey) {
+    setActiveSource(sourceKey)
+    setStatus('loading')
+  }
+
   // A cached image can finish before React attaches onLoad, and a hydrated
   // server render never fires one. The element itself is the source of truth.
   useEffect(() => {
@@ -120,7 +130,7 @@ export function Image({
     }
 
     setStatus('loading')
-  }, [src])
+  }, [sourceKey])
 
   const resolvedAspectRatio = aspectRatio
     ?? (width && height
@@ -137,6 +147,9 @@ export function Image({
       {...props}
       ref={imageRef}
       alt={alt}
+      aria-hidden={status === 'error'
+        ? true
+        : undefined}
       className={cn(
         'relative z-10 h-full w-full transition-opacity duration-300 motion-reduce:transition-none',
         status === 'loaded'
@@ -187,29 +200,41 @@ export function Image({
         ...placeholderBackground(placeholder),
       }}
     >
+      {sources?.length
+        ? (
+            <picture className="contents">
+              {sources.map(source => (
+                <source
+                  key={`${source.media ?? 'all'}-${source.type ?? 'any'}-${source.srcSet}`}
+                  media={source.media}
+                  sizes={sizes}
+                  srcSet={source.srcSet}
+                  type={source.type}
+                />
+              ))}
+              {element}
+            </picture>
+          )
+        : element}
+
       {status === 'error'
-        ? fallback ?? (
-          <span
-            aria-hidden="true"
-            className="block h-full w-full bg-muted"
-            data-slot="image-fallback"
-          />
-        )
-        : sources?.length
+        ? fallback
           ? (
-              <picture className="contents">
-                {sources.map(source => (
-                  <source
-                    key={`${source.media ?? 'all'}-${source.type ?? 'any'}-${source.srcSet}`}
-                    media={source.media}
-                    srcSet={source.srcSet}
-                    type={source.type}
-                  />
-                ))}
-                {element}
-              </picture>
+              <span
+                className="absolute inset-0 z-20 flex items-center justify-center bg-muted"
+                data-slot="image-fallback"
+              >
+                {fallback}
+              </span>
             )
-          : element}
+          : (
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 z-20 bg-muted"
+                data-slot="image-fallback"
+              />
+            )
+        : null}
     </span>
   )
 }

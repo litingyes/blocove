@@ -85,7 +85,7 @@ describe('image', () => {
     const { container, getByAltText } = render(
       <Image
         alt="Launch"
-        sizes="100vw"
+        sizes="(min-width: 768px) 640px, 100vw"
         sources={[
           { media: '(min-width: 768px)', srcSet: '/wide.jpg 960w' },
           { srcSet: '/narrow.jpg 480w', type: 'image/jpeg' },
@@ -100,6 +100,7 @@ describe('image', () => {
     expect(sources).toHaveLength(2)
     expect(sources[0].getAttribute('media')).toBe('(min-width: 768px)')
     expect(sources[0].getAttribute('srcset')).toBe('/wide.jpg 960w')
+    expect(sources[1].getAttribute('sizes')).toBe('(min-width: 768px) 640px, 100vw')
     expect(sources[1].getAttribute('type')).toBe('image/jpeg')
     expect(getByAltText('Launch')).not.toBeNull()
   })
@@ -143,6 +144,9 @@ describe('image', () => {
     )
 
     expect(imageWrapper(container).style.backgroundImage).toBe('url("/lqip.jpg")')
+    expect(imageWrapper(container).style.backgroundSize).toBe('cover')
+    expect(imageWrapper(container).style.backgroundPosition).toContain('center')
+    expect(imageWrapper(container).style.backgroundRepeat).toBe('no-repeat')
   })
 
   it('fades in once the image has loaded and forwards onLoad', () => {
@@ -187,7 +191,7 @@ describe('image', () => {
 
   it('replaces a failed image with the fallback', () => {
     const onError = vi.fn()
-    const { container, getByText, queryByAltText } = render(
+    const { container, getByText } = render(
       <Image
         alt="Broken"
         fallback={<span>No picture</span>}
@@ -201,18 +205,41 @@ describe('image', () => {
     expect(onError).toHaveBeenCalledOnce()
     expect(imageWrapper(container).dataset.state).toBe('error')
     expect(getByText('No picture')).toBeTruthy()
-    expect(queryByAltText('Broken')).toBeNull()
+    // The broken element stays mounted (hidden so it reserves its box) instead
+    // of leaving a browser broken-image icon on the page.
+    expect(container.querySelector('img')?.getAttribute('aria-hidden')).toBe('true')
   })
 
   it('draws a neutral surface when a failed image has no fallback', () => {
-    const { container, queryByAltText } = render(
+    const { container } = render(
       <Image alt="Broken" src="/missing.jpg" />,
     )
 
     fireEvent.error(container.querySelector('img')!)
 
-    expect(queryByAltText('Broken')).toBeNull()
-    expect(container.querySelector('[data-slot="image"]')?.getAttribute('data-state')).toBe('error')
+    expect(container.querySelector('[data-slot="image-fallback"]')).not.toBeNull()
+    expect(container.querySelector('img')?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('recovers from an error when the source changes', () => {
+    const { container, getByText, queryByText, rerender } = render(
+      <Image alt="Broken" fallback={<span>No picture</span>} src="/missing.jpg" />,
+    )
+
+    fireEvent.error(container.querySelector('img')!)
+    expect(getByText('No picture')).toBeTruthy()
+
+    rerender(
+      <Image alt="Fixed" fallback={<span>No picture</span>} src="/fixed.jpg" />,
+    )
+
+    expect(imageWrapper(container).dataset.state).toBe('loading')
+    expect(container.querySelector('img')?.getAttribute('src')).toBe('/fixed.jpg')
+    expect(queryByText('No picture')).toBeNull()
+
+    fireEvent.load(container.querySelector('img')!)
+
+    expect(imageWrapper(container).dataset.state).toBe('loaded')
   })
 
   it('merges the container and image class names', () => {

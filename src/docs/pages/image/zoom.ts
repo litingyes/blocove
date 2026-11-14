@@ -15,7 +15,7 @@ export const docsPage: DocsPage = {
       }),
     },
   ],
-  note: 'The trigger is a real button and the large image opens in a dialog, so Escape closes it, the focus stays inside it and returns to the trigger when it closes. `thumbnailSrc` keeps the trigger light while the dialog requests the full image with `sizes="100vw"`.',
+  note: 'The trigger is a real button and the large image opens in a dialog, so Escape closes it, the focus stays inside it and returns to the trigger when it closes. `sizes`, `widths` and `transform` apply to the trigger image, so a gallery preview stays responsive; `thumbnailSrc` keeps the trigger light while the dialog requests the full image at 100vw by default.',
   api: [
     {
       name: 'ImageZoom',
@@ -30,7 +30,7 @@ export const docsPage: DocsPage = {
         { prop: 'width', type: 'number', default: '-' },
         { prop: 'height', type: 'number', default: '-' },
         { prop: 'priority', type: 'boolean', default: 'false' },
-        { prop: 'sizes', type: 'string', default: '\'100vw\'' },
+        { prop: 'sizes', type: 'string', default: '\'100vw\' in the dialog' },
         { prop: 'widths', type: 'readonly number[]', default: '-' },
         { prop: 'transform', type: '(src, width) => string', default: 'Identity' },
         { prop: 'placeholder', type: 'string', default: '-' },

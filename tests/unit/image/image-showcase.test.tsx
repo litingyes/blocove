@@ -86,4 +86,26 @@ describe('imageShowcase', () => {
 
     expect(container.querySelector('[data-slot="separator"]')).toBeNull()
   })
+
+  it('reserves the lead box and shows its caption outside the zoom dialog', () => {
+    const { container, getByText } = render(
+      <ImageShowcase images={images} title="Around the Moon" />,
+    )
+    const lead = container.querySelector('[data-slot="image-zoom"] [data-slot="image"]') as HTMLElement
+
+    expect(lead.style.aspectRatio).toBe('16 / 9')
+    expect(getByText('The rocket leaves the assembly building.')).toBeTruthy()
+  })
+
+  it('forwards a custom aspect ratio to the lead image and the gallery', () => {
+    const { container } = render(
+      <ImageShowcase aspectRatio="4 / 3" images={images} title="Around the Moon" />,
+    )
+    const ratios = [
+      ...container.querySelectorAll('[data-slot="image-zoom"] [data-slot="image"]'),
+    ].map(node => (node as HTMLElement).style.aspectRatio)
+
+    expect(ratios).toHaveLength(2)
+    expect(ratios.every(ratio => ratio === '4 / 3')).toBe(true)
+  })
 })

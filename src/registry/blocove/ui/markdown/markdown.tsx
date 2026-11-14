@@ -51,15 +51,38 @@ function useMarkdownBlocks(source: string): MarkdownCache {
   return cache
 }
 
+function fencesEqual(
+  a: MarkdownComponents['fences'],
+  b: MarkdownComponents['fences'],
+): boolean {
+  if (a === b) {
+    return true
+  }
+
+  if (!a || !b) {
+    return false
+  }
+
+  const keys = Object.keys(a)
+
+  return keys.length === Object.keys(b).length
+    && keys.every(key => a[key] === b[key])
+}
+
 /**
  * The `components` map is rebuilt by callers that pass an inline object. Blocks
  * are memoized on the map, so it is held stable until one of its entries does
- * change.
+ * change; `fences` is compared entry by entry for the same reason. Module
+ * constants are still the cheapest way to keep the map stable.
  */
 function useStableComponents(components: MarkdownComponents | undefined): MarkdownComponents | undefined {
   const ref = useRef(components)
 
-  if (ref.current?.code !== components?.code || ref.current?.math !== components?.math) {
+  if (
+    ref.current?.code !== components?.code
+    || ref.current?.math !== components?.math
+    || !fencesEqual(ref.current?.fences, components?.fences)
+  ) {
     ref.current = components
   }
 
@@ -154,6 +177,8 @@ interface BlockViewProps {
   components?: MarkdownComponents
   footnotes: ReadonlyMap<string, number>
   streaming: boolean
+  /** The source has stopped growing, so nothing can change anymore. */
+  final: boolean
 }
 
 /**
@@ -167,6 +192,7 @@ const MarkdownBlockView = memo(function MarkdownBlockView({
   components,
   footnotes,
   streaming,
+  final,
 }: BlockViewProps) {
   switch (block.kind) {
     case 'heading': {
@@ -186,14 +212,16 @@ const MarkdownBlockView = memo(function MarkdownBlockView({
     case 'rule':
       return <hr />
     case 'code': {
-      const CodeRenderer = components?.code
+      const FenceRenderer = components?.fences?.[block.language.toLowerCase()]
+        ?? components?.code
 
-      if (CodeRenderer) {
+      if (FenceRenderer) {
         return (
-          <CodeRenderer
+          <FenceRenderer
             language={block.language}
             code={block.code}
             streaming={streaming}
+            complete={block.terminated || final}
           />
         )
       }
@@ -219,6 +247,7 @@ const MarkdownBlockView = memo(function MarkdownBlockView({
               components={components}
               footnotes={footnotes}
               streaming={false}
+              final={final}
             />
           ))}
         </blockquote>
@@ -230,6 +259,7 @@ const MarkdownBlockView = memo(function MarkdownBlockView({
           components={components}
           footnotes={footnotes}
           streaming={streaming}
+          final={final}
         />
       )
     case 'table':
@@ -253,11 +283,13 @@ function MarkdownList({
   components,
   footnotes,
   streaming,
+  final,
 }: {
   block: MarkdownListBlock
   components?: MarkdownComponents
   footnotes: ReadonlyMap<string, number>
   streaming: boolean
+  final: boolean
 }) {
   const Tag = block.ordered ? 'ol' : 'ul'
   const tasks = block.items.some(item => item.task !== null)
@@ -302,6 +334,7 @@ function MarkdownList({
                 components={components}
                 footnotes={footnotes}
                 streaming={false}
+                final={final}
               />
             )
           })}
@@ -405,6 +438,7 @@ export function Markdown({
             components={stableComponents}
             footnotes={footnotes}
             streaming={streaming && index === lastIndex}
+            final={!streaming}
           />
         ))}
 

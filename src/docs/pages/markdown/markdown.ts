@@ -99,10 +99,11 @@ export const docsPage: DocsPage = {
     {
       name: 'MarkdownComponents',
       description:
-        'Capability map of the shell. A node with no registered renderer keeps its literal source — a fence falls back to `<pre><code>` and math stays `$…$` — so the optional items compose without the shell knowing them.',
+        'Capability map of the shell. A node with no registered renderer keeps its literal source — a fence falls back to `<pre><code>` and math stays `$…$` — so the optional items compose without the shell knowing them. Fence renderers are keyed by lowercase language and fall back to `code`; a fence renderer receives `complete` when the closing fence has arrived or the source is final.',
       rows: [
         { prop: 'code', type: 'ComponentType<MarkdownCodeProps>', default: '-' },
         { prop: 'math', type: 'ComponentType<MarkdownMathProps>', default: '-' },
+        { prop: 'fences', type: 'Record<string, ComponentType<MarkdownCodeProps>>', default: '-' },
       ],
     },
   ],

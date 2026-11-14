@@ -1405,6 +1405,190 @@
           "target": "components/blocove/video-playlist.tsx"
         }
       ]
+    },
+    {
+      "name": "image-pipeline",
+      "type": "registry:lib",
+      "title": "Image Pipeline",
+      "description": "Internal helper that builds srcsets, focal-point positions and placeholder backgrounds for the image components.",
+      "categories": [
+        "image",
+        "internal"
+      ],
+      "files": [
+        {
+          "path": "lib/image-pipeline.ts",
+          "type": "registry:lib",
+          "target": "lib/blocove/image-pipeline.ts"
+        }
+      ]
+    },
+    {
+      "name": "image",
+      "type": "registry:ui",
+      "title": "Image",
+      "description": "A responsive image with a layout-stable box, srcset and sizes, focal point, placeholder and fallback, built on the native <img> and <picture> elements.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image-pipeline"
+      ],
+      "categories": [
+        "image"
+      ],
+      "files": [
+        {
+          "path": "ui/image/image.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/image/image.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-figure",
+      "type": "registry:ui",
+      "title": "Image Figure",
+      "description": "An image with an editorial caption and credit, keeping the reserved space and responsive behaviour of the Image component.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image"
+      ],
+      "categories": [
+        "image"
+      ],
+      "files": [
+        {
+          "path": "ui/image/figure.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/image/figure.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-zoom",
+      "type": "registry:ui",
+      "title": "Image Zoom",
+      "description": "A thumbnail that opens its full-size source in a dialog, with a caption and the focus behaviour a dialog owes its trigger.",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image",
+        "dialog"
+      ],
+      "categories": [
+        "image"
+      ],
+      "files": [
+        {
+          "path": "ui/image/zoom.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/image/zoom.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-gallery",
+      "type": "registry:ui",
+      "title": "Image Gallery",
+      "description": "A selected image with a thumbnail grid: arrow-key navigation, aria-current and the zoom view on the selected picture.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image",
+        "litingyes/blocove/image-zoom",
+        "button"
+      ],
+      "categories": [
+        "image"
+      ],
+      "files": [
+        {
+          "path": "ui/image/gallery.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/image/gallery.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-compare",
+      "type": "registry:ui",
+      "title": "Image Compare",
+      "description": "A before/after comparison on one layout-stable stage, driven by a native range input so it works with a mouse, a keyboard and a screen reader.",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image"
+      ],
+      "categories": [
+        "image"
+      ],
+      "files": [
+        {
+          "path": "ui/image/compare.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/image/compare.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-hero",
+      "type": "registry:block",
+      "title": "Image Hero",
+      "description": "A hero section with a full-bleed photograph behind a gradient: an eyebrow, a headline, supporting copy and calls to action.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image",
+        "badge"
+      ],
+      "categories": [
+        "image",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/image-hero.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/image-hero.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-showcase",
+      "type": "registry:block",
+      "title": "Image Showcase",
+      "description": "An editorial image story: a lead photograph with its caption and credit, the facts and actions that give it context, and a gallery for the rest of the set.",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/image",
+        "litingyes/blocove/image-gallery",
+        "litingyes/blocove/image-zoom",
+        "badge",
+        "separator"
+      ],
+      "categories": [
+        "image",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/image-showcase.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/image-showcase.tsx"
+        }
+      ]
     }
   ]
 }

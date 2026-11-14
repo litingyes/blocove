@@ -3,6 +3,7 @@ import {
   BlocksIcon,
   BracesIcon,
   CodeIcon,
+  ImageIcon,
   PaletteIcon,
   PenLineIcon,
   PlayIcon,
@@ -30,7 +31,7 @@ export const Route = createFileRoute('/')({
       {
         name: 'description',
         content:
-          'Composable building blocks for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video players, installed as registry items you own. Extend, never replace.',
+          'Composable building blocks for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor, Video.js audio and video players and responsive image components, installed as registry items you own. Extend, never replace.',
       },
     ],
   }),
@@ -66,6 +67,11 @@ const features = [
     icon: PlayIcon,
     title: 'Audio and video',
     body: 'Video.js players with skins themed by your shadcn/ui tokens, from single players to full sections.',
+  },
+  {
+    icon: ImageIcon,
+    title: 'Responsive images',
+    body: 'A native image with a reserved box, srcset, focal point, placeholder and a fallback that never shows a broken file.',
   },
   {
     icon: BlocksIcon,
@@ -111,10 +117,10 @@ function Home() {
             Composable building blocks for shadcn/ui.
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
-            Blocove adds a Tiptap rich text editor, a CodeMirror code editor and
-            Video.js audio and video players to the shadcn/ui project you already
-            have. Every node, mark, control and block installs on its own, and
-            nothing you already own is replaced.
+            Blocove adds a Tiptap rich text editor, a CodeMirror code editor,
+            Video.js audio and video players and responsive image components to
+            the shadcn/ui project you already have. Every node, mark, control and
+            block installs on its own, and nothing you already own is replaced.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

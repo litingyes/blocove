@@ -23,6 +23,9 @@
       "@/components/blocove/media/*": [
         "./src/registry/blocove/ui/media/*"
       ],
+      "@/components/blocove/image/*": [
+        "./src/registry/blocove/ui/image/*"
+      ],
       "@/lib/blocove/*": ["./src/registry/blocove/lib/*"],
       "@/*": ["./src/*"]
     },

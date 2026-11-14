@@ -37,11 +37,11 @@ and still has to ask what Blocove is.
 
 One sentence for metadata and directories:
 
-> A shadcn/ui registry of composable rich text, code editor and media items.
+> A shadcn/ui registry of composable rich text, code editor, media and image items.
 
 ## Families
 
-The registry ships three families, in this order:
+The registry ships four families, in this order:
 
 1. **Rich text editor** — a Tiptap shell with composable nodes and marks, typeset
    with shadcn/typeset.
@@ -49,11 +49,23 @@ The registry ships three families, in this order:
    with shiki.
 3. **Media** — Video.js audio and video players whose skins are themed by the
    project's shadcn/ui tokens, plus the blocks built on them.
+4. **Image** — native `<img>`/`<picture>` components that reserve their space,
+   serve a srcset and compose into viewers and editorial blocks. It is the first
+   family with no upstream engine: its description names the contract, not a
+   library.
 
 Copy lists the families in that order, and names the technology (Tiptap,
-CodeMirror, Video.js) when it is the reason to care. Registry names follow the
-family: `rich-text-editor-*`, `code-editor-*`, and `video-player`,
-`audio-player`, `ambient-video` for the media items.
+CodeMirror, Video.js) when it is the reason to care; image names no technology
+because the native elements are the point. Registry names follow the family:
+`rich-text-editor-*`, `code-editor-*`, `video-player`, `audio-player`,
+`ambient-video` for the media items, and `image-*` for the image items, which
+install into `components/blocove/image/`.
+
+A cluster of items opens its own family when it shares an upstream engine or
+skin layer with the family next to it, or when it has an independent rendering
+contract and at least four public components plus one block. Anything smaller
+stays a subgroup of the family it belongs to, the way video and audio sit under
+media.
 
 ## Where each line goes
 

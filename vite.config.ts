@@ -48,6 +48,9 @@ const config = defineConfig({
       '@/components/blocove/media': fileURLToPath(
         new URL('./src/registry/blocove/ui/media', import.meta.url),
       ),
+      '@/components/blocove/image': fileURLToPath(
+        new URL('./src/registry/blocove/ui/image', import.meta.url),
+      ),
       '@/lib/blocove': fileURLToPath(
         new URL('./src/registry/blocove/lib', import.meta.url),
       ),

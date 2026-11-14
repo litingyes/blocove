@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router'
 import { cn } from 'cn'
 import { ArrowUpRightIcon } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
+import ImageShowcaseDemo from '@/docs/examples/image/image-showcase'
 import VideoPlaylistDemo from '@/docs/examples/media/video-playlist'
 import { docsFamilies, docsFamilyItems } from '@/docs/nav'
 import { useScrollShowcase } from '@/hooks/use-scroll-showcase'
@@ -44,6 +45,14 @@ const showcases: Showcase[] = [
     family: 'media',
     block: 'video-playlist',
     demo: <VideoPlaylistDemo />,
+  },
+  {
+    family: 'image',
+    block: 'image-showcase',
+    demo: <ImageShowcaseDemo />,
+    // The photo story is tall: a bounded surface keeps the four previews at
+    // comparable heights while the sticky panel follows the scroll.
+    frameClassName: '[&_[data-slot=image-showcase]]:max-h-[34rem] [&_[data-slot=image-showcase]]:overflow-y-auto',
   },
 ]
 

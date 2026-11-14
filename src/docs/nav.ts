@@ -1,9 +1,9 @@
 import type { DocsKind } from '@/lib/registry-catalog'
 
 /**
- * The three registry families, in the order every surface lists them. The
- * paperwork lives here so the docs nav, the catalog pages and the homepage
- * showcase all name and describe a family the same way.
+ * The registry families, in the order every surface lists them. The paperwork
+ * lives here so the docs nav, the catalog pages and the homepage showcase all
+ * name and describe a family the same way.
  */
 export const docsFamilies = {
   'rich-text-editor': {
@@ -17,6 +17,12 @@ export const docsFamilies = {
   'media': {
     label: 'Media',
     description: 'Video.js audio and video players whose skins follow your shadcn/ui tokens, plus the blocks built on them.',
+  },
+  'image': {
+    label: 'Image',
+    // The first family with no upstream engine: it wraps the native <img> and
+    // <picture> elements, so the description names the contract, not a library.
+    description: 'Responsive images: layout-stable sizing, srcset, focal point and placeholders, plus the viewers and blocks built on them.',
   },
 } as const
 
@@ -143,6 +149,23 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
         },
       ],
     },
+    {
+      family: 'image',
+      entry: 'image',
+      groups: [
+        {
+          items: ['image'],
+        },
+        {
+          label: 'Viewers',
+          items: ['image-zoom', 'image-gallery', 'image-compare'],
+        },
+        {
+          label: 'Editorial',
+          items: ['image-figure'],
+        },
+      ],
+    },
   ],
   blocks: [
     {
@@ -172,6 +195,15 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
             'audio-episode-player',
             'video-playlist',
           ],
+        },
+      ],
+    },
+    {
+      family: 'image',
+      groups: [
+        {
+          label: 'Blocks',
+          items: ['image-hero', 'image-showcase'],
         },
       ],
     },

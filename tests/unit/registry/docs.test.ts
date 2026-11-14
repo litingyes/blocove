@@ -3,6 +3,13 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { docsNav, docsNavOrder } from '@/docs/nav'
 import { codeEditorUsage } from '@/docs/snippets/code-editor'
+import {
+  imageCompareUsage,
+  imageFigureUsage,
+  imageGalleryUsage,
+  imageUsage,
+  imageZoomUsage,
+} from '@/docs/snippets/image'
 import { audioPlayerUsage, videoPlayerUsage } from '@/docs/snippets/media'
 import { richTextEditorUsage } from '@/docs/snippets/rich-text-editor'
 import { codeSamples } from '../../helpers/fixtures'
@@ -20,6 +27,10 @@ const codeEditorModules = import.meta.glob(
 ) as Record<string, Record<string, unknown>>
 const mediaModules = import.meta.glob(
   '/src/registry/blocove/ui/media/*.tsx',
+  { eager: true },
+) as Record<string, Record<string, unknown>>
+const imageModules = import.meta.glob(
+  '/src/registry/blocove/ui/image/*.tsx',
   { eager: true },
 ) as Record<string, Record<string, unknown>>
 
@@ -167,6 +178,39 @@ describe('docs snippets', () => {
     })
 
     expectSnippetToResolve(code, installRootOf('code-editor'), modulesByStem(codeEditorModules))
+  })
+
+  it('import the shipped image modules', () => {
+    const images = modulesByStem(imageModules)
+    const root = installRootOf('image')
+
+    const snippets = [
+      imageUsage({
+        widths: [320, 640],
+        sizes: '100vw',
+        placeholder: 'var(--muted)',
+      }),
+      imageFigureUsage({
+        widths: [320, 640],
+        sizes: '100vw',
+        caption: 'A still from the launch trailer.',
+        credit: 'NASA',
+      }),
+      imageZoomUsage({
+        widths: [320, 640],
+        sizes: '100vw',
+        caption: 'A still from the launch trailer.',
+      }),
+      imageGalleryUsage({ columns: 3 }),
+      imageCompareUsage({
+        before: { alt: 'Black and white', src: '/before.jpg' },
+        after: { alt: 'Color', src: '/after.jpg' },
+      }),
+    ]
+
+    for (const code of snippets) {
+      expectSnippetToResolve(code, root, images)
+    }
   })
 })
 

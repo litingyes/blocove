@@ -7,30 +7,33 @@
 
 **Composable building blocks for shadcn/ui.** A [shadcn/ui registry](https://ui.shadcn.com/docs/registry)
 that **extends** [shadcn/ui](https://ui.shadcn.com) instead of replacing it: a
-Tiptap rich text editor, a CodeMirror code editor and Video.js audio and video
-players, plus the blocks built on them. shadcn/ui is installed first and Blocove
-only adds the blocks and components it needs.
+Tiptap rich text editor, a CodeMirror code editor, Video.js audio and video
+players and responsive image components, plus the blocks built on them. shadcn/ui
+is installed first and Blocove only adds the blocks and components it needs.
 
 Blocove is developed against the shadcn/ui **`b0` preset** (Base UI,
 `base-nova` style, neutral palette, Lucide icons, Inter font), but it ships no
 theme of its own: no base config, no theme tokens and no fonts. Items inherit
 the shadcn/ui setup of the project they are added to, so your own preset and
-theme stay in place. The flagship additions are three families: a composable
+theme stay in place. The flagship additions are four families: a composable
 [Tiptap](https://tiptap.dev) rich text editor, whose shell, nodes and marks are
 separate registry items with their own documentation page and whose content is
 typeset with [shadcn/typeset](https://ui.shadcn.com/docs/typeset); a
 [CodeMirror](https://codemirror.net) code editor with
 [shiki](https://shiki.style) highlighting, split into a shell and composable
-extensions; and a media family of [Video.js](https://videojs.org) audio and video
+extensions; a media family of [Video.js](https://videojs.org) audio and video
 players whose skins are themed by the shadcn/ui tokens of the project they are
-added to.
+added to; and an image family of native `<img>`/`<picture>` components that
+reserve their space, serve a srcset and compose into viewers and editorial
+blocks.
 
 Items are grouped per family. The rich text editor lives under the
 `rich-text-editor-*` prefix and installs into `components/blocove/rich-text-editor/`,
-the code editor under `code-editor-*` into `components/blocove/code-editor/`, and
-the media items into `components/blocove/media/`, so a new family can be added
-next to them without renaming existing items. Blocove owns its own namespace, so
-its files never mix with shadcn/ui's `components/ui`.
+the code editor under `code-editor-*` into `components/blocove/code-editor/`,
+the media items into `components/blocove/media/`, and the image items into
+`components/blocove/image/`, so a new family can be added next to them without
+renaming existing items. Blocove owns its own namespace, so its files never mix
+with shadcn/ui's `components/ui`.
 
 The site is built with [TanStack Start](https://tanstack.com/start) and the
 registry itself is plain JSON, so the same items work with the shadcn CLI from a
@@ -466,6 +469,72 @@ hand:
   resolves a source as a multivariant playlist: a bare media playlist attaches
   MediaSource and then never requests a segment.
 
+## Image
+
+Images are native `<img>` and `<picture>` elements, not a framework image
+loader: the primitive owns the layout-stable box, the srcset, the focal point,
+the placeholder and the fallback. It adds no dependency, so it installs next to
+whatever framework you already use and can be replaced by `next/image` without
+changing the surface around it.
+
+The family installs into `components/blocove/image/`:
+`@/components/blocove/image/image`, `figure`, `zoom`, `gallery` and `compare`,
+with the helper in `@/lib/blocove/image-pipeline`.
+
+```tsx
+import { Image } from '@/components/blocove/image/image'
+
+export function Frame() {
+  return (
+    <Image
+      src="/launch-960.jpg"
+      alt="The launch vehicle on the pad"
+      aspectRatio="16 / 9"
+      widths={[320, 480, 640, 960]}
+      sizes="(min-width: 1024px) 640px, 100vw"
+      transform={(src, width) => src.replace(/-960\.jpg$/, `-${width}.jpg`)}
+      placeholder="var(--muted)"
+    />
+  )
+}
+```
+
+`widths` and `transform` build the srcset; pass an explicit `srcSet` instead when
+the URLs come straight from your CDN. `priority` switches the image to eager
+loading, synchronous decoding and a high fetch priority for the largest
+contentful element on the page. `focalPoint`, `objectFit` and `placeholder`
+control how the box looks before the file loads; `fallback` replaces a failed
+image instead of leaving the browser's broken-image icon in the layout.
+
+The viewers compose on top of that primitive: `image-zoom` opens the full image
+in a dialog, `image-gallery` adds a roving-focus thumbnail grid, and
+`image-compare` uses a native range input for a before/after split.
+`image-figure` adds the editorial caption and credit, while the two blocks
+(`image-hero` and `image-showcase`) are complete surfaces built from them.
+
+### Image item graph
+
+- `image` depends on `image-pipeline` (internal: srcset, focal point and
+  placeholder helpers).
+- `image-figure` depends on `image`; `image-compare` depends on `image` too.
+- `image-zoom` depends on `image` and the `dialog` primitive.
+- `image-gallery` depends on `image`, `image-zoom` and the `button` primitive.
+- `image-hero` depends on `image` and `badge`.
+- `image-showcase` depends on `image`, `image-gallery`, `image-zoom`, `badge`
+  and `separator`.
+
+### Sample images
+
+`public/image/` holds the sample photographs the docs demos and the browser suite
+render. They are derived from the NASA material already committed for the media
+family; `public/image/CREDITS.md` records the lineage and
+`scripts/generate-image-samples.mjs` rebuilds every file from
+`public/media/sample-poster.jpg` and `public/media/sample-video.mp4` with ffmpeg.
+The `sample-launch-*` files are the poster at four widths for the srcset demos,
+`sample-frame-a/b/c.jpg` are three frames for the gallery, and
+`sample-before-960.jpg`/`sample-after-960.jpg` are the same frame desaturated and
+untouched for the comparison.
+
 ## Items
 
 | Item                          | Type             | Description                                                            |
@@ -505,11 +574,20 @@ hand:
 | `video-showcase`              | `registry:block` | Captioned video: player, title, description, facts and actions         |
 | `audio-episode-player`        | `registry:block` | Podcast episode: cover art, facts, player and actions                  |
 | `video-playlist`              | `registry:block` | Video next to a selectable playlist that swaps the media               |
+| `image-pipeline`              | `registry:lib`   | Internal helper: srcset, focal-point and placeholder values            |
+| `image`                       | `registry:ui`    | Responsive image: reserved box, srcset, placeholder and fallback       |
+| `image-figure`                | `registry:ui`    | Image with an editorial caption and credit                             |
+| `image-zoom`                  | `registry:ui`    | Thumbnail that opens the full image in a dialog                        |
+| `image-gallery`               | `registry:ui`    | Selected image plus a roving-focus thumbnail grid                      |
+| `image-compare`               | `registry:ui`    | Before/after split driven by a native range input                      |
+| `image-hero`                  | `registry:block` | Hero with a full-bleed photograph behind the copy                      |
+| `image-showcase`              | `registry:block` | Editorial photo story with a lead image, facts and a gallery           |
 
 Every Blocove file declares an explicit `target`, so items install into the
 Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*`,
-`code-editor-*` and media UI items land in `components/blocove/rich-text-editor/`,
-`components/blocove/code-editor/` and `components/blocove/media/`, the media
+`code-editor-*`, media and image UI items land in
+`components/blocove/rich-text-editor/`, `components/blocove/code-editor/`,
+`components/blocove/media/` and `components/blocove/image/`, the media and image
 blocks in `components/blocove/`, and the helpers in `lib/blocove/`. Projects that
 use a `src` directory get the same paths under `src/`.
 
@@ -601,8 +679,10 @@ src/registry/blocove/
   lib/code-editor-shiki.ts              # registry:lib shiki highlighter for the code editor
   lib/rich-text-editor-extension.ts     # registry:lib helper for the rich text editor family
   lib/media-theme.ts                    # registry:lib helper mapping shadcn/ui tokens to the skins
+  lib/image-pipeline.ts                 # registry:lib helper for srcsets, focal points and placeholders
   ui/code-editor/                       # registry:ui items (shell, highlighting, languages, chrome)
   ui/media/                             # registry:ui items (video, audio, tracks, ambient video)
+  ui/image/                             # registry:ui items (image, figure, zoom, gallery, compare)
   ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
   blocks/rich-text-editor-block.tsx     # registry:block item (complete editor)
   blocks/code-editor-block.tsx          # registry:block item (complete code editor)
@@ -610,6 +690,8 @@ src/registry/blocove/
   blocks/video-showcase.tsx
   blocks/audio-episode-player.tsx
   blocks/video-playlist.tsx
+  blocks/image-hero.tsx                 # registry:block items (hero and photo story)
+  blocks/image-showcase.tsx
 src/docs/
   types.ts                        # DocsPage and DocsPageData types
   nav.ts                          # docs navigation, one tree per kind, grouped per family
@@ -636,16 +718,19 @@ scripts/check-preset.mjs          # asserts the project still resolves to the b0
 scripts/check-registry-paths.mjs   # asserts every item targets the Blocove namespace
 scripts/generate-media-samples.mjs # downloads the NASA sources, cuts and encodes the sample clips
 scripts/generate-media-samples.sh  # wraps the clips as the committed HLS fixtures
+scripts/generate-image-samples.mjs # resizes the poster and extracts the sample image frames
 public/r/                         # generated registry JSON (gitignored)
 public/media/                     # committed sample clips, posters, captions, credits and HLS fixtures
+public/image/                     # committed sample photographs and their credits
 ```
 
 - `src/registry/blocove/` is the single source of truth for Blocove extensions.
   Items are grouped by family: the rich text editor lives in
   `ui/rich-text-editor/`, the complete editor block in `blocks/`, the code editor
-  in `ui/code-editor/`, the Video.js items in `ui/media/`, and a new family gets
-  its own folder and item prefix. Every shipped file declares a `target` under
-  `components/blocove/...` or `lib/blocove/...`.
+  in `ui/code-editor/`, the Video.js items in `ui/media/`, the image items in
+  `ui/image/`, and a new family gets its own folder and item prefix. Every
+  shipped file declares a `target` under `components/blocove/...` or
+  `lib/blocove/...`.
 - `src/components/ui/`, `src/hooks/` and `src/lib/highlighter.tsx` are vendored
   from shadcn/ui. This repository installs the **full** official component set so
   the whole shadcn/ui surface is available as context for composing new
@@ -659,7 +744,7 @@ Docs demos import registry files through the repository path
 (`@/registry/blocove/ui/rich-text-editor/bold`). The shipped items themselves use the
 exact paths consumers get (`@/components/blocove/rich-text-editor/*`,
 `@/components/blocove/code-editor/*`, `@/components/blocove/media/*`,
-`@/lib/blocove/*`), so the site resolves
+`@/components/blocove/image/*`, `@/lib/blocove/*`), so the site resolves
 those specifiers to the registry sources in `tsconfig.json` and
 `vite.config.ts`. The family mappings cover every node and mark, which is what
 lets the blocks run their shipped imports in the docs preview. Add a
@@ -849,9 +934,31 @@ reference it instead.
    props and markup; the browser suite covers real playback with the WebM samples.
    Blocks also get a suite in `tests/unit/media/blocks.test.tsx`.
 
+### Adding an image item
+
+1. Build on the shipped primitive: import `Image` from
+   `@/components/blocove/image/image`, give it an aspect ratio or intrinsic
+   dimensions, and compose your surface on top. Viewers wrap the primitive; they
+   never reimplement the `<img>` logic.
+2. Put shared helpers in `src/registry/blocove/lib/image-pipeline.ts` (an
+   internal `registry:lib` item) only when more than one item needs them.
+3. The family adds no npm dependency of its own. List the shadcn/ui primitives a
+   file imports (`dialog`, `button`, `badge`, `separator`) in
+   `registryDependencies`, and other Blocove items with their GitHub address.
+4. `tsconfig.json` and `vite.config.ts` already map
+   `@/components/blocove/image/*` to `src/registry/blocove/ui/image`; no change is
+   needed for a new component in the family.
+5. Document it: a demo in `src/docs/examples/image/`, a page in
+   `src/docs/pages/image/`, the item name in `src/docs/nav.ts` under `Image`, and
+   a snippet from `src/docs/snippets/image.ts` (blocks show their shipped source
+   instead).
+6. Test it in `tests/unit/image/` with happy-dom; use the browser suite for
+   behaviour that needs real layout, such as the dialog focus cycle, the gallery
+   keys and the comparison range.
+
 To add a whole editor family, give it its own folder (`ui/<family>/`), item
 prefix, docs section in `src/docs/nav.ts`, demo frame and snippet builder. The
-rich text editor, code editor and media items are unaffected.
+rich text editor, code editor, media and image items are unaffected.
 
 Conventions:
 

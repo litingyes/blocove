@@ -10,6 +10,12 @@ import {
   imageUsage,
   imageZoomUsage,
 } from '@/docs/snippets/image'
+import {
+  markdownCodeBlockUsage,
+  markdownMathUsage,
+  markdownStreamingUsage,
+  markdownUsage,
+} from '@/docs/snippets/markdown'
 import { audioPlayerUsage, videoPlayerUsage } from '@/docs/snippets/media'
 import { richTextEditorUsage } from '@/docs/snippets/rich-text-editor'
 import { codeSamples } from '../../helpers/fixtures'
@@ -31,6 +37,10 @@ const mediaModules = import.meta.glob(
 ) as Record<string, Record<string, unknown>>
 const imageModules = import.meta.glob(
   '/src/registry/blocove/ui/image/*.tsx',
+  { eager: true },
+) as Record<string, Record<string, unknown>>
+const markdownModules = import.meta.glob(
+  '/src/registry/blocove/ui/markdown/*.tsx',
   { eager: true },
 ) as Record<string, Record<string, unknown>>
 
@@ -78,6 +88,9 @@ function expectSnippetToResolve(
   modules: Map<string, Record<string, unknown>>,
 ) {
   const imports = parseGeneratedImports(code)
+    // A snippet that holds state also imports React; only the Blocove
+    // specifiers have to point at an installed module.
+    .filter(({ specifier }) => specifier.startsWith('@/'))
 
   expect(imports.length).toBeGreaterThan(0)
 
@@ -210,6 +223,22 @@ describe('docs snippets', () => {
 
     for (const code of snippets) {
       expectSnippetToResolve(code, root, images)
+    }
+  })
+
+  it('import the shipped markdown modules', () => {
+    // The four items install into one directory, so one install root covers the
+    // shell and both capability items.
+    const root = installRootOf('markdown')
+    const modules = modulesByStem(markdownModules)
+
+    for (const code of [
+      markdownUsage({ source: '# Title', code: true, math: true }),
+      markdownCodeBlockUsage('```ts\nconst a = 1\n```'),
+      markdownMathUsage('Inline $x^2$ math.'),
+      markdownStreamingUsage('- one\n- two'),
+    ]) {
+      expectSnippetToResolve(code, root, modules)
     }
   })
 })

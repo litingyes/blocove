@@ -26,6 +26,9 @@
       "@/components/blocove/image/*": [
         "./src/registry/blocove/ui/image/*"
       ],
+      "@/components/blocove/markdown/*": [
+        "./src/registry/blocove/ui/markdown/*"
+      ],
       "@/lib/blocove/*": ["./src/registry/blocove/lib/*"],
       "@/*": ["./src/*"]
     },

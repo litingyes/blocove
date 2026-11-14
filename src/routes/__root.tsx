@@ -29,7 +29,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'Composable building blocks for shadcn/ui. A registry of rich text, code editor, media and image items that extend shadcn/ui instead of replacing it.',
+          'Composable building blocks for shadcn/ui. A registry of rich text, code editor, media, image and markdown items that extend shadcn/ui instead of replacing it.',
       },
       {
         name: 'theme-color',

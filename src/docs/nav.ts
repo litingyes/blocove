@@ -24,6 +24,10 @@ export const docsFamilies = {
     // <picture> elements, so the description names the contract, not a library.
     description: 'Responsive images: layout-stable sizing, srcset, focal point and placeholders, plus the viewers and blocks built on them.',
   },
+  'markdown': {
+    label: 'Markdown',
+    description: 'A streaming-safe markdown renderer whose node styles come from shadcn/typeset, with optional shiki fences and KaTeX math.',
+  },
 } as const
 
 export type DocsFamily = keyof typeof docsFamilies
@@ -171,6 +175,19 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
         {
           label: 'Editorial',
           items: ['image-figure'],
+        },
+      ],
+    },
+    {
+      family: 'markdown',
+      entry: 'markdown',
+      groups: [
+        {
+          items: ['markdown'],
+        },
+        {
+          label: 'Rendering',
+          items: ['markdown-code-block', 'markdown-math'],
         },
       ],
     },

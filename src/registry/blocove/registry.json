@@ -1697,6 +1697,99 @@
           "target": "components/blocove/rich-text-editor-collaboration-block.tsx"
         }
       ]
+    },
+    {
+      "name": "markdown-parse",
+      "type": "registry:lib",
+      "title": "Markdown Parser",
+      "description": "Internal parser behind the markdown renderer: a block scanner, an inline parser and the append-only cache that keeps a streaming re-render down to the block still being written.",
+      "categories": [
+        "markdown",
+        "internal"
+      ],
+      "files": [
+        {
+          "path": "lib/markdown-parse.ts",
+          "type": "registry:lib",
+          "target": "lib/blocove/markdown-parse.ts"
+        }
+      ]
+    },
+    {
+      "name": "markdown",
+      "type": "registry:ui",
+      "title": "Markdown",
+      "description": "A streaming-safe markdown renderer. Every node is a semantic element inside a shadcn/typeset container, so the typography comes from typeset, and the append-only cache re-parses only the open block while the source grows.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/markdown-parse"
+      ],
+      "categories": [
+        "markdown",
+        "shell"
+      ],
+      "files": [
+        {
+          "path": "ui/markdown/markdown.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/markdown/markdown.tsx"
+        }
+      ]
+    },
+    {
+      "name": "markdown-code-block",
+      "type": "registry:ui",
+      "title": "Markdown Code Block",
+      "description": "Fence renderer for the markdown item, highlighted with shiki. A fence that streams is tokenized line by line, so finished lines are never re-highlighted.",
+      "dependencies": [
+        "cn",
+        "shiki"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/markdown-parse"
+      ],
+      "categories": [
+        "markdown",
+        "capability"
+      ],
+      "files": [
+        {
+          "path": "lib/markdown-shiki.tsx",
+          "type": "registry:lib",
+          "target": "lib/blocove/markdown-shiki.tsx"
+        },
+        {
+          "path": "ui/markdown/code-block.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/markdown/code-block.tsx"
+        }
+      ]
+    },
+    {
+      "name": "markdown-math",
+      "type": "registry:ui",
+      "title": "Markdown Math",
+      "description": "Math renderer for the markdown item, typeset with KaTeX. An expression that is still being written renders instead of throwing, and needs no math renderer registered, where the shell leaves the source literal.",
+      "dependencies": [
+        "cn",
+        "katex@^0.19.1"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/markdown-parse"
+      ],
+      "categories": [
+        "markdown",
+        "capability"
+      ],
+      "files": [
+        {
+          "path": "ui/markdown/math.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/markdown/math.tsx"
+        }
+      ]
     }
   ]
 }

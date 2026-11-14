@@ -31,7 +31,7 @@ export const Route = createFileRoute('/')({
       {
         name: 'description',
         content:
-          'Composable building blocks for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor, Video.js audio and video players and responsive image components, installed as registry items you own. Extend, never replace.',
+          'Composable building blocks for shadcn/ui: a Tiptap rich text editor, a CodeMirror code editor, Video.js audio and video players, responsive image components and a streaming-safe markdown renderer, installed as registry items you own. Extend, never replace.',
       },
     ],
   }),
@@ -81,7 +81,7 @@ const features = [
   {
     icon: TypeIcon,
     title: 'Typeset typography',
-    body: 'Editor content renders through shadcn/typeset, so long-form text reads like the rest of your project.',
+    body: 'Editor content and markdown documents render through shadcn/typeset, so long-form text reads like the rest of your project.',
   },
   {
     icon: PaletteIcon,
@@ -118,9 +118,10 @@ function Home() {
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
             Blocove adds a Tiptap rich text editor, a CodeMirror code editor,
-            Video.js audio and video players and responsive image components to
-            the shadcn/ui project you already have. Every node, mark, control and
-            block installs on its own, and nothing you already own is replaced.
+            Video.js audio and video players, responsive image components and a
+            streaming-safe markdown renderer to the shadcn/ui project you
+            already have. Every node, mark, control and block installs on its
+            own, and nothing you already own is replaced.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -180,7 +181,7 @@ function Home() {
         <SectionHeading
           eyebrow="Features"
           title="What you get"
-          description="Everything is a registry item: an editor shell, each node and mark, a media player and the blocks built on them."
+          description="Everything is a registry item: an editor shell, each node and mark, a media player, an image component, a markdown renderer and the blocks built on them."
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature) => {

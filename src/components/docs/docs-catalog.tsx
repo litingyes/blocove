@@ -34,6 +34,9 @@ export interface DocsCatalogProps {
 export function DocsCatalog({ kind, catalog }: DocsCatalogProps) {
   const isBlocks = kind === 'blocks'
   const items = new Map(catalog.items.map(item => [item.name, item]))
+  // A family without blocks has no anchor in the other catalog, so its section
+  // offers no cross-kind link rather than one that lands nowhere.
+  const blockFamilies = new Set(docsNav.blocks.map(section => section.family))
 
   const sections: CatalogSection[] = docsNav[kind]
     .map(section => ({
@@ -121,14 +124,18 @@ export function DocsCatalog({ kind, catalog }: DocsCatalogProps) {
                   </Link>
                 )
               : (
-                  <Link
-                    to="/blocks"
-                    hash={section.family}
-                    className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-                  >
-                    See the blocks
-                    <ArrowRightIcon className="size-3.5" />
-                  </Link>
+                  blockFamilies.has(section.family)
+                    ? (
+                        <Link
+                          to="/blocks"
+                          hash={section.family}
+                          className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                        >
+                          See the blocks
+                          <ArrowRightIcon className="size-3.5" />
+                        </Link>
+                      )
+                    : null
                 )}
           </div>
 

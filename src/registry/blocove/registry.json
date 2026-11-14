@@ -1589,6 +1589,114 @@
           "target": "components/blocove/image-showcase.tsx"
         }
       ]
+    },
+    {
+      "name": "rich-text-editor-collaboration",
+      "type": "registry:ui",
+      "title": "Collaboration",
+      "description": "Binds the editor document to a Yjs document, so every peer edits the same shared state.",
+      "dependencies": [
+        "@tiptap/extension-collaboration@3.32.2",
+        "@tiptap/y-tiptap@3.3.0",
+        "yjs@13.6.33"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "collaboration"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/collaboration.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/collaboration.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-collaboration-caret",
+      "type": "registry:ui",
+      "title": "Collaboration Caret",
+      "description": "Renders the cursors and selections of the other collaborators from the provider awareness.",
+      "dependencies": [
+        "@tiptap/extension-collaboration-caret@3.32.2",
+        "@tiptap/pm@3.32.2"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor-collaboration",
+        "litingyes/blocove/rich-text-editor-extension"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "collaboration"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/collaboration-caret.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/collaboration-caret.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-presence",
+      "type": "registry:ui",
+      "title": "Presence",
+      "description": "The online collaborator avatar stack and the connection status of the provider.",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "litingyes/blocove/rich-text-editor-collaboration"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "collaboration"
+      ],
+      "files": [
+        {
+          "path": "ui/rich-text-editor/presence.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/rich-text-editor/presence.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor-collaboration-block",
+      "type": "registry:block",
+      "title": "Collaborative Editor",
+      "description": "A complete collaborative editor: the shared document, the cursors, the presence bar and the connection status.",
+      "dependencies": [
+        "cn",
+        "yjs@13.6.33"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/rich-text-editor",
+        "litingyes/blocove/rich-text-editor-text",
+        "litingyes/blocove/rich-text-editor-paragraph",
+        "litingyes/blocove/rich-text-editor-hard-break",
+        "litingyes/blocove/rich-text-editor-bold",
+        "litingyes/blocove/rich-text-editor-italic",
+        "litingyes/blocove/rich-text-editor-link",
+        "litingyes/blocove/rich-text-editor-collaboration",
+        "litingyes/blocove/rich-text-editor-collaboration-caret",
+        "litingyes/blocove/rich-text-editor-presence"
+      ],
+      "categories": [
+        "rich-text-editor",
+        "collaboration",
+        "block"
+      ],
+      "files": [
+        {
+          "path": "blocks/rich-text-editor-collaboration-block.tsx",
+          "type": "registry:block",
+          "target": "components/blocove/rich-text-editor-collaboration-block.tsx"
+        }
+      ]
     }
   ]
 }

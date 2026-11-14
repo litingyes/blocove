@@ -102,10 +102,15 @@ export function Editor({
     ...resolveExtensions(extensionConfigs),
     ...(extensions ?? []),
   ]
+  // A collaborative document belongs to Yjs. Seeding it from React props, or
+  // pushing a controlled `value` back into it, would either overwrite a peer's
+  // edits or fight the sync plugin over the same transaction.
+  const hasCollaboration = declaredExtensions.some(
+    extension => extension.name === 'collaboration',
+  )
   // Collaboration ships its own undo manager, so registering the editor's
   // history next to it would fight over the same transaction metadata.
-  const historyEnabled = history
-    ?? !declaredExtensions.some(extension => extension.name === 'collaboration')
+  const historyEnabled = history ?? !hasCollaboration
 
   onChangeRef.current = onChange
   onReadyRef.current = onReady
@@ -115,7 +120,9 @@ export function Editor({
       immediatelyRender: false,
       autofocus: autoFocus ? 'end' : false,
       editable,
-      content: value ?? defaultValue ?? '',
+      content: hasCollaboration
+        ? undefined
+        : value ?? defaultValue ?? '',
       extensions: dedupeExtensions([
         Document,
         ...declaredExtensions,
@@ -165,7 +172,7 @@ export function Editor({
   }, [editor, editable])
 
   useEffect(() => {
-    if (!editor || value === undefined) {
+    if (!editor || value === undefined || hasCollaboration) {
       return
     }
 
@@ -175,7 +182,7 @@ export function Editor({
 
     lastEmittedRef.current = value
     editor.commands.setContent(value, { emitUpdate: false })
-  }, [editor, value])
+  }, [editor, value, hasCollaboration])
 
   return (
     <EditorContext value={{ editor }}>

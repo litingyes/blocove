@@ -207,3 +207,113 @@ describe('extensionSignature', () => {
     expect(first).not.toBe(second)
   })
 })
+
+describe('extensionSignature reference props', () => {
+  class FakeDocument {
+    update() {}
+  }
+
+  function signatureOf(props: Record<string, unknown>) {
+    return extensionSignature([
+      {
+        component: makeExtension('probe'),
+        props,
+      },
+    ])
+  }
+
+  it('compares class instances by reference instead of serializing them', () => {
+    const first = new FakeDocument()
+    const second = new FakeDocument()
+
+    expect(signatureOf({ document: first })).toBe(signatureOf({ document: first }))
+    expect(signatureOf({ document: first })).not.toBe(signatureOf({ document: second }))
+    // The token identifies the instance; its internals never reach the string.
+    expect(signatureOf({ document: first })).toMatch(/"#\d+"/)
+  })
+
+  it('survives a circular plain object and a circular instance', () => {
+    const circular: Record<string, unknown> = { label: 'loop' }
+    circular.self = circular
+
+    const node = new FakeDocument() as FakeDocument & { self?: unknown }
+    node.self = node
+
+    expect(() => signatureOf({ circular })).not.toThrow()
+    expect(() => signatureOf({ node })).not.toThrow()
+    // The walk bails out on an identity token before it can loop forever.
+    expect(signatureOf({ circular })).toContain('#')
+    expect(signatureOf({ node })).toContain('#')
+  })
+
+  it('walks arrays and nested plain objects by value', () => {
+    const first = signatureOf({
+      users: [
+        { id: 'ada' },
+        { id: 'alan' },
+      ],
+      config: { level: 1 },
+    })
+    const second = signatureOf({
+      users: [
+        { id: 'ada' },
+        { id: 'alan' },
+      ],
+      config: { level: 1 },
+    })
+    const changed = signatureOf({
+      users: [
+        { id: 'ada' },
+        { id: 'grace' },
+      ],
+      config: { level: 1 },
+    })
+
+    expect(first).toBe(second)
+    expect(first).not.toBe(changed)
+    expect(JSON.parse(first)).toEqual([
+      [
+        'probe',
+        {
+          users: [
+            { id: 'ada' },
+            { id: 'alan' },
+          ],
+          config: { level: 1 },
+        },
+      ],
+    ])
+  })
+
+  it('compares a null-prototype object by value', () => {
+    const bare = Object.assign(Object.create(null) as Record<string, unknown>, {
+      level: 2,
+    })
+
+    expect(signatureOf({ options: bare })).toBe(signatureOf({
+      options: { level: 2 },
+    }))
+  })
+
+  it('stops walking past the depth limit', () => {
+    const deep = {
+      a: {
+        b: {
+          c: {
+            d: { e: 'far-away' },
+          },
+        },
+      },
+    }
+    const signature = signatureOf(deep)
+
+    expect(signature).not.toContain('far-away')
+    expect(signature).toContain('#')
+  })
+
+  it('keeps null and primitive props', () => {
+    expect(signatureOf({ value: null, limit: 10, flag: true })).toBe(
+      '[[\"probe\",{\"value\":null,\"limit\":10,\"flag\":true}]]',
+    )
+  })
+})

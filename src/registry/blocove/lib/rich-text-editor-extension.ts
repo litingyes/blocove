@@ -147,17 +147,76 @@ export function resolveExtensions(configs: ExtensionConfig[]): Extensions {
   )
 }
 
+// Reference identity for props the signature cannot serialize: a Yjs document,
+// a collaboration provider, an awareness instance. They are static
+// configuration, so two renders that pass the same object must produce the same
+// signature, and different objects must produce different ones.
+const identityTokens = new WeakMap<object, number>()
+let nextIdentityToken = 0
+
+function identityToken(value: object): string {
+  let token = identityTokens.get(value)
+
+  if (token === undefined) {
+    nextIdentityToken += 1
+    token = nextIdentityToken
+    identityTokens.set(value, token)
+  }
+
+  return `#${token}`
+}
+
+// Plain objects are serialized by value, but only a few levels deep: extension
+// props are shallow configuration, and an unbounded walk would follow a graph
+// such as a document model into itself.
+const maxSignatureDepth = 4
+
+function signatureValue(value: unknown, depth: number): unknown {
+  if (typeof value === 'function') {
+    return undefined
+  }
+
+  if (value === null || typeof value !== 'object') {
+    return value
+  }
+
+  if (depth >= maxSignatureDepth) {
+    return identityToken(value)
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(item => signatureValue(item, depth + 1))
+  }
+
+  const prototype = Object.getPrototypeOf(value)
+
+  if (prototype !== Object.prototype && prototype !== null) {
+    return identityToken(value)
+  }
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      key,
+      signatureValue(item, depth + 1),
+    ]),
+  )
+}
+
 /**
  * A stable signature for the extension declarations. Prop changes recreate the
  * editor instance, so extension props are treated as static configuration.
+ *
+ * Values are compared by value only while they are plain data. Class instances
+ * (a Yjs document, a provider) are compared by reference, because serializing
+ * them would either throw on the first cycle or embed an unbounded state
+ * snapshot in a memo dependency. Functions never take part: callbacks and
+ * renderers are expected to be new on every render.
  */
 export function extensionSignature(configs: ExtensionConfig[]): string {
   return JSON.stringify(
     configs.map(({ component, props }) => [
       component.extensionName,
-      Object.fromEntries(
-        Object.entries(props).filter(([, value]) => typeof value !== 'function'),
-      ),
+      signatureValue(props, 0),
     ]),
   )
 }

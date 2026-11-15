@@ -112,22 +112,16 @@ const closedMermaid = '```mermaid\nflowchart LR\n  A --> B\n```\n'
  */
 function ClosingMermaid() {
   const [source, setSource] = useState(openMermaid)
-  const [streaming, setStreaming] = useState(true)
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => {
-          setSource(closedMermaid)
-          setStreaming(false)
-        }}
-      >
+      <button type="button" onClick={() => setSource(closedMermaid)}>
         Close
       </button>
+      {/* The stream is still open: the closing fence alone must draw the diagram. */}
       <Markdown
         source={source}
-        streaming={streaming}
+        streaming
         components={{
           fences: { mermaid: MarkdownMermaid },
         }}
@@ -153,23 +147,17 @@ const closedChart = ['```chart', chartBody, '```', ''].join('\n')
 /** A chart fence that closes while the answer stays on screen. */
 function ClosingChart() {
   const [source, setSource] = useState(openChart)
-  const [streaming, setStreaming] = useState(true)
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => {
-          setSource(closedChart)
-          setStreaming(false)
-        }}
-      >
+      <button type="button" onClick={() => setSource(closedChart)}>
         Close chart
       </button>
+      {/* The stream is still open: the closing fence alone must draw the chart. */}
       <div style={{ width: 640 }}>
         <Markdown
           source={source}
-          streaming={streaming}
+          streaming
           components={{
             fences: { chart: MarkdownChart },
           }}

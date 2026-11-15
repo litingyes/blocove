@@ -12,6 +12,14 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  // The browser tests render React through `vitest-browser-react`; when Vite
+  // pre-bundles that entry with its own React copy, Recharts (which resolves
+  // React separately) sees a null dispatcher. Serve the renderer from source and
+  // pre-bundle React itself, so every browser module shares one React instance.
+  optimizeDeps: {
+    exclude: ['vitest-browser-react'],
+    include: ['react', 'react-dom', 'react-dom/client'],
+  },
   test: {
     testTimeout: 15000,
     projects: [

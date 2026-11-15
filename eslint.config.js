@@ -24,6 +24,9 @@ export default antfu(
       // sketches of code that lives elsewhere, so linting them as source
       // reports rules the real files already enforce.
       'docs/**',
+      // Plan-execution workspace: generated task briefs and the progress
+      // ledger. Git-ignored scratch, not repository source.
+      '.superpowers/**',
     ],
   },
   {

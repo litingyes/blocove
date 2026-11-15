@@ -117,6 +117,8 @@ export interface MarkdownCodeProps {
   language: string
   code: string
   streaming?: boolean
+  /** The closing fence has arrived, or the source is final, so it can no longer change. */
+  complete?: boolean
 }
 
 /** Props the shell passes to a registered math renderer. */
@@ -134,6 +136,8 @@ export interface MarkdownMathProps {
 export interface MarkdownComponents {
   code?: ComponentType<MarkdownCodeProps>
   math?: ComponentType<MarkdownMathProps>
+  /** Fence renderers keyed by info-string language; falls back to `code`. */
+  fences?: Record<string, ComponentType<MarkdownCodeProps>>
 }
 
 export interface MarkdownCache {

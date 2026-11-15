@@ -5,12 +5,19 @@ const markdownModules = {
   Markdown: 'markdown',
   MarkdownCodeBlock: 'code-block',
   MarkdownMath: 'math',
+  MarkdownMermaid: 'mermaid',
+  MarkdownChart: 'chart',
 } as const
 
 export type MarkdownExport = keyof typeof markdownModules
 
 /** Import order of the modules, matching the docs navigation. */
-const moduleOrder = ['markdown', 'code-block', 'math'] as const
+const moduleOrder = [
+  'markdown',
+  'code-block',
+  'math',
+  'mermaid',
+] as const
 
 const importRoot = '@/components/blocove/markdown'
 
@@ -46,15 +53,26 @@ export interface MarkdownUsageOptions {
   code?: boolean
   /** Register the KaTeX renderer. */
   math?: boolean
+  /** Register the Pele renderer for mermaid fences. */
+  mermaid?: boolean
+  /** Register the shadcn/ui chart renderer for chart fences. */
+  chart?: boolean
 }
 
 /**
  * The usage snippet every markdown page shows: the shell, the source constant,
  * and the capability map the demo composes.
  */
-export function markdownUsage({ source, code = false, math = false }: MarkdownUsageOptions) {
+export function markdownUsage({
+  source,
+  code = false,
+  math = false,
+  mermaid = false,
+  chart = false,
+}: MarkdownUsageOptions) {
   const names: MarkdownExport[] = ['Markdown']
   const capabilities: string[] = []
+  const fences: string[] = []
 
   if (code) {
     names.push('MarkdownCodeBlock')
@@ -64,6 +82,20 @@ export function markdownUsage({ source, code = false, math = false }: MarkdownUs
   if (math) {
     names.push('MarkdownMath')
     capabilities.push('math: MarkdownMath')
+  }
+
+  if (mermaid) {
+    names.push('MarkdownMermaid')
+    fences.push('mermaid: MarkdownMermaid')
+  }
+
+  if (chart) {
+    names.push('MarkdownChart')
+    fences.push('chart: MarkdownChart')
+  }
+
+  if (fences.length > 0) {
+    capabilities.push(`fences: { ${fences.join(', ')} }`)
   }
 
   const element = capabilities.length > 0
@@ -91,6 +123,16 @@ export function markdownCodeBlockUsage(source: string) {
 /** The math item's page: the shell with the KaTeX renderer. */
 export function markdownMathUsage(source: string) {
   return markdownUsage({ source, math: true })
+}
+
+/** The Mermaid item's page: the shell with the shiki and Pele renderers. */
+export function markdownMermaidUsage(source: string) {
+  return markdownUsage({ source, code: true, mermaid: true })
+}
+
+/** The chart item's page: the shell with the shiki and chart renderers. */
+export function markdownChartUsage(source: string) {
+  return markdownUsage({ source, code: true, chart: true })
 }
 
 /**

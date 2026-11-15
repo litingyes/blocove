@@ -27,7 +27,8 @@ players whose skins are themed by the shadcn/ui tokens of the project they are
 added to; an image family of native `<img>`/`<picture>` components that reserve
 their space, serve a srcset and compose into viewers and editorial blocks; and a
 markdown renderer that turns a growing string into the same typeset nodes, with
-shiki fences and KaTeX math as optional capability items.
+shiki fences, KaTeX math, Pele diagrams and shadcn/ui charts as optional
+capability items.
 
 Items are grouped per family. The rich text editor lives under the
 `rich-text-editor-*` prefix and installs into `components/blocove/rich-text-editor/`,
@@ -71,9 +72,11 @@ npx shadcn@latest add litingyes/blocove/rich-text-editor-heading litingyes/bloco
 npx shadcn@latest add litingyes/blocove/video-player
 npx shadcn@latest add litingyes/blocove/video-hero
 
-# The markdown renderer, plus the shiki fences when the answers contain code.
+# The markdown renderer, with the fences, diagrams and charts an answer needs.
 npx shadcn@latest add litingyes/blocove/markdown
 npx shadcn@latest add litingyes/blocove/markdown-code-block
+npx shadcn@latest add litingyes/blocove/markdown-mermaid
+npx shadcn@latest add litingyes/blocove/markdown-chart
 ```
 
 Pin a release for reproducible installs:
@@ -590,28 +593,38 @@ untouched for the comparison.
 The markdown family is a renderer, not an editor: `<Markdown source>` parses the
 string into semantic elements inside the `typeset typeset-docs` container, so
 every node style comes from shadcn/typeset and a document reads like the rich
-text editor. The shell has no runtime dependencies; the shiki fence renderer and
-the KaTeX math renderer are optional capability items registered through the
-`components` map.
+text editor. The shell has no runtime dependencies; the fence, math, Mermaid and
+chart renderers are optional capability items registered through the `components`
+map. `code` is the fallback fence renderer, `math` typesets formulas, and `fences`
+dispatches a fence to a renderer by its language.
 
 The family installs into `components/blocove/markdown/`, so imports are
 namespaced: `@/components/blocove/markdown/markdown`,
-`@/components/blocove/markdown/code-block` and
-`@/components/blocove/markdown/math`. The parser installs as
-`@/lib/blocove/markdown-parse`, and the fence item also ships the tokenizer as
-`@/lib/blocove/markdown-shiki`.
+`@/components/blocove/markdown/code-block`,
+`@/components/blocove/markdown/math`,
+`@/components/blocove/markdown/mermaid` and
+`@/components/blocove/markdown/chart`. The parser installs as
+`@/lib/blocove/markdown-parse`; the capability items also ship
+`@/lib/blocove/markdown-shiki`, `@/lib/blocove/markdown-mermaid` and
+`@/lib/blocove/markdown-chart`.
 
 ```tsx
+import { MarkdownChart } from '@/components/blocove/markdown/chart'
 import { MarkdownCodeBlock } from '@/components/blocove/markdown/code-block'
 import { Markdown } from '@/components/blocove/markdown/markdown'
 import { MarkdownMath } from '@/components/blocove/markdown/math'
+import { MarkdownMermaid } from '@/components/blocove/markdown/mermaid'
 
 export function Answer({ source, streaming }: { source: string, streaming: boolean }) {
   return (
     <Markdown
       source={source}
       streaming={streaming}
-      components={{ code: MarkdownCodeBlock, math: MarkdownMath }}
+      components={{
+        code: MarkdownCodeBlock,
+        math: MarkdownMath,
+        fences: { mermaid: MarkdownMermaid, chart: MarkdownChart },
+      }}
     />
   )
 }
@@ -624,6 +637,10 @@ identity, and re-parses only the open one, so finished elements keep their DOM, 
 completed fence is not tokenized again and a half-written marker stays literal
 until its closing token arrives. `streaming` only marks the surface (`aria-busy`,
 `data-streaming`) and the block still being written while tokens are arriving.
+Fence renderers also receive `complete`: the closing fence arrived, or the source
+is final (a stream that ends on the closing fence without a trailing newline).
+That is the signal a renderer uses to draw a diagram or a chart instead of
+showing the source.
 
 The parser covers headings (ATX and setext), paragraphs, fenced code, blockquotes,
 bullet, ordered and task lists with nesting, GFM tables, thematic breaks, math
@@ -631,8 +648,9 @@ fences and footnote definitions; inline it covers strong, emphasis,
 strikethrough, code spans, links, images, math, footnote references and hard
 breaks. Raw HTML is escaped, and only `http`, `https`, `mailto`, `tel`, fragment
 and relative targets become anchors. Raw HTML passthrough, reference-style links,
-multi-paragraph footnote bodies, heading ids and fence chrome (copy, download)
-are out of scope.
+multi-paragraph footnote bodies and heading ids are out of scope. Fence chrome
+(language title and copy) comes from `markdown-code-block`; a fence with no
+registered renderer keeps its source, so Mermaid and chart rendering stay opt-in.
 
 ### Markdown item graph
 
@@ -640,13 +658,27 @@ are out of scope.
   append-only cache, with no dependencies.
 - `markdown` depends on `markdown-parse` and `cn`, and ships the shell, the node
   renderers and the streaming cache hook.
-- `markdown-code-block` depends on `markdown-parse`, adds `shiki`, and ships the
-  fence renderer plus the tokenizer that highlights a streamed fence line by
-  line. Register it through the shell's `components` map.
+- `markdown-code-block` depends on `markdown-parse` and the `code-block` item,
+  adds `shiki`, and ships the fence renderer plus the tokenizer that highlights a
+  streamed fence line by line. It renders the shadcn/ui code block with the
+  language in the header and a copy action.
 - `markdown-math` depends on `markdown-parse`, adds `katex`, and ships the math
   renderer; import `katex/dist/katex.min.css` once in the application.
-- Both capability items are optional: without a registered renderer the shell
+- `markdown-mermaid` depends on `markdown-parse` and `code-block`, adds `pele`,
+  and renders `mermaid` fences after the closing fence. Register it under
+  `fences.mermaid`.
+- `markdown-chart` depends on `markdown-parse`, `chart` and `code-block`, adds
+  `recharts`, and renders `chart` fences from the JSON spec. Register it under
+  `fences.chart`.
+- The capability items are optional: without a registered renderer the shell
   falls back to a plain `<pre><code>` fence and literal `$…$` text.
+
+Mermaid diagrams are drawn by Pele: the Mermaid 12.1 built-in diagram types,
+colors from the shadcn CSS variables, images disabled, and the source stays
+visible until the fence closes or the diagram is rejected. Charts are a small
+JSON contract rather than arbitrary components: `bar`, `line`, `area` and `pie`,
+1–200 rows and 1–8 series, with a pie limited to one series and 1–12 slices.
+Both render client-side; server rendering keeps the source.
 
 ## Items
 
@@ -697,8 +729,10 @@ are out of scope.
 | `image-showcase`              | `registry:block` | Editorial photo story with a lead image, facts and a gallery           |
 | `markdown`                    | `registry:ui`    | Streaming-safe markdown renderer inside a shadcn/typeset container     |
 | `markdown-parse`              | `registry:lib`   | Internal parser: block scanner, inline parser and streaming cache      |
-| `markdown-code-block`         | `registry:ui`    | Shiki-highlighted fence renderer for the markdown shell                |
+| `markdown-code-block`         | `registry:ui`    | Shiki-highlighted fences inside the shadcn/ui code block               |
 | `markdown-math`               | `registry:ui`    | KaTeX math renderer for the markdown shell                             |
+| `markdown-mermaid`            | `registry:ui`    | Mermaid fence renderer drawn with Pele, source while streaming         |
+| `markdown-chart`              | `registry:ui`    | JSON-driven shadcn/ui charts for `chart` fences                        |
 
 Every Blocove file declares an explicit `target`, so items install into the
 Blocove namespace instead of shadcn/ui's `ui` alias: the `rich-text-editor-*`,
@@ -798,12 +832,14 @@ src/registry/blocove/
   lib/rich-text-editor-extension.ts     # registry:lib helper for the rich text editor family
   lib/markdown-parse.ts                 # registry:lib parser and streaming cache for markdown
   lib/markdown-shiki.tsx                # registry:lib shiki tokenizer for streamed fences
+  lib/markdown-mermaid.ts               # registry:lib Pele loader and mount options for Mermaid
+  lib/markdown-chart.ts                 # registry:lib chart spec parser and validator
   lib/media-theme.ts                    # registry:lib helper mapping shadcn/ui tokens to the skins
   lib/image-pipeline.ts                 # registry:lib helper for srcsets, focal points and placeholders
   ui/code-editor/                       # registry:ui items (shell, highlighting, languages, chrome)
   ui/media/                             # registry:ui items (video, audio, tracks, ambient video)
   ui/image/                             # registry:ui items (image, figure, zoom, gallery, compare)
-  ui/markdown/                          # registry:ui items (renderer, highlighted fence, math)
+  ui/markdown/                          # registry:ui items (renderer, code fence, math, mermaid, chart)
   ui/rich-text-editor/                  # registry:ui items (shell, nodes, marks)
   blocks/rich-text-editor-block.tsx     # registry:block item (complete editor)
   blocks/code-editor-block.tsx          # registry:block item (complete code editor)
@@ -1080,17 +1116,19 @@ reference it instead.
 
 ### Adding a markdown item
 
-1. Add capability renderers under `src/registry/blocove/ui/markdown/`; a renderer
-   is a `ComponentType` that receives the node props the shell passes
-   (`MarkdownCodeProps` or `MarkdownMathProps` from
-   `@/lib/blocove/markdown-parse`). Pure parser changes live in
+1. Add capability renderers under `src/registry/blocove/ui/markdown/`; a math
+   renderer receives `MarkdownMathProps`, and a fence renderer receives
+   `MarkdownCodeProps` (including `complete`). Register a fence renderer through
+   the shell's `components.fences` map, keyed by lowercase language; `code` stays
+   the fallback for fences no language claims. Pure parser changes live in
    `src/registry/blocove/lib/markdown-parse.ts`.
 2. Register the item in `src/registry/blocove/registry.json` with
    `registryDependencies: ["litingyes/blocove/markdown-parse"]` plus the shell
    when the page composes it, then add the dependency packages (`shiki`,
    `katex`, ...) to `dependencies`.
 3. Document it with a demo in `src/docs/examples/markdown/` (compose
-   `MarkdownDemoFrame` from `src/docs/examples/markdown/frame.tsx`), a page in
+   `MarkdownDemoFrame` from `src/docs/examples/markdown/frame.tsx`, passing its
+   `code` / `math` / `mermaid` / `chart` flag), a page in
    `src/docs/pages/markdown/`, and the item name in `src/docs/nav.ts` under
    `Markdown`; extend `src/docs/snippets/markdown.ts` when the page needs
    generated code.

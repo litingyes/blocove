@@ -26,7 +26,7 @@ export const docsFamilies = {
   },
   'markdown': {
     label: 'Markdown',
-    description: 'A streaming-safe markdown renderer whose node styles come from shadcn/typeset, with optional shiki fences and KaTeX math.',
+    description: 'A streaming-safe markdown renderer whose node styles come from shadcn/typeset, with optional shiki fences, KaTeX math, Pele diagrams and shadcn/ui charts.',
   },
 } as const
 
@@ -187,7 +187,12 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
         },
         {
           label: 'Rendering',
-          items: ['markdown-code-block', 'markdown-math'],
+          items: [
+            'markdown-code-block',
+            'markdown-math',
+            'markdown-mermaid',
+            'markdown-chart',
+          ],
         },
       ],
     },

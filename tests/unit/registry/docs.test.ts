@@ -11,8 +11,10 @@ import {
   imageZoomUsage,
 } from '@/docs/snippets/image'
 import {
+  markdownChartUsage,
   markdownCodeBlockUsage,
   markdownMathUsage,
+  markdownMermaidUsage,
   markdownStreamingUsage,
   markdownUsage,
 } from '@/docs/snippets/markdown'
@@ -236,6 +238,8 @@ describe('docs snippets', () => {
       markdownUsage({ source: '# Title', code: true, math: true }),
       markdownCodeBlockUsage('```ts\nconst a = 1\n```'),
       markdownMathUsage('Inline $x^2$ math.'),
+      markdownMermaidUsage('```mermaid\nflowchart LR\n  A --> B\n```'),
+      markdownChartUsage('```chart\n{"type":"bar"}\n```'),
       markdownStreamingUsage('- one\n- two'),
     ]) {
       expectSnippetToResolve(code, root, modules)

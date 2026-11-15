@@ -81,7 +81,7 @@ export const docsPage: DocsPage = {
       language: 'css',
     },
   ],
-  note: 'Every node is a plain semantic element inside a `.typeset typeset-docs` container, so a document looks exactly like the rich text editor and no second stylesheet has to be kept in sync. Streaming is the default behaviour, not a second mode: while `source` grows, the parse cache keeps every block that already ended and re-parses only the open one, so finished elements keep their DOM, a completed fence is not tokenized again, and a half-written marker stays literal until its closing token arrives. Raw HTML is escaped, and only `http`, `https`, `mailto`, `tel`, fragment and relative targets become anchors.',
+  note: 'Every node is a plain semantic element inside a `.typeset typeset-docs` container, so a document looks exactly like the rich text editor and no second stylesheet has to be kept in sync. Streaming is the default behaviour, not a second mode: while `source` grows, the parse cache keeps every block that already ended and re-parses only the open one, so finished elements keep their DOM, a completed fence is not tokenized again, and a half-written marker stays literal until its closing token arrives. Raw HTML is escaped, and only `http`, `https`, `mailto`, `tel`, fragment and relative targets become anchors. Fence renderers register through `components.fences` keyed by lowercase language and fall back to `code`; they receive `complete` when the closing fence has arrived or the source is final, so a diagram renders on the closing line even when the answer ends without a trailing newline. A fence with no registered renderer keeps its source.',
   api: [
     {
       name: 'Markdown',

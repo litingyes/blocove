@@ -73,6 +73,26 @@ function chartConfigOf(spec: MarkdownChartSpec): ChartConfig {
   return config
 }
 
+// The pie config is keyed by position (`s0`, `s1`) so arbitrary slice names never
+// become CSS variable names. That leaves `ChartLegendContent` without a config
+// entry for the slice name, so the pie legend renders the names from the spec.
+function PieLegend({ spec }: { spec: MarkdownChartSpec }) {
+  return (
+    <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 pt-3 text-xs text-muted-foreground">
+      {spec.data.map((row, index) => (
+        <li key={index} className="flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className="h-2 w-2 shrink-0 rounded-[2px]"
+            style={{ backgroundColor: `var(--chart-${(index % 5) + 1})` }}
+          />
+          {String(row[spec.x])}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function ChartBody({ spec }: { spec: MarkdownChartSpec }) {
   const config = useMemo(() => chartConfigOf(spec), [spec])
   const label = `${spec.type} chart${spec.title
@@ -82,24 +102,26 @@ function ChartBody({ spec }: { spec: MarkdownChartSpec }) {
 
   if (spec.type === 'pie') {
     return (
-      <ChartContainer config={config} className="aspect-auto h-60 w-full" aria-label={label}>
-        <PieChart>
-          <ChartTooltip content={<ChartTooltipContent nameKey={spec.x} />} />
-          <ChartLegend content={<ChartLegendContent nameKey={spec.x} />} />
-          <Pie
-            data={spec.data}
-            dataKey={spec.series[0].key}
-            nameKey={spec.x}
-            innerRadius={56}
-            outerRadius={84}
-            paddingAngle={2}
-          >
-            {spec.data.map((_, index) => (
-              <Cell key={index} fill={`var(--color-s${index})`} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ChartContainer>
+      <div>
+        <ChartContainer config={config} className="aspect-auto h-60 w-full" aria-label={label}>
+          <PieChart>
+            <ChartTooltip content={<ChartTooltipContent nameKey={spec.x} />} />
+            <Pie
+              data={spec.data}
+              dataKey={spec.series[0].key}
+              nameKey={spec.x}
+              innerRadius={56}
+              outerRadius={84}
+              paddingAngle={2}
+            >
+              {spec.data.map((_, index) => (
+                <Cell key={index} fill={`var(--color-s${index})`} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+        <PieLegend spec={spec} />
+      </div>
     )
   }
 
@@ -164,6 +186,7 @@ function ChartBody({ spec }: { spec: MarkdownChartSpec }) {
                     dataKey={series.key}
                     fill={`var(--color-${series.key})`}
                     fillOpacity={0.35}
+                    stroke={`var(--color-${series.key})`}
                     stackId={spec.stacked ? 'stack' : undefined}
                   />
                 ))}

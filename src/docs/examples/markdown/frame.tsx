@@ -1,6 +1,7 @@
 import type { MarkdownComponents } from '@/lib/blocove/markdown-parse'
 import { cn } from 'cn'
 import { useMemo } from 'react'
+import { MarkdownChart } from '@/registry/blocove/ui/markdown/chart'
 import { MarkdownCodeBlock } from '@/registry/blocove/ui/markdown/code-block'
 import { Markdown } from '@/registry/blocove/ui/markdown/markdown'
 import { MarkdownMath } from '@/registry/blocove/ui/markdown/math'
@@ -15,6 +16,8 @@ export interface MarkdownDemoFrameProps {
   math?: boolean
   /** Register the Pele renderer. */
   mermaid?: boolean
+  /** Register the shadcn/ui chart renderer. */
+  chart?: boolean
   className?: string
 }
 
@@ -29,6 +32,7 @@ export function MarkdownDemoFrame({
   code = false,
   math = false,
   mermaid = false,
+  chart = false,
   className,
 }: MarkdownDemoFrameProps) {
   const components = useMemo(() => {
@@ -49,10 +53,17 @@ export function MarkdownDemoFrame({
       }
     }
 
+    if (chart) {
+      result.fences = {
+        ...(result.fences ?? {}),
+        chart: MarkdownChart,
+      }
+    }
+
     return Object.keys(result).length > 0
       ? result
       : undefined
-  }, [code, math, mermaid])
+  }, [code, math, mermaid, chart])
 
   return (
     <div

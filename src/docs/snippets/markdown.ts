@@ -6,6 +6,7 @@ const markdownModules = {
   MarkdownCodeBlock: 'code-block',
   MarkdownMath: 'math',
   MarkdownMermaid: 'mermaid',
+  MarkdownChart: 'chart',
 } as const
 
 export type MarkdownExport = keyof typeof markdownModules
@@ -54,6 +55,8 @@ export interface MarkdownUsageOptions {
   math?: boolean
   /** Register the Pele renderer for mermaid fences. */
   mermaid?: boolean
+  /** Register the shadcn/ui chart renderer for chart fences. */
+  chart?: boolean
 }
 
 /**
@@ -65,6 +68,7 @@ export function markdownUsage({
   code = false,
   math = false,
   mermaid = false,
+  chart = false,
 }: MarkdownUsageOptions) {
   const names: MarkdownExport[] = ['Markdown']
   const capabilities: string[] = []
@@ -83,6 +87,11 @@ export function markdownUsage({
   if (mermaid) {
     names.push('MarkdownMermaid')
     fences.push('mermaid: MarkdownMermaid')
+  }
+
+  if (chart) {
+    names.push('MarkdownChart')
+    fences.push('chart: MarkdownChart')
   }
 
   if (fences.length > 0) {
@@ -119,6 +128,11 @@ export function markdownMathUsage(source: string) {
 /** The Mermaid item's page: the shell with the shiki and Pele renderers. */
 export function markdownMermaidUsage(source: string) {
   return markdownUsage({ source, code: true, mermaid: true })
+}
+
+/** The chart item's page: the shell with the shiki and chart renderers. */
+export function markdownChartUsage(source: string) {
+  return markdownUsage({ source, code: true, chart: true })
 }
 
 /**

@@ -1821,6 +1821,37 @@
           "target": "components/blocove/markdown/mermaid.tsx"
         }
       ]
+    },
+    {
+      "name": "markdown-chart",
+      "type": "registry:ui",
+      "title": "Markdown Chart",
+      "description": "Chart renderer for the markdown item, built on the shadcn/ui chart item. A chart fence carries a small JSON spec; bar, line, area and pie charts render once the fence closes and the spec validates, and the fence stays as source otherwise.",
+      "dependencies": [
+        "cn",
+        "recharts@3.8.0"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/markdown-parse",
+        "chart",
+        "code-block"
+      ],
+      "categories": [
+        "markdown",
+        "capability"
+      ],
+      "files": [
+        {
+          "path": "lib/markdown-chart.ts",
+          "type": "registry:lib",
+          "target": "lib/blocove/markdown-chart.ts"
+        },
+        {
+          "path": "ui/markdown/chart.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/markdown/chart.tsx"
+        }
+      ]
     }
   ]
 }

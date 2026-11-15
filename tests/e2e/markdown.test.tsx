@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { expect, it } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { page } from 'vitest/browser'
+import { MarkdownChart } from '@/components/blocove/markdown/chart'
 import { MarkdownCodeBlock } from '@/components/blocove/markdown/code-block'
 import { Markdown } from '@/components/blocove/markdown/markdown'
 import { MarkdownMermaid } from '@/components/blocove/markdown/mermaid'
@@ -144,3 +145,61 @@ it('draws the mermaid diagram when the fence closes', async () => {
 
   await expect.poll(() => document.querySelector('svg.pele'), { timeout: 15000 }).not.toBeNull()
 })
+
+const chartBody = '{"type":"bar","title":"MRR","x":"month","series":[{"key":"mrr","label":"MRR"}],"data":[{"month":"Jan","mrr":120},{"month":"Feb","mrr":140}]}'
+const openChart = ['```chart', chartBody].join('\n')
+const closedChart = ['```chart', chartBody, '```', ''].join('\n')
+
+/** A chart fence that closes while the answer stays on screen. */
+function ClosingChart() {
+  const [source, setSource] = useState(openChart)
+  const [streaming, setStreaming] = useState(true)
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setSource(closedChart)
+          setStreaming(false)
+        }}
+      >
+        Close chart
+      </button>
+      <div style={{ width: 640 }}>
+        <Markdown
+          source={source}
+          streaming={streaming}
+          components={{
+            fences: { chart: MarkdownChart },
+          }}
+        />
+      </div>
+    </>
+  )
+}
+
+it('draws the chart when the fence closes', async () => {
+  // The browser test page loads no Tailwind, so the chart card would collapse
+  // to zero height and ResponsiveContainer would never paint. Supply the size
+  // the item gets from `h-60` in an application.
+  const layout = document.createElement('style')
+  layout.textContent = '[data-slot="chart"] { width: 640px; height: 240px; }'
+  document.head.append(layout)
+
+  try {
+    await render(<ClosingChart />)
+
+    expect(document.querySelector('[data-slot="chart"]')).toBeNull()
+
+    await page.getByRole('button', { name: 'Close chart' }).click()
+
+    await expect.poll(
+      () => document.querySelector('.recharts-surface'),
+      { timeout: 5000 },
+    ).not.toBeNull()
+  }
+  finally {
+    layout.remove()
+  }
+}, 20000)

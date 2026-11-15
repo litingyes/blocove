@@ -4,6 +4,7 @@ import { render } from 'vitest-browser-react'
 import { page } from 'vitest/browser'
 import { MarkdownCodeBlock } from '@/components/blocove/markdown/code-block'
 import { Markdown } from '@/components/blocove/markdown/markdown'
+import { MarkdownMermaid } from '@/components/blocove/markdown/mermaid'
 
 // The fence and the tail after it: appending grows the open paragraph while the
 // finished fence must keep its DOM, highlighted lines included.
@@ -99,4 +100,47 @@ it('highlights a streamed fence and keeps its nodes across an append', async () 
   await expect.element(elementLocator('.typeset p')).toMatchTextContent(/Tail and more/)
   expect(document.querySelector('[data-slot="code-block-content"]')).toBe(pre)
   expect(document.querySelector('.typeset')!.textContent!.length).toBeGreaterThan(text.length)
+})
+
+const openMermaid = '```mermaid\nflowchart LR\n  A --> B'
+const closedMermaid = '```mermaid\nflowchart LR\n  A --> B\n```\n'
+
+/**
+ * A fence that closes while the answer is still on screen: the diagram must
+ * appear on the closing line, not when the stream ends.
+ */
+function ClosingMermaid() {
+  const [source, setSource] = useState(openMermaid)
+  const [streaming, setStreaming] = useState(true)
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setSource(closedMermaid)
+          setStreaming(false)
+        }}
+      >
+        Close
+      </button>
+      <Markdown
+        source={source}
+        streaming={streaming}
+        components={{
+          fences: { mermaid: MarkdownMermaid },
+        }}
+      />
+    </>
+  )
+}
+
+it('draws the mermaid diagram when the fence closes', async () => {
+  await render(<ClosingMermaid />)
+
+  expect(document.querySelector('svg.pele')).toBeNull()
+
+  await page.getByRole('button', { name: 'Close' }).click()
+
+  await expect.poll(() => document.querySelector('svg.pele'), { timeout: 15000 }).not.toBeNull()
 })

@@ -187,7 +187,7 @@ export const docsNav: Record<DocsKind, DocsNavSection[]> = {
         },
         {
           label: 'Rendering',
-          items: ['markdown-code-block', 'markdown-math'],
+          items: ['markdown-code-block', 'markdown-math', 'markdown-mermaid'],
         },
       ],
     },

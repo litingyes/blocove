@@ -1791,6 +1791,36 @@
           "target": "components/blocove/markdown/math.tsx"
         }
       ]
+    },
+    {
+      "name": "markdown-mermaid",
+      "type": "registry:ui",
+      "title": "Markdown Mermaid",
+      "description": "Mermaid renderer for the markdown item, drawn with Pele. A fence renders as a diagram once it closes; while the source streams, or when Pele rejects it, the fence stays a code block.",
+      "dependencies": [
+        "cn",
+        "pele@^1.13.0"
+      ],
+      "registryDependencies": [
+        "litingyes/blocove/markdown-parse",
+        "code-block"
+      ],
+      "categories": [
+        "markdown",
+        "capability"
+      ],
+      "files": [
+        {
+          "path": "lib/markdown-mermaid.ts",
+          "type": "registry:lib",
+          "target": "lib/blocove/markdown-mermaid.ts"
+        },
+        {
+          "path": "ui/markdown/mermaid.tsx",
+          "type": "registry:ui",
+          "target": "components/blocove/markdown/mermaid.tsx"
+        }
+      ]
     }
   ]
 }

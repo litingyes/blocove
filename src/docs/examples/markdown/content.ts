@@ -128,6 +128,18 @@ export const markdownDemoContent = {
     '$$',
   ].join('\n'),
 
+  mermaid: [
+    'A fence with the mermaid language becomes a diagram once it closes:',
+    '',
+    '```mermaid',
+    'flowchart LR',
+    '  Source[Model output] -->|fence closes| Diagram[SVG]',
+    '  Diagram --> Answer',
+    '```',
+    '',
+    'While the source streams, the fence stays readable as code.',
+  ].join('\n'),
+
   footnotes: [
     'Footnotes keep the document readable[^why] without breaking the flow[^how].',
     '',
